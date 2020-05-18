@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ZMCMSModel1.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ComboDetail">
+          <Key>
+            <PropertyRef Name="CBDRowid" />
+          </Key>
+          <Property Name="CBDRowid" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="CBMRowid" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="CBDCode" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CBDDescription" Type="nvarchar" MaxLength="50" />
+          <Property Name="CBDDisplayFlag" Type="bit" />
+          <Property Name="CBDDisplayOrder" Type="int" />
+          <Property Name="CBDLastModifiedDateTime" Type="datetime" />
+          <Property Name="CBDModifiedUserRowid" Type="nvarchar" MaxLength="128" />
+        </EntityType>
+        <EntityType Name="ComboMaster">
+          <Key>
+            <PropertyRef Name="CBMRowid" />
+          </Key>
+          <Property Name="CBMRowid" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="CBMClass" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="CBMDescription" Type="nvarchar" MaxLength="50" />
+          <Property Name="CBMRemark" Type="nvarchar" MaxLength="100" />
+          <Property Name="CBMGroup" Type="char" MaxLength="2" />
+          <Property Name="CBMLastModifiedDateTime" Type="datetime" />
+          <Property Name="CBMModifiedUserRowid" Type="nvarchar" MaxLength="128" />
+        </EntityType>
+        <EntityContainer Name="ZMCMSModel1StoreContainer">
+          <EntitySet Name="ComboDetail" EntityType="Self.ComboDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ComboMaster" EntityType="Self.ComboMaster" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ZMCMSModel1" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ComboDetail">
+          <Key>
+            <PropertyRef Name="CBDRowid" />
+          </Key>
+          <Property Name="CBDRowid" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CBMRowid" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CBDCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CBDDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CBDDisplayFlag" Type="Boolean" />
+          <Property Name="CBDDisplayOrder" Type="Int32" />
+          <Property Name="CBDLastModifiedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="CBDModifiedUserRowid" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="ComboMaster">
+          <Key>
+            <PropertyRef Name="CBMRowid" />
+          </Key>
+          <Property Name="CBMRowid" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CBMClass" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CBMDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CBMRemark" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CBMGroup" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="CBMLastModifiedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="CBMModifiedUserRowid" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityContainer Name="ZMCMSconn" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ComboDetail" EntityType="Self.ComboDetail" />
+          <EntitySet Name="ComboMaster" EntityType="Self.ComboMaster" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ZMCMSModel1StoreContainer" CdmEntityContainer="ZMCMSconn">
+          <EntitySetMapping Name="ComboDetail">
+            <EntityTypeMapping TypeName="ZMCMSModel1.ComboDetail">
+              <MappingFragment StoreEntitySet="ComboDetail">
+                <ScalarProperty Name="CBDRowid" ColumnName="CBDRowid" />
+                <ScalarProperty Name="CBMRowid" ColumnName="CBMRowid" />
+                <ScalarProperty Name="CBDCode" ColumnName="CBDCode" />
+                <ScalarProperty Name="CBDDescription" ColumnName="CBDDescription" />
+                <ScalarProperty Name="CBDDisplayFlag" ColumnName="CBDDisplayFlag" />
+                <ScalarProperty Name="CBDDisplayOrder" ColumnName="CBDDisplayOrder" />
+                <ScalarProperty Name="CBDLastModifiedDateTime" ColumnName="CBDLastModifiedDateTime" />
+                <ScalarProperty Name="CBDModifiedUserRowid" ColumnName="CBDModifiedUserRowid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ComboMaster">
+            <EntityTypeMapping TypeName="ZMCMSModel1.ComboMaster">
+              <MappingFragment StoreEntitySet="ComboMaster">
+                <ScalarProperty Name="CBMRowid" ColumnName="CBMRowid" />
+                <ScalarProperty Name="CBMClass" ColumnName="CBMClass" />
+                <ScalarProperty Name="CBMDescription" ColumnName="CBMDescription" />
+                <ScalarProperty Name="CBMRemark" ColumnName="CBMRemark" />
+                <ScalarProperty Name="CBMGroup" ColumnName="CBMGroup" />
+                <ScalarProperty Name="CBMLastModifiedDateTime" ColumnName="CBMLastModifiedDateTime" />
+                <ScalarProperty Name="CBMModifiedUserRowid" ColumnName="CBMModifiedUserRowid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="無" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

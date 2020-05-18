@@ -1,54 +1,84 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
+using System;
+using System.Runtime.InteropServices;
 
 namespace OCLink
 {
     public partial class Cutter : Form
     {
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool WritePrivateProfileString(string lpAppName, string lpKeyName, string lpString, string lpFileName);
+
         Bitmap screenBtmp = null; //電腦螢幕的截圖
-       
-        public Cutter(Bitmap btm)
+        bool btz1;
+        public Cutter(Bitmap btm,bool btz)
         {
             InitializeComponent();
-
+            btz1 = btz;
             screenBtmp = btm;
             //Rectangle catchRec;//存放擷取範圍
 
             try
             {
-                // Create an instance of StreamReader to read from a file.
+                // Create an instance of StreamReader to read from a file.'
+
                 // The using statement also closes the StreamReader.
-
-                using (StreamReader sr = new StreamReader(@"C:\Temp\TestFile.TXT"))     //小寫TXT
+                if(btz1 == true)
                 {
-                    String line;
-                    // Read and display lines from the file until the end of
-                    // the file is reached.
-                    line = sr.ReadLine();
-                    var matches = Regex.Match(line,
-                           @"\D*(\d+)\D*(\d+)\D*(\d+)\D*(\d+)");
+                    using (StreamReader sr = new StreamReader(@"C:\ZMTemp\TestFile.TXT"))     //小寫TXT
+                    {
+                        String line;
+                        // Read and display lines from the file until the end of
+                        // the file is reached.
+                        line = sr.ReadLine();
+                        var matches = Regex.Match(line,
+                               @"\D*(\d+)\D*(\d+)\D*(\d+)\D*(\d+)");
 
-                    catchRec = new Rectangle(int.Parse(matches.Groups[1].Value),
-                         int.Parse(matches.Groups[2].Value),
-                         int.Parse(matches.Groups[3].Value),
-                         int.Parse(matches.Groups[4].Value));
+                        catchRec = new Rectangle(int.Parse(matches.Groups[1].Value),
+                             int.Parse(matches.Groups[2].Value),
+                             int.Parse(matches.Groups[3].Value),
+                             int.Parse(matches.Groups[4].Value));
 
 
-                    CatchStart = false;
-                    catchFinished = true;
-                    //sr.Close();
+                        CatchStart = false;
+                        catchFinished = true;
+                        //sr.Close();
 
-                    CaptureHandle(false);
+                        CaptureHandle(false);
+                    }
                 }
+                else
+                {
+                    using (StreamReader sr = new StreamReader(@"C:\ZMTemp\TestFile_office.TXT"))     //小寫TXT
+                    {
+                        String line;
+                        // Read and display lines from the file until the end of
+                        // the file is reached.
+                        line = sr.ReadLine();
+                        var matches = Regex.Match(line,
+                               @"\D*(\d+)\D*(\d+)\D*(\d+)\D*(\d+)");
+
+                        catchRec = new Rectangle(int.Parse(matches.Groups[1].Value),
+                             int.Parse(matches.Groups[2].Value),
+                             int.Parse(matches.Groups[3].Value),
+                             int.Parse(matches.Groups[4].Value));
+
+
+                        CatchStart = false;
+                        catchFinished = true;
+                        //sr.Close();
+
+                        CaptureHandle(false);
+                    }
+                }
+               
             }
             catch (Exception e)
             {
@@ -168,7 +198,7 @@ namespace OCLink
             //引數2  在空圖上繪製的範圍區域
             //引數3  原圖的擷取範圍
             //引數4  度量單位
-            g.DrawImage(screenBtmp, new Rectangle(0, 0, catchRec.Width, catchRec.Height), catchRec, GraphicsUnit.Pixel);            
+            g.DrawImage(screenBtmp, new Rectangle(0, 0, catchRec.Width, catchRec.Height), catchRec, GraphicsUnit.Pixel);
 
             //將自由擷取的圖片儲存到剪下板中
             Clipboard.Clear();
@@ -178,23 +208,51 @@ namespace OCLink
 
             if (Clipboard.ContainsImage())
             {
-                if (!Directory.Exists(@"C:\Temp")) { Directory.CreateDirectory(@"C:\Temp"); }
-                Clipboard.GetImage().Save(@"C:\Temp\CaptureImage.jpg");
-                //Clipboard.SetText($"![image](/posts/2018/{Path.GetFileName(fileName)})");
-
-                if (bEvent)
+                bool Return;
+                if(btz1 == true)
                 {
-                    // 將選取的矩形座標存入參數檔內
-                    using (StreamWriter sw = new StreamWriter(@"C:\Temp\TestFile.TXT"))
+                    if (!Directory.Exists(@"C:\ZMTemp")) { Directory.CreateDirectory(@"C:\ZMTemp"); }
+                    Clipboard.GetImage().Save(@"C:\ZMTemp\CaptureImage.jpg");
+                    //Clipboard.SetText($"![image](/posts/2018/{Path.GetFileName(fileName)})");
+                    string test = @"C:\ZMTemp\System.ini";
+                    if (bEvent)
                     {
-                        // Add some text to the file.
-                        sw.Write(catchRec.ToString());
-                        //sw.Write(catchRec.X.ToString() + Environment.NewLine);
-                        //sw.Write(catchRec.Y.ToString() + Environment.NewLine);
-                        //sw.Write(catchRec.Width.ToString() + Environment.NewLine);
-                        //sw.Write(catchRec.Height.ToString());
+                        // 將選取的矩形座標存入參數檔內
+                        using (StreamWriter sw = new StreamWriter(@"C:\ZMTemp\TestFile.TXT"))
+                        {
+                            // Add some text to the file.
+                            sw.Write(catchRec.ToString());
+                            Return = WritePrivateProfileString("AppName", "REG", catchRec.ToString(), test);
+                            //sw.Write(catchRec.X.ToString() + Environment.NewLine);
+                            //sw.Write(catchRec.Y.ToString() + Environment.NewLine);
+                            //sw.Write(catchRec.Width.ToString() + Environment.NewLine);
+                            //sw.Write(catchRec.Height.ToString());
+                        }
                     }
                 }
+                else
+                {
+                    if (!Directory.Exists(@"C:\ZMTemp")) { Directory.CreateDirectory(@"C:\ZMTemp"); }
+                    Clipboard.GetImage().Save(@"C:\ZMTemp\CaptureImage_office.jpg");
+                    //Clipboard.SetText($"![image](/posts/2018/{Path.GetFileName(fileName)})");
+                    string test = @"C:\ZMTemp\System.ini";
+
+                    if (bEvent)
+                    {
+                        // 將選取的矩形座標存入參數檔內
+                        using (StreamWriter sw = new StreamWriter(@"C:\ZMTemp\TestFile_office.TXT"))
+                        {
+                            // Add some text to the file.
+                            sw.Write(catchRec.ToString());
+                            Return = WritePrivateProfileString("AppName", "OPD", catchRec.ToString(), test);
+                            //sw.Write(catchRec.X.ToString() + Environment.NewLine);
+                            //sw.Write(catchRec.Y.ToString() + Environment.NewLine);
+                            //sw.Write(catchRec.Width.ToString() + Environment.NewLine);
+                            //sw.Write(catchRec.Height.ToString());
+                        }
+                    }
+                }
+               
             }
 
             g.Dispose();
@@ -215,7 +273,7 @@ namespace OCLink
         {
             if (catchFinished)
             {
-                CaptureHandle(true);                
+                CaptureHandle(true);
             }
         }
     }

@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ZMCMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="HospInfo">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="HospOrder" Type="int" />
+          <Property Name="HospBranchOffice" Type="char" MaxLength="1" />
+          <Property Name="HospID" Type="char" MaxLength="10" />
+          <Property Name="HospName" Type="nvarchar" MaxLength="255" />
+          <Property Name="HospAddress" Type="nvarchar" MaxLength="255" />
+          <Property Name="HospAreaCode" Type="nvarchar" MaxLength="3" />
+          <Property Name="HospPhone" Type="nvarchar" MaxLength="20" />
+          <Property Name="HospClass" Type="char" MaxLength="1" />
+          <Property Name="HospType" Type="char" MaxLength="2" />
+          <Property Name="HospKind" Type="char" MaxLength="1" />
+          <Property Name="HospTermDate" Type="nvarchar" MaxLength="8" />
+          <Property Name="HospDean" Type="nvarchar" MaxLength="50" />
+          <Property Name="HospHis" Type="nvarchar" MaxLength="50" />
+          <Property Name="HospLis" Type="bit" />
+          <Property Name="HospLoginPassword" Type="nvarchar(max)" />
+          <Property Name="HospRank" Type="char" MaxLength="1" />
+          <Property Name="HospGroup" Type="nchar" MaxLength="10" />
+          <Property Name="HospMedicalGroup" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="SysHospital">
+          <Key>
+            <PropertyRef Name="HospRowid" />
+          </Key>
+          <Property Name="HospRowid" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="HospID" Type="char" MaxLength="10" Nullable="false" />
+          <Property Name="HospName" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="HospPrincipal" Type="nvarchar" MaxLength="128" />
+          <Property Name="HospDean" Type="nvarchar" MaxLength="128" />
+          <Property Name="HospAddress" Type="nvarchar" MaxLength="255" />
+          <Property Name="HospAreaCode" Type="nvarchar" MaxLength="3" />
+          <Property Name="HospPhone" Type="nvarchar" MaxLength="20" />
+          <Property Name="HospFaxno" Type="nvarchar" MaxLength="20" />
+          <Property Name="HospEmail" Type="nvarchar" MaxLength="255" />
+          <Property Name="HospLevel" Type="nvarchar" MaxLength="10" />
+          <Property Name="HospHIS" Type="nvarchar" MaxLength="50" />
+          <Property Name="HospActive" Type="bit" />
+          <Property Name="HospImage" Type="nvarchar(max)" />
+          <Property Name="HospRegSys" Type="nvarchar" MaxLength="50" />
+          <Property Name="HospLogo" Type="nvarchar" MaxLength="255" />
+          <Property Name="HospQRCode01" Type="nvarchar" MaxLength="255" />
+          <Property Name="HospQRCode02" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityContainer Name="ZMCMSModelStoreContainer">
+          <EntitySet Name="HospInfo" EntityType="Self.HospInfo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SysHospital" EntityType="Self.SysHospital" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ZMCMSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="SysHospital">
+          <Key>
+            <PropertyRef Name="HospRowid" />
+          </Key>
+          <Property Name="HospRowid" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="HospID" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="HospName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="HospPrincipal" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="HospDean" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="HospAddress" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="HospAreaCode" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="HospPhone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="HospFaxno" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="HospEmail" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="HospLevel" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="HospHIS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HospActive" Type="Boolean" />
+          <Property Name="HospImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="HospRegSys" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HospLogo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="HospQRCode01" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="HospQRCode02" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityContainer Name="ZMCMSEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="SysHospital" EntityType="Self.SysHospital" />
+          <EntitySet Name="HospInfo" EntityType="ZMCMSModel.HospInfo" />
+        </EntityContainer>
+        <EntityType Name="HospInfo">
+          <Key>
+            <PropertyRef Name="Rowid" />
+          </Key>
+          <Property Name="Rowid" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="HospOrder" Type="Int32" />
+          <Property Name="HospBranchOffice" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="HospID" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="HospName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="HospAddress" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="HospAreaCode" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="HospPhone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="HospClass" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="HospType" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="HospKind" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="HospTermDate" Type="String" MaxLength="8" FixedLength="false" Unicode="true" />
+          <Property Name="HospDean" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HospHis" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HospLis" Type="Boolean" />
+          <Property Name="HospLoginPassword" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="HospRank" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="HospGroup" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="HospMedicalGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ZMCMSModelStoreContainer" CdmEntityContainer="ZMCMSEntities">
+          <EntitySetMapping Name="SysHospital">
+            <EntityTypeMapping TypeName="ZMCMSModel.SysHospital">
+              <MappingFragment StoreEntitySet="SysHospital">
+                <ScalarProperty Name="HospRowid" ColumnName="HospRowid" />
+                <ScalarProperty Name="HospID" ColumnName="HospID" />
+                <ScalarProperty Name="HospName" ColumnName="HospName" />
+                <ScalarProperty Name="HospPrincipal" ColumnName="HospPrincipal" />
+                <ScalarProperty Name="HospDean" ColumnName="HospDean" />
+                <ScalarProperty Name="HospAddress" ColumnName="HospAddress" />
+                <ScalarProperty Name="HospAreaCode" ColumnName="HospAreaCode" />
+                <ScalarProperty Name="HospPhone" ColumnName="HospPhone" />
+                <ScalarProperty Name="HospFaxno" ColumnName="HospFaxno" />
+                <ScalarProperty Name="HospEmail" ColumnName="HospEmail" />
+                <ScalarProperty Name="HospLevel" ColumnName="HospLevel" />
+                <ScalarProperty Name="HospHIS" ColumnName="HospHIS" />
+                <ScalarProperty Name="HospActive" ColumnName="HospActive" />
+                <ScalarProperty Name="HospImage" ColumnName="HospImage" />
+                <ScalarProperty Name="HospRegSys" ColumnName="HospRegSys" />
+                <ScalarProperty Name="HospLogo" ColumnName="HospLogo" />
+                <ScalarProperty Name="HospQRCode01" ColumnName="HospQRCode01" />
+                <ScalarProperty Name="HospQRCode02" ColumnName="HospQRCode02" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HospInfo">
+            <EntityTypeMapping TypeName="ZMCMSModel.HospInfo">
+              <MappingFragment StoreEntitySet="HospInfo">
+                <ScalarProperty Name="HospMedicalGroup" ColumnName="HospMedicalGroup" />
+                <ScalarProperty Name="HospGroup" ColumnName="HospGroup" />
+                <ScalarProperty Name="HospRank" ColumnName="HospRank" />
+                <ScalarProperty Name="HospLoginPassword" ColumnName="HospLoginPassword" />
+                <ScalarProperty Name="HospLis" ColumnName="HospLis" />
+                <ScalarProperty Name="HospHis" ColumnName="HospHis" />
+                <ScalarProperty Name="HospDean" ColumnName="HospDean" />
+                <ScalarProperty Name="HospTermDate" ColumnName="HospTermDate" />
+                <ScalarProperty Name="HospKind" ColumnName="HospKind" />
+                <ScalarProperty Name="HospType" ColumnName="HospType" />
+                <ScalarProperty Name="HospClass" ColumnName="HospClass" />
+                <ScalarProperty Name="HospPhone" ColumnName="HospPhone" />
+                <ScalarProperty Name="HospAreaCode" ColumnName="HospAreaCode" />
+                <ScalarProperty Name="HospAddress" ColumnName="HospAddress" />
+                <ScalarProperty Name="HospName" ColumnName="HospName" />
+                <ScalarProperty Name="HospID" ColumnName="HospID" />
+                <ScalarProperty Name="HospBranchOffice" ColumnName="HospBranchOffice" />
+                <ScalarProperty Name="HospOrder" ColumnName="HospOrder" />
+                <ScalarProperty Name="Rowid" ColumnName="Rowid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="無" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
