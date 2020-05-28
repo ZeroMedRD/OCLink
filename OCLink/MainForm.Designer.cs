@@ -61,6 +61,7 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.panel2 = new System.Windows.Forms.Panel();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.label20 = new System.Windows.Forms.Label();
             this.comboBox12 = new System.Windows.Forms.ComboBox();
             this.comboBox11 = new System.Windows.Forms.ComboBox();
             this.comboBox10 = new System.Windows.Forms.ComboBox();
@@ -88,22 +89,27 @@
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.關閉一鍵連結ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.comboBox13 = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.comboBox14 = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel2.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // ButtonHotKey
             // 
             this.ButtonHotKey.Font = new System.Drawing.Font("微軟正黑體", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.ButtonHotKey.Location = new System.Drawing.Point(370, 47);
+            this.ButtonHotKey.Location = new System.Drawing.Point(370, 48);
             this.ButtonHotKey.Margin = new System.Windows.Forms.Padding(4);
             this.ButtonHotKey.Name = "ButtonHotKey";
             this.ButtonHotKey.Size = new System.Drawing.Size(173, 48);
@@ -267,6 +273,7 @@
             // 
             // btn_OCR
             // 
+            this.btn_OCR.Enabled = false;
             this.btn_OCR.Font = new System.Drawing.Font("微軟正黑體", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.btn_OCR.Location = new System.Drawing.Point(178, 10);
             this.btn_OCR.Margin = new System.Windows.Forms.Padding(4);
@@ -428,6 +435,7 @@
             // panel2
             // 
             this.panel2.Controls.Add(this.checkBox3);
+            this.panel2.Controls.Add(this.label20);
             this.panel2.Controls.Add(this.comboBox12);
             this.panel2.Controls.Add(this.comboBox11);
             this.panel2.Controls.Add(this.comboBox10);
@@ -472,15 +480,25 @@
             this.checkBox3.UseVisualStyleBackColor = true;
             this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
             // 
+            // label20
+            // 
+            this.label20.Font = new System.Drawing.Font("微軟正黑體", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label20.Location = new System.Drawing.Point(501, 228);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(190, 29);
+            this.label20.TabIndex = 0;
+            this.label20.Text = "版權所有  凌醫科技";
+            // 
             // comboBox12
             // 
             this.comboBox12.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox12.Font = new System.Drawing.Font("微軟正黑體", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.comboBox12.FormattingEnabled = true;
-            this.comboBox12.Location = new System.Drawing.Point(523, 220);
+            this.comboBox12.Location = new System.Drawing.Point(775, 220);
             this.comboBox12.Name = "comboBox12";
             this.comboBox12.Size = new System.Drawing.Size(176, 37);
             this.comboBox12.TabIndex = 54;
+            this.comboBox12.Visible = false;
             this.comboBox12.SelectedIndexChanged += new System.EventHandler(this.comboBox12_SelectedIndexChanged);
             // 
             // comboBox11
@@ -609,11 +627,12 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label8.Location = new System.Drawing.Point(470, 219);
+            this.label8.Location = new System.Drawing.Point(722, 219);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(47, 25);
             this.label8.TabIndex = 42;
             this.label8.Text = "F12";
+            this.label8.Visible = false;
             // 
             // label9
             // 
@@ -753,9 +772,34 @@
             // notifyIcon1
             // 
             this.notifyIcon1.BalloonTipText = "一鍵連結";
+            this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-            this.notifyIcon1.Text = "ZM一鍵連結";
+            this.notifyIcon1.Text = "凌醫一鍵連結";
             this.notifyIcon1.Visible = true;
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1,
+            this.關閉一鍵連結ToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(169, 52);
+            this.contextMenuStrip1.Text = "關閉一鍵連結";
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(168, 24);
+            this.toolStripMenuItem1.Text = "開啟一鍵連結";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            // 
+            // 關閉一鍵連結ToolStripMenuItem
+            // 
+            this.關閉一鍵連結ToolStripMenuItem.Name = "關閉一鍵連結ToolStripMenuItem";
+            this.關閉一鍵連結ToolStripMenuItem.Size = new System.Drawing.Size(168, 24);
+            this.關閉一鍵連結ToolStripMenuItem.Text = "關閉一鍵連結";
+            this.關閉一鍵連結ToolStripMenuItem.Click += new System.EventHandler(this.關閉一鍵連結ToolStripMenuItem_Click);
             // 
             // comboBox13
             // 
@@ -832,11 +876,25 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // button2
+            // 
+            this.button2.Font = new System.Drawing.Font("微軟正黑體", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.button2.Location = new System.Drawing.Point(189, 2);
+            this.button2.Margin = new System.Windows.Forms.Padding(4);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(157, 41);
+            this.button2.TabIndex = 44;
+            this.button2.Text = "登入帳號";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(728, 367);
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(733, 376);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.comboBox14);
             this.Controls.Add(this.label1);
@@ -867,6 +925,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -935,5 +994,10 @@
         private System.Windows.Forms.TextBox tresize;
         private System.Windows.Forms.ComboBox comboBox14;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem 關閉一鍵連結ToolStripMenuItem;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Button button2;
     }
 }

@@ -23,6 +23,8 @@ using OCLink.Models;
 using System.Data.OleDb;
 using ZMLib;
 using System.Web.Mvc;
+using System.Deployment.Application;
+
 namespace OCLink
 {
     public partial class MainForm : Form
@@ -50,12 +52,11 @@ namespace OCLink
             Keys _hotKey = Keys.None;
             Keys _comboKey = Keys.None;
 
-            public HotKey(IntPtr formHandle, Keys hotKey, Keys comboKey, Keys comboKey1)
+            public HotKey(IntPtr formHandle, Keys hotKey, Keys comboKey)
             {
                 _hWnd = formHandle; //Form Handle, 註冊系統熱鍵需要用到這個
                 _hotKey = hotKey; //熱鍵
                 _comboKey = comboKey; //組合鍵, 必須設定Keys.Control, Keys.Alt, Keys.Shift, Keys.None以及Keys.LWin等值才有作用
-                _comboKey = comboKey1; //組合鍵, 必須設定Keys.Control, Keys.Alt, Keys.Shift, Keys.None以及Keys.LWin等值才有作用
 
                 UInt32 uint_comboKey; //由於API對於組合鍵碼的定義不一樣, 所以我們這邊做個轉換                
                 switch (comboKey)
@@ -213,15 +214,25 @@ namespace OCLink
         {
             InitializeComponent();
             getLocalMacAddress();
+            UpdateApplication();
             setdata();
             hotkey();
             this.MaximizeBox = false;
             prog_flag = true;
+            this.TopMost = true;
         }
 
+        private string strValue;
+        public string StrValue
+        {
+            set
+            {
+                strValue = value;
+            }
+        }
         public string Server;//住機位置
         public string testhis;//判斷資料庫
-        public string function;//所選項目
+        public string function1111;//所選項目
         public bool prog_flag;
         public string hisid;//診所his
         public string id;//病人資料代號
@@ -232,17 +243,26 @@ namespace OCLink
         public string ID;//病人身分證
         public string patientno;//病人編號
         public string sHospRowid;//資訊面板
-        public string CBDCode;
+        string drId = "1111";//取得登錄者帳號
+        string drName = "";
         ArrayList MyMacAddress = new ArrayList();//本機地址
         public bool bCheckID = false;//核對身分後確認是否開啟程式
         Dictionary<string, string> dMAC = new Dictionary<string, string>();//IPMAC位置,診所
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-        static extern uint GetPrivateProfileString( string lpAppName,string lpKeyName, string lpDefault,StringBuilder lpReturnedString, uint nSize,string lpFileName);
+        static extern uint GetPrivateProfileString(string lpAppName,string lpKeyName,string lpDefault,StringBuilder lpReturnedString,uint nSize, string lpFileName);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool WritePrivateProfileString(string lpAppName, string lpKeyName, string lpString, string lpFileName);
+        [return: MarshalAs(UnmanagedType.Bool)]static extern bool WritePrivateProfileString(string lpAppName,string lpKeyName, string lpString, string lpFileName);
+
+        private void UpdateApplication()
+        {
+            if (ApplicationDeployment.IsNetworkDeployed)
+            {
+                ApplicationDeployment myVersion = ApplicationDeployment.CurrentDeployment;
+                string publishVersion = string.Concat(myVersion.CurrentVersion);
+            }
+        }
 
         public void getLocalMacAddress()
         {   // 因為電腦中可能有很多的網卡(包含虛擬的網卡)，存入所有的設備號碼
@@ -255,11 +275,11 @@ namespace OCLink
         {
             panel1.Visible = false;
             panel2.Visible = false;
-            this.Height = 120;
-            hotkey1 = new HotKey(this.Handle, Keys.D2, Keys.Alt, Keys.None); //註冊Alt + 2為熱鍵, 如果不要組合鍵請傳Keys.None當參數
+            this.Height = 138;
+            hotkey1 = new HotKey(this.Handle, Keys.D2, Keys.Alt); //註冊Alt + 2為熱鍵, 如果不要組合鍵請傳Keys.None當參數
             hotkey1.OnHotkey += new HotKey.HotkeyEventHandler(hotkey1to4_OnHotkey); //hotkey1~4共用事件
 
-            hotkey1 = new HotKey(this.Handle, Keys.Q, Keys.Alt, Keys.None); //註冊Alt + Q為熱鍵, 如果不要組合鍵請傳Keys.None當參數(截圖快捷鍵)
+            hotkey1 = new HotKey(this.Handle, Keys.Q, Keys.Alt); //註冊Alt + Q為熱鍵, 如果不要組合鍵請傳Keys.None當參數(截圖快捷鍵)
             hotkey1.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR_Click); //hotkey1~4共用事件(如果沒按 診間或掛號紐  會以預設診間為主)
 
 
@@ -430,6 +450,13 @@ namespace OCLink
 
                     uint reg25 = GetPrivateProfileString("AppName", "b_office", "", sb, (uint)sb.Capacity, test);
                     tblue.Text = sb.ToString();
+
+                    uint reg26 = GetPrivateProfileString("AppName", "Enabled", "", sb, (uint)sb.Capacity, test);
+                    if(sb.ToString() == "True")
+                    {
+                        btn_OCR.Enabled = true;
+                    }
+                    
                 }
                 catch (Exception ex)
                 {
@@ -439,18 +466,87 @@ namespace OCLink
             // 下列參數則一律儲存在使用者端的 C:\ZeroMed 目錄內,若檔案不在或參數變數不在則一律帶預設值
             if(tbResize.Text == "" || tbRed.Text == "" || tbGreen.Text == "" || tbBlue.Text =="")
             {
-                tbResize.Text = "3";
+                tbResize.Text = "1";
                 tbRed.Text = "50";
                 tbGreen.Text = "50";
                 tbBlue.Text = "50";
             }
             if(tresize.Text == "" || tred.Text == "" || tgreen.Text == "" || tblue.Text == "")
             {
-                tresize.Text = "3";
+                tresize.Text = "1";
                 tred.Text = "40";
                 tgreen.Text = "40";
                 tblue.Text = "40";
             }
+            //string computerName = System.Environment.GetEnvironmentVariable("COMPUTERNAME");
+            //string userName = System.Environment.GetEnvironmentVariable("USERNAME");
+            //string computerName_10 = computerName.Substring(0, 10);
+            //string datenow = DateTime.Now.ToString("MMdd");
+
+            ////耀聖 RS
+            //if (testhis == "RS" && File.Exists(Server + @":\Z\travel.dbf"))
+            //{
+            //    OleDbConnection conn = new OleDbConnection("Provider=VFPOLEDB.1;Data Source=" + Server + @":\Z\");
+            //    conn.Open();
+
+            //    string query = "select top 1 * from travel where date2=' ' and  memo='" + computerName_10 + "' and date1 like '%" + datenow + "' order by date1 desc , time1 desc";
+            //    //string query = "select * from travel where date2=' ' and  memo='" + computerName_10 + "' order by date1 desc , time1 desc";
+            //    //select * from travel where date2=' ' and  memo='LAPTOP-9BV'  and date1 like '%0519' order by  date1 desc , time1 desc;  asc
+            //    OleDbCommand cmd = new OleDbCommand(query, conn);
+
+            //    OleDbDataAdapter da = new OleDbDataAdapter(cmd);
+            //    DataTable dt = new DataTable();
+
+            //    da.Fill(dt);
+
+            //    conn.Close();
+            //    foreach (DataRow dr in dt.Rows)
+            //    {
+            //        drId = dr["code"].ToString().Trim();
+            //    }
+            //}
+            ////展望 VISW
+            //else if (testhis == "VISW" && File.Exists(Server + @":\VISW\vislog.dbf") && File.Exists(Server + @":\VISW\vis00.dbf"))
+            //{
+            //    OleDbConnection conn = new OleDbConnection("Provider=VFPOLEDB.1;Data Source=" + Server + @":\VISW\");
+            //    conn.Open();
+
+            //    string query = "select * from vis00";
+            //    OleDbCommand cmd = new OleDbCommand(query, conn);
+
+            //    OleDbDataAdapter da = new OleDbDataAdapter(cmd);
+            //    DataTable dt = new DataTable();
+
+            //    da.Fill(dt);
+
+            //    Dictionary<string, string> empDict = new Dictionary<string, string>();
+            //    foreach (DataRow dr in dt.Rows)
+            //    {
+            //        string Vuser = dr["Vuser"].ToString();
+            //        string Vname = dr["Vname"].ToString().Substring(0, 3);
+            //        if (!empDict.ContainsKey(Vname))
+            //        {
+            //            empDict.Add(Vname, Vuser);
+            //        }
+            //    }
+            //    var viswKey = computerName + " # " + userName;
+            //    viswKey = viswKey.Substring(0, 30);
+            //    DataTable table = new DataTable();
+            //    string query1 = "select * from vislog where Lnet ='" + viswKey + "' order by Ldate desc , Ltime desc";
+            //    OleDbCommand cmd1 = new OleDbCommand(query1, conn);
+
+            //    OleDbDataAdapter da1 = new OleDbDataAdapter(cmd);
+            //    da1.Fill(table);
+            //    conn.Close();
+            //    foreach (DataRow s in table.Rows)
+            //    {
+            //        drName = s["Lsur"].ToString().Trim().Substring(0, 3);
+            //        if (empDict.ContainsKey(drName))
+            //        {
+            //            drId = empDict[drName];
+            //        }
+            //    }
+            //}
         }
 
         //private void resetConfiguration()
@@ -480,54 +576,54 @@ namespace OCLink
             // 設定資料皆在 HotKey4OCLink Table 做取得
             // 全部診所皆在此依診所別在此 Table 取得一鍵連結相關資訊
 
-            hotkey2 = new HotKey(this.Handle, Keys.F1, Keys.None, Keys.None); //註冊 F1 為熱鍵
+            hotkey2 = new HotKey(this.Handle, Keys.F1, Keys.None); //註冊 F1 為熱鍵
             hotkey2.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
             hotkey2.OnHotkey += new HotKey.HotkeyEventHandler(hotkey2_OnHotkey); //獨立事件 
 
-            hotkey3 = new HotKey(this.Handle, Keys.F2, Keys.None, Keys.None); //註冊 F2 為熱鍵
+            hotkey3 = new HotKey(this.Handle, Keys.F2, Keys.None); //註冊 F2 為熱鍵
             hotkey3.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
             hotkey3.OnHotkey += new HotKey.HotkeyEventHandler(hotkey3_OnHotkey); //獨立事件
 
-            hotkey4 = new HotKey(this.Handle, Keys.F3, Keys.None, Keys.None); //註冊 F3 為熱鍵
+            hotkey4 = new HotKey(this.Handle, Keys.F3, Keys.None); //註冊 F3 為熱鍵
             hotkey4.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
             hotkey4.OnHotkey += new HotKey.HotkeyEventHandler(hotkey4_OnHotkey); //獨立事件
 
-            hotkey5 = new HotKey(this.Handle, Keys.F4, Keys.None, Keys.None); //註冊 F4 為熱鍵
+            hotkey5 = new HotKey(this.Handle, Keys.F4, Keys.None); //註冊 F4 為熱鍵
             hotkey5.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
             hotkey5.OnHotkey += new HotKey.HotkeyEventHandler(hotkey5_OnHotkey); //獨立事件
 
-            hotkey6 = new HotKey(this.Handle, Keys.F5, Keys.None, Keys.None); //註冊 F5 為熱鍵
+            hotkey6 = new HotKey(this.Handle, Keys.F5, Keys.None); //註冊 F5 為熱鍵
             hotkey6.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
             hotkey6.OnHotkey += new HotKey.HotkeyEventHandler(hotkey6_OnHotkey); //獨立事件
 
-            hotkey7 = new HotKey(this.Handle, Keys.F6, Keys.None, Keys.None); //註冊 F6 為熱鍵
+            hotkey7 = new HotKey(this.Handle, Keys.F6, Keys.None); //註冊 F6 為熱鍵
             hotkey7.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
             hotkey7.OnHotkey += new HotKey.HotkeyEventHandler(hotkey7_OnHotkey); //獨立事件
 
-            hotkey8 = new HotKey(this.Handle, Keys.F7, Keys.None, Keys.None); //註冊F7 為熱鍵
+            hotkey8 = new HotKey(this.Handle, Keys.F7, Keys.None); //註冊F7 為熱鍵
             hotkey8.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
             hotkey8.OnHotkey += new HotKey.HotkeyEventHandler(hotkey8_OnHotkey); //獨立事件
 
-            hotkey9 = new HotKey(this.Handle, Keys.F8, Keys.None, Keys.None); //註冊 F8 為熱鍵
+            hotkey9 = new HotKey(this.Handle, Keys.F8, Keys.None); //註冊 F8 為熱鍵
             hotkey9.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
             hotkey9.OnHotkey += new HotKey.HotkeyEventHandler(hotkey9_OnHotkey); //獨立事件
 
-            hotkey10 = new HotKey(this.Handle, Keys.F9, Keys.None, Keys.None); //註冊 F9 為熱鍵
+            hotkey10 = new HotKey(this.Handle, Keys.F9, Keys.None); //註冊 F9 為熱鍵
             hotkey10.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
             hotkey10.OnHotkey += new HotKey.HotkeyEventHandler(hotkey10_OnHotkey); //獨立事件
 
-            hotkey11 = new HotKey(this.Handle, Keys.F10, Keys.None, Keys.None); //註冊 F10 為熱鍵
+            hotkey11 = new HotKey(this.Handle, Keys.F10, Keys.None); //註冊 F10 為熱鍵
             hotkey11.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
             hotkey11.OnHotkey += new HotKey.HotkeyEventHandler(hotkey11_OnHotkey); //獨立事件
 
-            hotkey12 = new HotKey(this.Handle, Keys.F11, Keys.None, Keys.None); //註冊 F11 為熱鍵
+            hotkey12 = new HotKey(this.Handle, Keys.F11, Keys.None); //註冊 F11 為熱鍵
             hotkey12.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
             hotkey12.OnHotkey += new HotKey.HotkeyEventHandler(hotkey12_OnHotkey); //獨立事件
 
-            hotkey13 = new HotKey(this.Handle, Keys.F12, Keys.None, Keys.None); //註冊 F12 為熱鍵
+            hotkey13 = new HotKey(this.Handle, Keys.F12, Keys.None); //註冊 F12 為熱鍵
             hotkey13.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
             hotkey13.OnHotkey += new HotKey.HotkeyEventHandler(hotkey13_OnHotkey); //獨立事件
-            return;
+            //return;
         }
 
         void hotkeydispose()//清除熱鍵資訊
@@ -548,303 +644,153 @@ namespace OCLink
 
         void hotkeycas() // 設定功能鍵(新增Control Alt shift鍵)
         {
-            if (bck_box1 == true)
+            if (bck_box1 == true && bck_box2 ==false && bck_box3 == false)
             {
-                hotkey2 = new HotKey(this.Handle, Keys.F1, Keys.Control, Keys.None); //註冊 Control+F1 為熱鍵
+                hotkey2 = new HotKey(this.Handle, Keys.F1, Keys.Control); //註冊 Control+F1 為熱鍵
                 hotkey2.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey2.OnHotkey += new HotKey.HotkeyEventHandler(hotkey2_OnHotkey); //獨立事件
 
-                hotkey3 = new HotKey(this.Handle, Keys.F2, Keys.Control, Keys.None); //註冊 Control+F2 為熱鍵
+                hotkey3 = new HotKey(this.Handle, Keys.F2, Keys.Control); //註冊 Control+F2 為熱鍵
                 hotkey3.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey3.OnHotkey += new HotKey.HotkeyEventHandler(hotkey3_OnHotkey); //獨立事件
 
-                hotkey4 = new HotKey(this.Handle, Keys.F3, Keys.Control, Keys.None); //註冊 Control+F3 為熱鍵
+                hotkey4 = new HotKey(this.Handle, Keys.F3, Keys.Control); //註冊 Control+F3 為熱鍵
                 hotkey4.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey4.OnHotkey += new HotKey.HotkeyEventHandler(hotkey4_OnHotkey); //獨立事件
 
-                hotkey5 = new HotKey(this.Handle, Keys.F4, Keys.Control, Keys.None); //註冊 Control+F4 為熱鍵
+                hotkey5 = new HotKey(this.Handle, Keys.F4, Keys.Control); //註冊 Control+F4 為熱鍵
                 hotkey5.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey5.OnHotkey += new HotKey.HotkeyEventHandler(hotkey5_OnHotkey); //獨立事件
 
-                hotkey6 = new HotKey(this.Handle, Keys.F5, Keys.Control, Keys.None); //註冊 Control+F5 為熱鍵
+                hotkey6 = new HotKey(this.Handle, Keys.F5, Keys.Control); //註冊 Control+F5 為熱鍵
                 hotkey6.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey6.OnHotkey += new HotKey.HotkeyEventHandler(hotkey6_OnHotkey); //獨立事件
 
-                hotkey7 = new HotKey(this.Handle, Keys.F6, Keys.Control, Keys.None); //註冊 Control+F6 為熱鍵
+                hotkey7 = new HotKey(this.Handle, Keys.F6, Keys.Control); //註冊 Control+F6 為熱鍵
                 hotkey7.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey7.OnHotkey += new HotKey.HotkeyEventHandler(hotkey7_OnHotkey); //獨立事件
 
-                hotkey8 = new HotKey(this.Handle, Keys.F7, Keys.Control, Keys.None); //註冊 Control+F7 為熱鍵
+                hotkey8 = new HotKey(this.Handle, Keys.F7, Keys.Control); //註冊 Control+F7 為熱鍵
                 hotkey8.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey8.OnHotkey += new HotKey.HotkeyEventHandler(hotkey8_OnHotkey); //獨立事件
 
-                hotkey9 = new HotKey(this.Handle, Keys.F8, Keys.Control, Keys.None); //註冊 Control+F8 為熱鍵
+                hotkey9 = new HotKey(this.Handle, Keys.F8, Keys.Control); //註冊 Control+F8 為熱鍵
                 hotkey9.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey9.OnHotkey += new HotKey.HotkeyEventHandler(hotkey9_OnHotkey); //獨立事件
 
-                hotkey10 = new HotKey(this.Handle, Keys.F9, Keys.Control, Keys.None); //註冊 Control+F9 為熱鍵
+                hotkey10 = new HotKey(this.Handle, Keys.F9, Keys.Control); //註冊 Control+F9 為熱鍵
                 hotkey10.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey10.OnHotkey += new HotKey.HotkeyEventHandler(hotkey10_OnHotkey); //獨立事件
 
-                hotkey11 = new HotKey(this.Handle, Keys.F10, Keys.Control, Keys.None); //註冊 Control+F10 為熱鍵
+                hotkey11 = new HotKey(this.Handle, Keys.F10, Keys.Control); //註冊 Control+F10 為熱鍵
                 hotkey11.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey11.OnHotkey += new HotKey.HotkeyEventHandler(hotkey11_OnHotkey); //獨立事件
 
-                hotkey12 = new HotKey(this.Handle, Keys.F11, Keys.Control, Keys.None); //註冊 Control+F11 為熱鍵
+                hotkey12 = new HotKey(this.Handle, Keys.F11, Keys.Control); //註冊 Control+F11 為熱鍵
                 hotkey12.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey12.OnHotkey += new HotKey.HotkeyEventHandler(hotkey12_OnHotkey); //獨立事件
 
-                hotkey13 = new HotKey(this.Handle, Keys.F12, Keys.Control, Keys.None); //註冊 Control+F12 為熱鍵
+                hotkey13 = new HotKey(this.Handle, Keys.F12, Keys.Control); //註冊 Control+F12 為熱鍵
                 hotkey13.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey13.OnHotkey += new HotKey.HotkeyEventHandler(hotkey13_OnHotkey); //獨立事件
             }
-            else if (bck_box2 == true)
+            else if (bck_box2 == true && bck_box1 == false && bck_box3 == false)
             {
-                hotkey2 = new HotKey(this.Handle, Keys.F1, Keys.Alt, Keys.None); //註冊 Alt+F1 為熱鍵
+                hotkey2 = new HotKey(this.Handle, Keys.F1, Keys.Alt); //註冊 Alt+F1 為熱鍵
                 hotkey2.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey2.OnHotkey += new HotKey.HotkeyEventHandler(hotkey2_OnHotkey); //獨立事件
 
-                hotkey3 = new HotKey(this.Handle, Keys.F2, Keys.Alt, Keys.None); //註冊 Alt+F2 為熱鍵
+                hotkey3 = new HotKey(this.Handle, Keys.F2, Keys.Alt); //註冊 Alt+F2 為熱鍵
                 hotkey3.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey3.OnHotkey += new HotKey.HotkeyEventHandler(hotkey3_OnHotkey); //獨立事件
 
-                hotkey4 = new HotKey(this.Handle, Keys.F3, Keys.Alt, Keys.None); //註冊 Alt+F3 為熱鍵
+                hotkey4 = new HotKey(this.Handle, Keys.F3, Keys.Alt); //註冊 Alt+F3 為熱鍵
                 hotkey4.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey4.OnHotkey += new HotKey.HotkeyEventHandler(hotkey4_OnHotkey); //獨立事件
 
-                hotkey5 = new HotKey(this.Handle, Keys.F4, Keys.Alt, Keys.None); //註冊 Alt+F4 為熱鍵
+                hotkey5 = new HotKey(this.Handle, Keys.F4, Keys.Alt); //註冊 Alt+F4 為熱鍵
                 hotkey5.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey5.OnHotkey += new HotKey.HotkeyEventHandler(hotkey5_OnHotkey); //獨立事件
 
-                hotkey6 = new HotKey(this.Handle, Keys.F5, Keys.Alt, Keys.None); //註冊 Alt+F5 為熱鍵
+                hotkey6 = new HotKey(this.Handle, Keys.F5, Keys.Alt); //註冊 Alt+F5 為熱鍵
                 hotkey6.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey6.OnHotkey += new HotKey.HotkeyEventHandler(hotkey6_OnHotkey); //獨立事件
 
-                hotkey7 = new HotKey(this.Handle, Keys.F6, Keys.Alt, Keys.None); //註冊 Alt+F6 為熱鍵
+                hotkey7 = new HotKey(this.Handle, Keys.F6, Keys.Alt); //註冊 Alt+F6 為熱鍵
                 hotkey7.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey7.OnHotkey += new HotKey.HotkeyEventHandler(hotkey6_OnHotkey); //獨立事件
 
-                hotkey8 = new HotKey(this.Handle, Keys.F7, Keys.Alt, Keys.None); //註冊 Alt+F7 為熱鍵
+                hotkey8 = new HotKey(this.Handle, Keys.F7, Keys.Alt); //註冊 Alt+F7 為熱鍵
                 hotkey8.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey8.OnHotkey += new HotKey.HotkeyEventHandler(hotkey8_OnHotkey); //獨立事件
 
-                hotkey9 = new HotKey(this.Handle, Keys.F8, Keys.Alt, Keys.None); //註冊 Alt+F8 為熱鍵
+                hotkey9 = new HotKey(this.Handle, Keys.F8, Keys.Alt); //註冊 Alt+F8 為熱鍵
                 hotkey9.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey9.OnHotkey += new HotKey.HotkeyEventHandler(hotkey9_OnHotkey); //獨立事件
 
-                hotkey10 = new HotKey(this.Handle, Keys.F9, Keys.Alt, Keys.None); //註冊 Alt+F9 為熱鍵
+                hotkey10 = new HotKey(this.Handle, Keys.F9, Keys.Alt); //註冊 Alt+F9 為熱鍵
                 hotkey10.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey10.OnHotkey += new HotKey.HotkeyEventHandler(hotkey10_OnHotkey); //獨立事件
 
-                hotkey11 = new HotKey(this.Handle, Keys.F10, Keys.Alt, Keys.None); //註冊 Alt+F10 為熱鍵
+                hotkey11 = new HotKey(this.Handle, Keys.F10, Keys.Alt); //註冊 Alt+F10 為熱鍵
                 hotkey11.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey11.OnHotkey += new HotKey.HotkeyEventHandler(hotkey11_OnHotkey); //獨立事件
 
-                hotkey12 = new HotKey(this.Handle, Keys.F11, Keys.Alt, Keys.None); //註冊 Alt+F11 為熱鍵
+                hotkey12 = new HotKey(this.Handle, Keys.F11, Keys.Alt); //註冊 Alt+F11 為熱鍵
                 hotkey12.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey12.OnHotkey += new HotKey.HotkeyEventHandler(hotkey12_OnHotkey); //獨立事件
 
-                hotkey13 = new HotKey(this.Handle, Keys.F12, Keys.Alt, Keys.None); //註冊 Alt+F12 為熱鍵
+                hotkey13 = new HotKey(this.Handle, Keys.F12, Keys.Alt); //註冊 Alt+F12 為熱鍵
                 hotkey13.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey13.OnHotkey += new HotKey.HotkeyEventHandler(hotkey13_OnHotkey); //獨立事件
             }
-            else if (bck_box3 == true)
+            else if (bck_box3 == true && bck_box1 == false && bck_box2 == false)
             {
-                hotkey2 = new HotKey(this.Handle, Keys.F1, Keys.Shift, Keys.None); //註冊 Shift+F1 為熱鍵
+                hotkey2 = new HotKey(this.Handle, Keys.F1, Keys.Shift); //註冊 Shift+F1 為熱鍵
                 hotkey2.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey2.OnHotkey += new HotKey.HotkeyEventHandler(hotkey2_OnHotkey); //獨立事件
 
-                hotkey3 = new HotKey(this.Handle, Keys.F2, Keys.Shift, Keys.None); //註冊 Shift+F2 為熱鍵
+                hotkey3 = new HotKey(this.Handle, Keys.F2, Keys.Shift); //註冊 Shift+F2 為熱鍵
                 hotkey3.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey3.OnHotkey += new HotKey.HotkeyEventHandler(hotkey3_OnHotkey); //獨立事件
 
-                hotkey4 = new HotKey(this.Handle, Keys.F3, Keys.Shift, Keys.None); //註冊 Shift+F3 為熱鍵
+                hotkey4 = new HotKey(this.Handle, Keys.F3, Keys.Shift); //註冊 Shift+F3 為熱鍵
                 hotkey4.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey4.OnHotkey += new HotKey.HotkeyEventHandler(hotkey4_OnHotkey); //獨立事件
 
-                hotkey5 = new HotKey(this.Handle, Keys.F4, Keys.Shift, Keys.None); //註冊 Shift+F4 為熱鍵
+                hotkey5 = new HotKey(this.Handle, Keys.F4, Keys.Shift); //註冊 Shift+F4 為熱鍵
                 hotkey5.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey5.OnHotkey += new HotKey.HotkeyEventHandler(hotkey5_OnHotkey); //獨立事件
 
-                hotkey6 = new HotKey(this.Handle, Keys.F5, Keys.Shift, Keys.None); //註冊 Shift+F5 為熱鍵
+                hotkey6 = new HotKey(this.Handle, Keys.F5, Keys.Shift); //註冊 Shift+F5 為熱鍵
                 hotkey6.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件\
                 hotkey6.OnHotkey += new HotKey.HotkeyEventHandler(hotkey6_OnHotkey); //獨立事件
 
-                hotkey7 = new HotKey(this.Handle, Keys.F6, Keys.Shift, Keys.None); //註冊 Shift+F6 為熱鍵
+                hotkey7 = new HotKey(this.Handle, Keys.F6, Keys.Shift); //註冊 Shift+F6 為熱鍵
                 hotkey7.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey7.OnHotkey += new HotKey.HotkeyEventHandler(hotkey7_OnHotkey); //獨立事件
 
-                hotkey8 = new HotKey(this.Handle, Keys.F7, Keys.Shift, Keys.None); //註冊 Shift+F7 為熱鍵
+                hotkey8 = new HotKey(this.Handle, Keys.F7, Keys.Shift); //註冊 Shift+F7 為熱鍵
                 hotkey8.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey8.OnHotkey += new HotKey.HotkeyEventHandler(hotkey8_OnHotkey); //獨立事件
 
-                hotkey9 = new HotKey(this.Handle, Keys.F8, Keys.Shift, Keys.None); //註冊 Shift+F8 為熱鍵
+                hotkey9 = new HotKey(this.Handle, Keys.F8, Keys.Shift); //註冊 Shift+F8 為熱鍵
                 hotkey9.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey9.OnHotkey += new HotKey.HotkeyEventHandler(hotkey9_OnHotkey); //獨立事件
 
-                hotkey10 = new HotKey(this.Handle, Keys.F9, Keys.Shift, Keys.None); //註冊 Shift+F9 為熱鍵
+                hotkey10 = new HotKey(this.Handle, Keys.F9, Keys.Shift); //註冊 Shift+F9 為熱鍵
                 hotkey10.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey10.OnHotkey += new HotKey.HotkeyEventHandler(hotkey10_OnHotkey); //獨立事件
 
-                hotkey11 = new HotKey(this.Handle, Keys.F10, Keys.Shift, Keys.None); //註冊 Shift+F10 為熱鍵
+                hotkey11 = new HotKey(this.Handle, Keys.F10, Keys.Shift); //註冊 Shift+F10 為熱鍵
                 hotkey11.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey11.OnHotkey += new HotKey.HotkeyEventHandler(hotkey11_OnHotkey); //獨立事件
 
-                hotkey12 = new HotKey(this.Handle, Keys.F11, Keys.Shift, Keys.None); //註冊 Shift+F11 為熱鍵
+                hotkey12 = new HotKey(this.Handle, Keys.F11, Keys.Shift); //註冊 Shift+F11 為熱鍵
                 hotkey12.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey12.OnHotkey += new HotKey.HotkeyEventHandler(hotkey12_OnHotkey); //獨立事件
 
-                hotkey13 = new HotKey(this.Handle, Keys.F12, Keys.Shift, Keys.None); //註冊 Shift+F12 為熱鍵
-                hotkey13.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey13.OnHotkey += new HotKey.HotkeyEventHandler(hotkey13_OnHotkey); //獨立事件
-            }
-            else if (bck_box1 == true && bck_box2 == true)
-            {
-                hotkey2 = new HotKey(this.Handle, Keys.F1, Keys.Control, Keys.Alt); //註冊 Control+Alt+F1 為熱鍵
-                hotkey2.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey2.OnHotkey += new HotKey.HotkeyEventHandler(hotkey2_OnHotkey); //獨立事件
-
-                hotkey3 = new HotKey(this.Handle, Keys.F2, Keys.Control, Keys.Alt); //註冊 Control+Alt+F2 為熱鍵
-                hotkey3.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey3.OnHotkey += new HotKey.HotkeyEventHandler(hotkey3_OnHotkey); //獨立事件
-
-                hotkey4 = new HotKey(this.Handle, Keys.F3, Keys.Control, Keys.Alt); //註冊 Control+Alt+F3 為熱鍵
-                hotkey4.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey4.OnHotkey += new HotKey.HotkeyEventHandler(hotkey4_OnHotkey); //獨立事件
-
-                hotkey5 = new HotKey(this.Handle, Keys.F4, Keys.Control, Keys.Alt); //註冊 Control+Alt+F4 為熱鍵
-                hotkey5.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey5.OnHotkey += new HotKey.HotkeyEventHandler(hotkey5_OnHotkey); //獨立事件
-
-                hotkey6 = new HotKey(this.Handle, Keys.F5, Keys.Control, Keys.Alt); //註冊 Control+Alt+F5 為熱鍵
-                hotkey6.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey6.OnHotkey += new HotKey.HotkeyEventHandler(hotkey6_OnHotkey); //獨立事件
-
-                hotkey7 = new HotKey(this.Handle, Keys.F6, Keys.Control, Keys.Alt); //註冊 Control+Alt+F6 為熱鍵
-                hotkey7.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey7.OnHotkey += new HotKey.HotkeyEventHandler(hotkey7_OnHotkey); //獨立事件
-
-                hotkey8 = new HotKey(this.Handle, Keys.F7, Keys.Control, Keys.Alt); //註冊 Control+Alt+F7 為熱鍵
-                hotkey8.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey8.OnHotkey += new HotKey.HotkeyEventHandler(hotkey8_OnHotkey); //獨立事件
-
-                hotkey9 = new HotKey(this.Handle, Keys.F8, Keys.Control, Keys.Alt); //註冊 Control+Alt+F8 為熱鍵
-                hotkey9.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey9.OnHotkey += new HotKey.HotkeyEventHandler(hotkey9_OnHotkey); //獨立事件
-
-                hotkey10 = new HotKey(this.Handle, Keys.F9, Keys.Control, Keys.Alt); //註冊 Control+Alt+F9 為熱鍵
-                hotkey10.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey10.OnHotkey += new HotKey.HotkeyEventHandler(hotkey10_OnHotkey); //獨立事件
-
-                hotkey11 = new HotKey(this.Handle, Keys.F10, Keys.Control, Keys.Alt); //註冊 Control+Alt+F10 為熱鍵
-                hotkey11.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey11.OnHotkey += new HotKey.HotkeyEventHandler(hotkey11_OnHotkey); //獨立事件
-
-                hotkey12 = new HotKey(this.Handle, Keys.F11, Keys.Control, Keys.Alt); //註冊 Control+Alt+F11 為熱鍵
-                hotkey12.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey12.OnHotkey += new HotKey.HotkeyEventHandler(hotkey12_OnHotkey); //獨立事件
-
-                hotkey13 = new HotKey(this.Handle, Keys.F12, Keys.Control, Keys.Alt); //註冊 Control+Alt+F12 為熱鍵
-                hotkey13.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey13.OnHotkey += new HotKey.HotkeyEventHandler(hotkey13_OnHotkey); //獨立事件
-            }
-            else if (bck_box1 == true && bck_box3 == true)
-            {
-                hotkey2 = new HotKey(this.Handle, Keys.F1, Keys.Control, Keys.Shift); //註冊 Control+Shift+F1 為熱鍵
-                hotkey2.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey2.OnHotkey += new HotKey.HotkeyEventHandler(hotkey2_OnHotkey); //獨立事件
-
-                hotkey3 = new HotKey(this.Handle, Keys.F2, Keys.Control, Keys.Shift); //註冊 Control+Shift+F2 為熱鍵
-                hotkey3.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey3.OnHotkey += new HotKey.HotkeyEventHandler(hotkey3_OnHotkey); //獨立事件
-
-                hotkey4 = new HotKey(this.Handle, Keys.F3, Keys.Control, Keys.Shift); //註冊 Control+Shift+F3 為熱鍵
-                hotkey4.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey4.OnHotkey += new HotKey.HotkeyEventHandler(hotkey4_OnHotkey); //獨立事件
-
-                hotkey5 = new HotKey(this.Handle, Keys.F4, Keys.Control, Keys.Shift); //註冊 Control+Shift+F4 為熱鍵
-                hotkey5.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey5.OnHotkey += new HotKey.HotkeyEventHandler(hotkey5_OnHotkey); //獨立事件
-
-                hotkey6 = new HotKey(this.Handle, Keys.F5, Keys.Control, Keys.Shift); //註冊 Control+Shift+F5 為熱鍵
-                hotkey6.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey6.OnHotkey += new HotKey.HotkeyEventHandler(hotkey6_OnHotkey); //獨立事件
-
-                hotkey7 = new HotKey(this.Handle, Keys.F6, Keys.Control, Keys.Shift); //註冊 Control+Shift+F6 為熱鍵
-                hotkey7.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey7.OnHotkey += new HotKey.HotkeyEventHandler(hotkey7_OnHotkey); //獨立事件
-
-                hotkey8 = new HotKey(this.Handle, Keys.F7, Keys.Control, Keys.Shift); //註冊 Control+Shift+F7 為熱鍵
-                hotkey8.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey8.OnHotkey += new HotKey.HotkeyEventHandler(hotkey8_OnHotkey); //獨立事件
-
-                hotkey9 = new HotKey(this.Handle, Keys.F8, Keys.Control, Keys.Shift); //註冊 Control+Shift+F8 為熱鍵
-                hotkey9.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey9.OnHotkey += new HotKey.HotkeyEventHandler(hotkey9_OnHotkey); //獨立事件
-
-                hotkey10 = new HotKey(this.Handle, Keys.F9, Keys.Control, Keys.Shift); //註冊 Control+Shift+F9 為熱鍵
-                hotkey10.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey10.OnHotkey += new HotKey.HotkeyEventHandler(hotkey10_OnHotkey); //獨立事件
-
-                hotkey11 = new HotKey(this.Handle, Keys.F10, Keys.Control, Keys.Shift); //註冊 Control+Shift+F10 為熱鍵
-                hotkey11.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey11.OnHotkey += new HotKey.HotkeyEventHandler(hotkey11_OnHotkey); //獨立事件
-
-                hotkey12 = new HotKey(this.Handle, Keys.F11, Keys.Control, Keys.Shift); //註冊 Control+Shift+F11 為熱鍵
-                hotkey12.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey12.OnHotkey += new HotKey.HotkeyEventHandler(hotkey12_OnHotkey); //獨立事件
-
-                hotkey13 = new HotKey(this.Handle, Keys.F12, Keys.Control, Keys.Shift); //註冊 Control+Shift+F12 為熱鍵
-                hotkey13.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey13.OnHotkey += new HotKey.HotkeyEventHandler(hotkey13_OnHotkey); //獨立事件
-            }
-            else if (bck_box2 == true && bck_box3 == true)
-            {
-                hotkey2 = new HotKey(this.Handle, Keys.F1, Keys.Alt, Keys.Shift); //註冊 Alt+Shift+F1 為熱鍵
-                hotkey2.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey2.OnHotkey += new HotKey.HotkeyEventHandler(hotkey2_OnHotkey); //獨立事件
-
-                hotkey3 = new HotKey(this.Handle, Keys.F2, Keys.Alt, Keys.Shift); //註冊 Alt+Shift+F2 為熱鍵
-                hotkey3.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey3.OnHotkey += new HotKey.HotkeyEventHandler(hotkey3_OnHotkey); //獨立事件
-
-                hotkey4 = new HotKey(this.Handle, Keys.F3, Keys.Alt, Keys.Shift); //註冊 Alt+Shift+F3 為熱鍵
-                hotkey4.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey4.OnHotkey += new HotKey.HotkeyEventHandler(hotkey4_OnHotkey); //獨立事件
-
-                hotkey5 = new HotKey(this.Handle, Keys.F4, Keys.Alt, Keys.Shift); //註冊 Alt+Shift+F4 為熱鍵
-                hotkey5.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey5.OnHotkey += new HotKey.HotkeyEventHandler(hotkey5_OnHotkey); //獨立事件
-
-                hotkey6 = new HotKey(this.Handle, Keys.F5, Keys.Alt, Keys.Shift); //註冊 Alt+Shift+F5 為熱鍵
-                hotkey6.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey6.OnHotkey += new HotKey.HotkeyEventHandler(hotkey6_OnHotkey); //獨立事件
-
-                hotkey7 = new HotKey(this.Handle, Keys.F6, Keys.Alt, Keys.Shift); //註冊 Alt+Shift+F6 為熱鍵
-                hotkey7.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey7.OnHotkey += new HotKey.HotkeyEventHandler(hotkey7_OnHotkey); //獨立事件
-
-                hotkey8 = new HotKey(this.Handle, Keys.F7, Keys.Alt, Keys.Shift); //註冊 Alt+Shift+F7 為熱鍵
-                hotkey8.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey8.OnHotkey += new HotKey.HotkeyEventHandler(hotkey8_OnHotkey); //獨立事件
-
-                hotkey9 = new HotKey(this.Handle, Keys.F8, Keys.Alt, Keys.Shift); //註冊 Alt+Shift+F8 為熱鍵
-                hotkey9.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey9.OnHotkey += new HotKey.HotkeyEventHandler(hotkey9_OnHotkey); //獨立事件
-
-                hotkey10 = new HotKey(this.Handle, Keys.F9, Keys.Alt, Keys.Shift); //註冊 Alt+Shift+F9 為熱鍵
-                hotkey10.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey10.OnHotkey += new HotKey.HotkeyEventHandler(hotkey10_OnHotkey); //獨立事件
-
-                hotkey11 = new HotKey(this.Handle, Keys.F10, Keys.Alt, Keys.Shift); //註冊 Alt+Shift+F10 為熱鍵
-                hotkey11.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey11.OnHotkey += new HotKey.HotkeyEventHandler(hotkey11_OnHotkey); //獨立事件
-
-                hotkey12 = new HotKey(this.Handle, Keys.F11, Keys.Alt, Keys.Shift); //註冊 Alt+Shift+F11 為熱鍵
-                hotkey12.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
-                hotkey12.OnHotkey += new HotKey.HotkeyEventHandler(hotkey12_OnHotkey); //獨立事件
-
-                hotkey13 = new HotKey(this.Handle, Keys.F12, Keys.Alt, Keys.Shift); //註冊 Alt+Shift+F12 為熱鍵
+                hotkey13 = new HotKey(this.Handle, Keys.F12, Keys.Shift); //註冊 Shift+F12 為熱鍵
                 hotkey13.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
                 hotkey13.OnHotkey += new HotKey.HotkeyEventHandler(hotkey13_OnHotkey); //獨立事件
             }
@@ -870,7 +816,14 @@ namespace OCLink
                             break;
                         case 2:
                             hisid = clinic["HospID"].ToString();//醫事機構代碼
-                            this.Text = hisid + "_" + clinic["HospName"].ToString();//診間名稱+醫事機構代碼
+                            if (ApplicationDeployment.IsNetworkDeployed)
+                            {
+                                ApplicationDeployment myVersion = ApplicationDeployment.CurrentDeployment;
+                                string publishVersion = string.Concat(myVersion.CurrentVersion);
+                                this.Text = hisid + "_" + clinic["HospName"].ToString() + "_" + publishVersion;//診間名稱+醫事機構代碼
+                            }
+                            else
+                                this.Text = hisid + "_" + clinic["HospName"].ToString();//診間名稱+醫事機構代碼
                             break;
                         //case 3:
                         //    name = clinic["strDisplayName"].ToString();//名子
@@ -918,121 +871,125 @@ namespace OCLink
 
         private void hotkey2_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            function = combobox1;
+            function1111 = combobox1;
             string ur2 = comboBox1.SelectedValue.ToString();
             openBrowser(ur2);
         }
 
         private void hotkey3_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            function = combobox2;
+            function1111 = combobox2;
             string ur2 = comboBox2.SelectedValue.ToString();
             openBrowser(ur2);
         }
 
         private void hotkey4_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            function = combobox3;
+            function1111 = combobox3;
             string ur2 = comboBox3.SelectedValue.ToString();
             openBrowser(ur2);
         }
 
         private void hotkey5_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            function = combobox4;
+            function1111 = combobox4;
             string ur2 = comboBox4.SelectedValue.ToString();
             openBrowser(ur2);
         }
         private void hotkey6_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            function = combobox5;
+            function1111 = combobox5;
             string ur2 = comboBox5.SelectedValue.ToString();
             openBrowser(ur2);
         }
         private void hotkey7_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            function = combobox6;
+            function1111 = combobox6;
             string ur2 = comboBox6.SelectedValue.ToString();
             openBrowser(ur2);
         }
         private void hotkey8_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            function = combobox7;
+            function1111 = combobox7;
             string ur2 = comboBox7.SelectedValue.ToString();
             openBrowser(ur2);
         }
         private void hotkey9_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            function = combobox8;
+            function1111 = combobox8;
             string ur2 = comboBox8.SelectedValue.ToString();
             openBrowser(ur2);
         }
         private void hotkey10_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            function = combobox9;
+            function1111 = combobox9;
             string ur2 = comboBox9.SelectedValue.ToString();
             openBrowser(ur2);
         }
         private void hotkey11_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            function = combobox10;
+            function1111 = combobox10;
             string ur2 = comboBox10.SelectedValue.ToString();
             openBrowser(ur2);
         }
         private void hotkey12_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            function = combobox11;
+            function1111 = combobox11;
             string ur2 = comboBox11.SelectedValue.ToString();
             openBrowser(ur2);
         }
         private void hotkey13_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            function = combobox12;
+            function1111 = combobox12;
             string ur2 = comboBox12.SelectedValue.ToString();
             openBrowser(ur2);
         }
 
         void openBrowser(string conn)
         {
+           
             // 打開愛半月網頁F0000
             string ur = string.Empty;
             //string url1 = "?hospital=" + ConfigurationManager.AppSettings["HospID"] + "&dr=" + sDrID.Trim() + "&patientno=" + patientno + "&patientname=" + name + "&patientIdno=" + patientIdno + "&patientBirth=" + patientBirth + "&tel=" + tel;
             //string url1 = "?hospital=" + hisid + "&patientno=" + str1 + "&patientname=" + name + "&patientIdno=" + ID + "&patientBirth=" + Birth + "&tel=" + tel + "&cell=" + Cell;
 
-            string ur0 = (hisid != "") ? "?hospital=" + hisid : "";
+            string ur0 = (hisid != "") ? hisid : "";
             
-            string ur1 = (drId != "") ? "&dr=" + drId : "";
+            string ur1 = (drId != "") ?  drId : "";
 
-            string ur2 = (str1 != "") ? "&patientno=" + str1 : "";
+            string ur2 = (str1 != "") ?  str1 : "";
 
-            string ur3 = (name != "") ? "&patientname=" + name : "";
+            string ur3 = (name != "") ?  name : "";
             
-            string ur4 = (ID != "") ? "&patientIdno=" + ID : "";
+            string ur4 = (ID != "") ?  ID : "";
             
-            string ur5 = (Birth != "") ? "&patientBirth=" + Birth : "";
+            string ur5 = (Birth != "") ?  Birth : "";
             
-            string ur6 = (tel != "") ? "&tel=" + tel : "";
+            string ur6 = (tel != "") ?  tel : "";
             
-            string ur7 = (Cell != "") ? "&cell=" + Cell : "";
-
-            string ur8 = (ID != "") ? "hisUvSearch:" + ID : "";
+            string ur7 = (Cell != "") ?  Cell : "";
 
 
-            string[] names = { ur0, ur1, ur2, ur3, ur4, ur5, ur6 ,ur7, ur8};
+
+            string[] names = { ur0, ur1, ur2, ur3, ur4, ur5, ur6 ,ur7 };
             string output = names[0] + ", " + names[1] + ", " + names[2] + ", " +
                             names[3] + ", " + names[4] + ", " + names[5] + ", " +
-                            names[6] + ", " + names[7] + ", " + names[8];
+                            names[6] + ", " + names[7];
             
-            ur = String.Format(conn, names[0], names[1], names[2], names[3], names[4], names[5], names[6],names[7], names[8]);
-            Process.Start(ur);
+            ur = String.Format(conn, names[0], names[1], names[2], names[3], names[4], names[5], names[6],names[7]);
 
-            if (function != "")
+           
+
+            if(myClass.IsNumeric(str1) && function1111 !="   ")//判斷是否截圖內容為數字
             {
-                this.Hide();
-                notifyIcon1.ShowBalloonTip(5000);
+                
+                    this.Hide();
+                    notifyIcon1.ShowBalloonTip(5000);
 
-                prog_flag = false;
+                    prog_flag = false;
+                    Process.Start(ur);
             }
+
             //gotoSite(url);
         }
 
@@ -1069,7 +1026,7 @@ namespace OCLink
             panel1.Visible = true;
             panel2.Visible = false;
             btz = true;
-            this.Height = 335;
+            //this.Height = 365;
             buttonS.BackColor = Color.Black;//按鈕按下的顏色
             buttonS.ForeColor = System.Drawing.Color.White;
             ButtonZ.BackColor = Color.Gainsboro;
@@ -1140,81 +1097,16 @@ namespace OCLink
         
         private void btn_OCR_Click(object sender, EventArgs e)
         {
+            bool Return;
+            Return = WritePrivateProfileString("AppName", "Enabled", btn_OCR.Enabled.ToString(), test);
             hotkeycheck = false;
             btn_OCR1(sender,e);
         }
         // OCR 測試結果顯示
-        string drId = "1111";//取得登錄者帳號
-        string drName = "";
+       
         public string str1;//截圖出來的內容
         private void btn_OCR1(object sender, EventArgs e)
         {
-            string computerName = System.Environment.GetEnvironmentVariable("COMPUTERNAME");
-            string userName = System.Environment.GetEnvironmentVariable("USERNAME");
-            string computerName_10 = computerName.Substring(0, 10);
-
-            //耀聖 RS
-            if (testhis == "RS" && File.Exists(Server + @":\Z\travel.dbf"))
-            {
-                OleDbConnection conn = new OleDbConnection("Provider=VFPOLEDB.1;Data Source=" + Server + @":\Z\");
-                conn.Open();
-
-                string query = "select * from travel where date2=' ' and  memo='" + computerName_10 + "' order by date1 desc , time1 desc";
-                OleDbCommand cmd = new OleDbCommand(query, conn);
-
-                OleDbDataAdapter da = new OleDbDataAdapter(cmd);
-                DataTable dt = new DataTable();
-
-                da.Fill(dt);
-
-                conn.Close();
-                foreach (DataRow dr in dt.Rows)
-                {
-                    drId = dr["code"].ToString();
-                }
-            }
-            //展望 VISW
-            else if (testhis == "VISW" && File.Exists(Server + @":\VISW\vislog.dbf") && File.Exists(Server + @":\VISW\vis00.dbf"))
-            {
-                OleDbConnection conn = new OleDbConnection("Provider=VFPOLEDB.1;Data Source=" + Server + @":\VISW\");
-                conn.Open();
-
-                string query = "select * from vis00";
-                OleDbCommand cmd = new OleDbCommand(query, conn);
-
-                OleDbDataAdapter da = new OleDbDataAdapter(cmd);
-                DataTable dt = new DataTable();
-
-                da.Fill(dt);
-                
-                Dictionary<string, string> empDict = new Dictionary<string, string>();
-                foreach (DataRow dr in dt.Rows)
-                {
-                    string Vuser = dr["Vuser"].ToString();
-                    string Vname = dr["Vname"].ToString().Substring(0, 3);
-                    if (!empDict.ContainsKey(Vname))
-                    {
-                        empDict.Add(Vname, Vuser);
-                    }
-                }
-                var viswKey = computerName + " # " + userName;
-                viswKey = viswKey.Substring(0, 30);
-                DataTable table = new DataTable();
-                string query1 = "select * from vislog where Lnet ='" + viswKey + "' order by Ldate desc , Ltime desc";
-                OleDbCommand cmd1 = new OleDbCommand(query1, conn);
-
-                OleDbDataAdapter da1 = new OleDbDataAdapter(cmd);
-                da1.Fill(table);
-                conn.Close();
-                foreach(DataRow s in table.Rows)
-                {
-                    drName = s["Lsur"].ToString().Trim().Substring(0, 3);
-                    if(empDict.ContainsKey(drName))
-                    {
-                        drId = empDict[drName];
-                    }
-                }
-            }
             string str = GetOCR();
             str1 = str.Trim();
             if (hotkeycheck == false)
@@ -1222,6 +1114,7 @@ namespace OCLink
                 MessageBox.Show(str1);
                 hotkeycheck = true;
             }
+           
             //取得病人資料
             if (testhis == "RS" && File.Exists(Server + @":\S\patdb.dbf"))
             {
@@ -1257,10 +1150,14 @@ namespace OCLink
                             Cell = "";
                         }
                     }
+                    //name = "黃宏軒";
+                    //ID = "H125076348";
+                    //tel = "034381676";
+                    //Birth = "8612-21";
                 }
                 else
                 {
-                    MessageBox.Show("截圖錯誤,請重新截圖");
+                    MessageBox.Show("擷取資料錯誤,請重新截圖");
                 }
             }
             else if (testhis == "VISW" && File.Exists(Server + @":\VISW\CO01M.dbf"))
@@ -1299,7 +1196,7 @@ namespace OCLink
                 }
                 else
                 {
-                    MessageBox.Show("截圖錯誤,請重新截圖");
+                    MessageBox.Show("擷取資料錯誤,請重新截圖");
                 }
             }
             else if (testhis == "TECH")//測試抓oy的his3532040438的資料庫
@@ -1349,7 +1246,7 @@ namespace OCLink
                 }
                 else
                 {
-                    MessageBox.Show("截圖錯誤,請重新截圖");
+                    MessageBox.Show("擷取資料錯誤,請重新截圖");
                 }
             }
             else if (testhis == "SC" && File.Exists(Server + @":\SC\Dat\User.dat"))
@@ -1388,7 +1285,7 @@ namespace OCLink
                 }
                 else
                 {
-                    MessageBox.Show("截圖錯誤,請重新截圖");
+                    MessageBox.Show("擷取資料錯誤,請重新截圖");
                 }
             }
             else if (testhis == "KN")//測試抓oy的his3532040438的資料庫
@@ -1438,7 +1335,7 @@ namespace OCLink
                 }
                 else
                 {
-                    MessageBox.Show("截圖錯誤,請重新截圖");
+                    MessageBox.Show("擷取資料錯誤,請重新截圖");
                 }
             }
             //testcomm();//連接個人資料
@@ -1448,15 +1345,15 @@ namespace OCLink
         private string GetOCR()
         {
             // 依畫面再重新截圖
-            int swidth = Screen.PrimaryScreen.Bounds.Width;//1536
-            int sheight = Screen.PrimaryScreen.Bounds.Height;//864
+            int swidth = Screen.PrimaryScreen.Bounds.Width;
+            int sheight = Screen.PrimaryScreen.Bounds.Height;
             Bitmap btm = new Bitmap(swidth, sheight); //空圖與螢幕同大小
             Graphics g = Graphics.FromImage(btm); //空圖的畫板
             g.CopyFromScreen(new Point(0, 0), new Point(0, 0), new Size(swidth, sheight)); //將螢幕內容複製到空圖
 
             Cutter cutter = new Cutter(btm, btz); //傳送截圖
 
-            if (!File.Exists(@"C:\ZMTemp\System.ini"))
+            if (!File.Exists(@"C:\ZMTemp\TestFile.TXT"))
             {
                 //cutter.FormBorderStyle = FormBorderStyle.None; //截圖全屏，無邊框
                 cutter.BackgroundImage = btm; //新的窗體截圖做背景
@@ -1472,22 +1369,16 @@ namespace OCLink
             string str = String.Empty;
 
             //匯入圖片進行識別
-            if (btz == true)
+            if(btz ==true)
             {
-                File.Delete(@"C:\ZMTemp\BWImage.jpg");
-                File.Delete(@"C:\ZMTemp\Preprocess_HighRes.jpg");
-                File.Delete(@"C:\ZMTemp\Preprocess_Resize.jpg");
-            }
-            else
-            {
-                File.Delete(@"C:\ZMTemp\BWImage_office.jpg");
-                File.Delete(@"C:\ZMTemp\Preprocess_HighRes_office.jpg");
-                File.Delete(@"C:\ZMTemp\Preprocess_Resize_office.jpg");
-            }
+                if(hotkeycheck ==false)
+                {
+                    File.Delete(@"C:\ZMTemp\BWImage.jpg");
+                    File.Delete(@"C:\ZMTemp\Preprocess_HighRes.jpg");
+                    File.Delete(@"C:\ZMTemp\Preprocess_Resize.jpg");
+                }
 
-            //Bitmap bit = new Bitmap(Image.FromFile(@"C:\Temp\CaptureImage.jpg"));
-            if (btz == true)
-            {
+                //Bitmap bit = new Bitmap(Image.FromFile(@"C:\Temp\CaptureImage.jpg"));
                 using (var fs = new System.IO.FileStream(@"C:\ZMTemp\CaptureImage.jpg", System.IO.FileMode.Open))
                 {
                     var bmp = new Bitmap(fs);
@@ -1510,6 +1401,15 @@ namespace OCLink
                 }
             }
             else
+            {
+                if (hotkeycheck == false)
+                {
+                    File.Delete(@"C:\ZMTemp\BWImage_office.jpg");
+                    File.Delete(@"C:\ZMTemp\Preprocess_HighRes_office.jpg");
+                    File.Delete(@"C:\ZMTemp\Preprocess_Resize_office.jpg");
+                }
+
+                //Bitmap bit = new Bitmap(Image.FromFile(@"C:\Temp\CaptureImage.jpg"));
                 using (var fs = new System.IO.FileStream(@"C:\ZMTemp\CaptureImage_office.jpg", System.IO.FileMode.Open))
                 {
                     var bmp = new Bitmap(fs);
@@ -1530,7 +1430,7 @@ namespace OCLink
 
                     LoadImageList();
                 }
-
+            }
             return (str);
         }
 
@@ -1556,10 +1456,18 @@ namespace OCLink
             //make an empty bitmap the same size as scrBitmap
             nResize = (IsNumeric(tbResize.Text)) ? int.Parse(tbResize.Text.Trim()) : 1;
             image = ResizeImage(image, image.Width * nResize, image.Height * nResize);
-            if (btz == true)
-                image.Save(@"C:\ZMTemp\Preprocess_Resize.jpg");
-            else
-                image.Save(@"C:\ZMTemp\Preprocess_Resize_office.jpg");
+            if(hotkeycheck == false)
+            {
+                if(btz == true)
+                {
+                    image.Save(@"C:\ZMTemp\Preprocess_Resize.jpg");
+                }
+                else
+                {
+                    image.Save(@"C:\ZMTemp\Preprocess_Resize_office.jpg");
+                }
+            }
+            
 
             Bitmap newBitmap = new Bitmap(image.Width, image.Height);
             for (int i = 0; i < image.Width; i++)
@@ -1584,16 +1492,18 @@ namespace OCLink
 
             newBitmap = ResizeImage(newBitmap, newBitmap.Width, newBitmap.Height);
 
-            if (btz == true)
+            if(hotkeycheck ==false)
             {
-                newBitmap.Save(@"C:\ZMTemp\BWImage.jpg");
+                if(btz ==true)
+                {
+                    newBitmap.Save(@"C:\ZMTemp\BWImage.jpg");
+                }
+                else
+                {
+                    newBitmap.Save(@"C:\ZMTemp\BWImage_office.jpg");
+                }
             }
-            else
-            {
-                newBitmap.Save(@"C:\ZMTemp\BWImage_office.jpg");
-            }
-
-
+            
             return newBitmap;
         }
 
@@ -1609,7 +1519,7 @@ namespace OCLink
 
         private void ButtonHotKey_Click(object sender, EventArgs e)
         {
-            this.Height = 335;
+           // this.Height = 335;
             if (panel2.Visible == false)
             {
                 panel2.Visible = true;
@@ -1705,18 +1615,19 @@ namespace OCLink
             var destRect = new Rectangle(0, 0, width, height);
             var destImage = new Bitmap(width, height);
 
-            //destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution * 2);//2,3
-            if (btz == true)
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution * 2);//2,3
+            if(hotkeycheck ==false)
             {
-                destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution * 2);//2,3
-                image.Save(@"C:\ZMTemp\Preprocess_HighRes.jpg");
+                if(btz ==true)
+                {
+                    image.Save(@"C:\ZMTemp\Preprocess_HighRes.jpg");
+                }
+                else
+                {
+                    image.Save(@"C:\ZMTemp\Preprocess_HighRes_office.jpg");
+                }
             }
-            else
-            {
-                destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution * 2);//2,3
-                image.Save(@"C:\ZMTemp\Preprocess_HighRes_office.jpg");//2
-            }
-            //image.Save(@"C:\Temp\Preprocess_HighRes_office.jpg");
+            
 
             using (var graphics = Graphics.FromImage(destImage))
             {
@@ -1732,6 +1643,7 @@ namespace OCLink
                     graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
                 }
             }
+
             return destImage;
         }
 
@@ -1740,7 +1652,7 @@ namespace OCLink
             panel1.Visible = true;
             panel2.Visible = false;
             btz = false;
-            this.Height = 335;
+            //this.Height = 365;
             ButtonZ.BackColor = Color.Black;
             ButtonZ.ForeColor = System.Drawing.Color.White;
             buttonS.BackColor = Color.Gainsboro;
@@ -1864,6 +1776,24 @@ namespace OCLink
             
         }
 
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            this.Show();
+        }
+
+        private void 關閉一鍵連結ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Environment.Exit(0);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Form1 lForm = new Form1();
+            lForm.Owner = this;//重要的一步，主要是使Form2的Owner指標指向Form1
+            lForm.ShowDialog();
+            drId = strValue;//顯示返回的值
+        }
+
         public static string combobox8;
         private void comboBox8_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1897,49 +1827,59 @@ namespace OCLink
                 // 要重設座標故先把檔案刪除
                 File.Delete(@"C:\ZMTemp\TestFile.TXT");
 
+                //if (!File.Exists(@"C:\Temp\TestFile.TXT"))
+                //{
+                if (this.WindowState != FormWindowState.Minimized)
+                {
+                    this.WindowState = FormWindowState.Minimized;
+                    Thread.Sleep(200);
+                }
+                int swidth = Screen.PrimaryScreen.Bounds.Width;
+                int sheight = Screen.PrimaryScreen.Bounds.Height;
+                Bitmap btm = new Bitmap(swidth, sheight); //空圖與螢幕同大小
+                Graphics g = Graphics.FromImage(btm); //空圖的畫板
+                g.CopyFromScreen(new Point(0, 0), new Point(0, 0), new Size(swidth, sheight)); //將螢幕內容複製到空圖
+
+                Cutter cutter = new Cutter(btm, btz); //傳送截圖
+
                 if (!File.Exists(@"C:\ZMTemp\TestFile.TXT"))
                 {
-                    if (this.WindowState != FormWindowState.Minimized)
-                    {
-                        this.WindowState = FormWindowState.Minimized;
-                        Thread.Sleep(200);
-                    }
+                    //cutter.FormBorderStyle = FormBorderStyle.None; //截圖全屏，無邊框
+                    cutter.BackgroundImage = btm; //新的窗體截圖做背景
+                    cutter.Show();
+                    cutter.TopMost = true;
                 }
+                this.WindowState = FormWindowState.Normal;
             }
             else
             {
                 // 要重設座標故先把檔案刪除
                 File.Delete(@"C:\ZMTemp\TestFile_office.TXT");
 
+                //if (!File.Exists(@"C:\Temp\TestFile.TXT"))
+                //{
+                if (this.WindowState != FormWindowState.Minimized)
+                {
+                    this.WindowState = FormWindowState.Minimized;
+                    Thread.Sleep(200);
+                }
+                int swidth = Screen.PrimaryScreen.Bounds.Width;
+                int sheight = Screen.PrimaryScreen.Bounds.Height;
+                Bitmap btm = new Bitmap(swidth, sheight); //空圖與螢幕同大小
+                Graphics g = Graphics.FromImage(btm); //空圖的畫板
+                g.CopyFromScreen(new Point(0, 0), new Point(0, 0), new Size(swidth, sheight)); //將螢幕內容複製到空圖
+
+                Cutter cutter = new Cutter(btm, btz); //傳送截圖
+
                 if (!File.Exists(@"C:\ZMTemp\TestFile_office.TXT"))
                 {
-                    if (this.WindowState != FormWindowState.Minimized)
-                    {
-                        this.WindowState = FormWindowState.Minimized;
-                        Thread.Sleep(200);
-                    }
+                    //cutter.FormBorderStyle = FormBorderStyle.None; //截圖全屏，無邊框
+                    cutter.BackgroundImage = btm; //新的窗體截圖做背景
+                    cutter.Show();
+                    cutter.TopMost = true;
                 }
+                this.WindowState = FormWindowState.Normal;
             }
-                
-           
-            int swidth = Screen.PrimaryScreen.Bounds.Width;
-            int sheight = Screen.PrimaryScreen.Bounds.Height;
-            Bitmap btm = new Bitmap(swidth, sheight); //空圖與螢幕同大小
-            Graphics g = Graphics.FromImage(btm); //空圖的畫板
-            g.CopyFromScreen(new Point(0, 0), new Point(0, 0), new Size(swidth, sheight)); //將螢幕內容複製到空圖
-
-
-            Cutter cutter = new Cutter(btm, btz); //傳送截圖
-
-
-            //if (!File.Exists(@"C:\Temp\TestFile.TXT"))
-            //{
-            //cutter.FormBorderStyle = FormBorderStyle.None; //截圖全屏，無邊框
-            cutter.BackgroundImage = btm; //新的窗體截圖做背景
-            cutter.Show();
-            cutter.TopMost = true;
-            //}
-            this.WindowState = FormWindowState.Normal;
         }
 
         private void checkBox1_Click(object sender, EventArgs e)
@@ -1950,7 +1890,7 @@ namespace OCLink
 
         private void LoadImageList()
         {
-            if (btz == true)
+            if(btz ==true)
             {
                 FileStream photo = File.OpenRead(@"C:\ZMTemp\CaptureImage.jpg");
                 pictureBox1.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
@@ -1986,6 +1926,42 @@ namespace OCLink
                 pictureBox4.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
                 photo.Close();
             }
+            //if (btz == true)
+            //{
+            //    FileStream photo = File.OpenRead(@"C:\Temp\CaptureImage.jpg");
+            //    pictureBox1.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
+            //    photo.Close();
+
+            //    photo = File.OpenRead(@"C:\Temp\Preprocess_HighRes.jpg");
+            //    pictureBox2.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
+            //    photo.Close();
+
+            //    photo = File.OpenRead(@"C:\Temp\Preprocess_Resize.jpg");
+            //    pictureBox3.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
+            //    photo.Close();
+
+            //    photo = File.OpenRead(@"C:\Temp\BWImage.jpg");
+            //    pictureBox4.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
+            //    photo.Close();
+            //}
+            //else
+            //{
+            //    FileStream photo = File.OpenRead(@"C:\ZMTemp\CaptureImage_office.jpg");
+            //    pictureBox1.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
+            //    photo.Close();
+
+            //    photo = File.OpenRead(@"C:\ZMTemp\Preprocess_HighRes_office.jpg");
+            //    pictureBox2.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
+            //    photo.Close();
+
+            //    photo = File.OpenRead(@"C:\ZMTemp\Preprocess_Resize_office.jpg");
+            //    pictureBox3.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
+            //    photo.Close();
+
+            //    photo = File.OpenRead(@"C:\ZMTemp\BWImage_office.jpg");
+            //    pictureBox4.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
+            //    photo.Close();
+            //}
         }
         void f2_FormClosing(object sender, FormClosingEventArgs e)
         {

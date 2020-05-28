@@ -18,7 +18,7 @@ namespace OCLink
 
         Bitmap screenBtmp = null; //電腦螢幕的截圖
         bool btz1;
-        public Cutter(Bitmap btm,bool btz)
+        public Cutter(Bitmap btm, bool btz)
         {
             InitializeComponent();
             btz1 = btz;
@@ -30,7 +30,7 @@ namespace OCLink
                 // Create an instance of StreamReader to read from a file.'
 
                 // The using statement also closes the StreamReader.
-                if(btz1 == true)
+                if (btz1 == true)
                 {
                     using (StreamReader sr = new StreamReader(@"C:\ZMTemp\TestFile.TXT"))     //小寫TXT
                     {
@@ -78,7 +78,7 @@ namespace OCLink
                         CaptureHandle(false);
                     }
                 }
-               
+
             }
             catch (Exception e)
             {
@@ -209,7 +209,7 @@ namespace OCLink
             if (Clipboard.ContainsImage())
             {
                 bool Return;
-                if(btz1 == true)
+                if (btz1 == true)
                 {
                     if (!Directory.Exists(@"C:\ZMTemp")) { Directory.CreateDirectory(@"C:\ZMTemp"); }
                     Clipboard.GetImage().Save(@"C:\ZMTemp\CaptureImage.jpg");
@@ -252,7 +252,7 @@ namespace OCLink
                         }
                     }
                 }
-               
+
             }
 
             g.Dispose();
