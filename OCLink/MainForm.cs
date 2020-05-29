@@ -29,6 +29,25 @@ namespace OCLink
 {
     public partial class MainForm : Form
     {
+        public string Server;//住機位置
+        public string testhis;//判斷資料庫
+        public string function1111;//所選項目
+        public bool prog_flag;
+        public string hisid;//診所his
+        public string hospname;//診所名稱
+        public string id;//病人資料代號
+        public string name;//病人姓名
+        public string Birth;//病人生日
+        public string tel;//病人電話
+        public string Cell;//病人手機
+        public string ID;//病人身分證
+        public string patientno;//病人編號
+        public string sHospRowid;//資訊面板
+        public string drId = "1111";//取得登錄者帳號
+        string publishVersion;//版本號碼
+        ArrayList MyMacAddress = new ArrayList();//本機地址
+        public bool bCheckID = false;//核對身分後確認是否開啟程式
+        Dictionary<string, string> dMAC = new Dictionary<string, string>();//IPMAC位置,診所
         private ZMCMSEntities db_test = new ZMCMSEntities();
         private his3532040438Entities db_0438 = new his3532040438Entities();
         private ZMCMSconn db_zmcms = new ZMCMSconn();
@@ -214,7 +233,7 @@ namespace OCLink
         {
             InitializeComponent();
             getLocalMacAddress();
-            UpdateApplication();
+            //UpdateApplication();
             setdata();
             hotkey();
             this.MaximizeBox = false;
@@ -230,24 +249,7 @@ namespace OCLink
                 strValue = value;
             }
         }
-        public string Server;//住機位置
-        public string testhis;//判斷資料庫
-        public string function1111;//所選項目
-        public bool prog_flag;
-        public string hisid;//診所his
-        public string id;//病人資料代號
-        public string name;//病人姓名
-        public string Birth;//病人生日
-        public string tel;//病人電話
-        public string Cell;//病人手機
-        public string ID;//病人身分證
-        public string patientno;//病人編號
-        public string sHospRowid;//資訊面板
-        string drId = "1111";//取得登錄者帳號
-        string drName = "";
-        ArrayList MyMacAddress = new ArrayList();//本機地址
-        public bool bCheckID = false;//核對身分後確認是否開啟程式
-        Dictionary<string, string> dMAC = new Dictionary<string, string>();//IPMAC位置,診所
+       
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         static extern uint GetPrivateProfileString(string lpAppName,string lpKeyName,string lpDefault,StringBuilder lpReturnedString,uint nSize, string lpFileName);
@@ -255,14 +257,15 @@ namespace OCLink
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]static extern bool WritePrivateProfileString(string lpAppName,string lpKeyName, string lpString, string lpFileName);
 
-        private void UpdateApplication()
-        {
-            if (ApplicationDeployment.IsNetworkDeployed)
-            {
-                ApplicationDeployment myVersion = ApplicationDeployment.CurrentDeployment;
-                string publishVersion = string.Concat(myVersion.CurrentVersion);
-            }
-        }
+        //private void UpdateApplication()
+        //{
+        //    if (ApplicationDeployment.IsNetworkDeployed)
+        //    {
+        //        ApplicationDeployment myVersion = ApplicationDeployment.CurrentDeployment;
+        //        string publishVersion = string.Concat(myVersion.CurrentVersion);
+        //    }
+
+        //}
 
         public void getLocalMacAddress()
         {   // 因為電腦中可能有很多的網卡(包含虛擬的網卡)，存入所有的設備號碼
@@ -457,6 +460,9 @@ namespace OCLink
                         btn_OCR.Enabled = true;
                     }
                     
+                    uint reg27 = GetPrivateProfileString("AppName", "登入帳號", "", sb, (uint)sb.Capacity, test);
+                    drId = sb.ToString();
+                    this.Text = this.Text + "_" + drId;
                 }
                 catch (Exception ex)
                 {
@@ -816,14 +822,15 @@ namespace OCLink
                             break;
                         case 2:
                             hisid = clinic["HospID"].ToString();//醫事機構代碼
+                            hospname = clinic["HospName"].ToString();
                             if (ApplicationDeployment.IsNetworkDeployed)
                             {
                                 ApplicationDeployment myVersion = ApplicationDeployment.CurrentDeployment;
-                                string publishVersion = string.Concat(myVersion.CurrentVersion);
-                                this.Text = hisid + "_" + clinic["HospName"].ToString() + "_" + publishVersion;//診間名稱+醫事機構代碼
+                                publishVersion = string.Concat(myVersion.CurrentVersion);
+                                this.Text = hisid + "_" + hospname + "_" + publishVersion;//診間名稱+醫事機構代碼 + 版本
                             }
                             else
-                                this.Text = hisid + "_" + clinic["HospName"].ToString();//診間名稱+醫事機構代碼
+                                this.Text = hisid + "_" + clinic["HospName"].ToString() + "_版本號碼" ;//診間名稱+醫事機構代碼
                             break;
                         //case 3:
                         //    name = clinic["strDisplayName"].ToString();//名子
@@ -1563,6 +1570,7 @@ namespace OCLink
             Return = WritePrivateProfileString("AppName", "r_office", tred.Text, test);
             Return = WritePrivateProfileString("AppName", "g_office", tgreen.Text, test);
             Return = WritePrivateProfileString("AppName", "b_office", tblue.Text, test);
+            Return = WritePrivateProfileString("AppName", "登入帳號", drId, test);
             MessageBox.Show("儲存成功");
         }
 
@@ -1792,6 +1800,7 @@ namespace OCLink
             lForm.Owner = this;//重要的一步，主要是使Form2的Owner指標指向Form1
             lForm.ShowDialog();
             drId = strValue;//顯示返回的值
+            this.Text = hisid + "_" + hospname + "_" + publishVersion + "_" + drId;
         }
 
         public static string combobox8;
@@ -1822,6 +1831,7 @@ namespace OCLink
        
         private void buttonC_Click_1(object sender, EventArgs e)
         {
+            btn_OCR.Enabled = true;
             if(btz ==true)
             {
                 // 要重設座標故先把檔案刪除
