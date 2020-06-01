@@ -229,6 +229,7 @@ namespace OCLink
             }
         }
 
+
         public MainForm()
         {
             InitializeComponent();
@@ -1157,10 +1158,6 @@ namespace OCLink
                             Cell = "";
                         }
                     }
-                    //name = "黃宏軒";
-                    //ID = "H125076348";
-                    //tel = "034381676";
-                    //Birth = "8612-21";
                 }
                 else
                 {
@@ -1376,9 +1373,9 @@ namespace OCLink
             string str = String.Empty;
 
             //匯入圖片進行識別
-            if(btz ==true)
+            if (btz == true)
             {
-                if(hotkeycheck ==false)
+                if (hotkeycheck == false)
                 {
                     File.Delete(@"C:\ZMTemp\BWImage.jpg");
                     File.Delete(@"C:\ZMTemp\Preprocess_HighRes.jpg");
@@ -1391,11 +1388,14 @@ namespace OCLink
                     var bmp = new Bitmap(fs);
                     fs.Close();
                     Bitmap bit = (Bitmap)bmp.Clone();
-
-                    if (File.Exists(@"C:\ZMTemp\BWImage.jpg"))
+                    if (hotkeycheck == false)
                     {
-                        bit = new Bitmap(Image.FromFile(@"C:\ZMTemp\BWImage.jpg"));
+                        if (File.Exists(@"C:\ZMTemp\BWImage.jpg"))
+                        {
+                            bit = new Bitmap(Image.FromFile(@"C:\ZMTemp\BWImage.jpg"));
+                        }
                     }
+
                     bit = PreprocesImage(bit, false);
                     Page page = ocr.Process(bit);
                     str = page.GetText();//識別後的內容
@@ -1404,11 +1404,14 @@ namespace OCLink
                     bit.Dispose();
                     ocr.Dispose();
 
+
                     LoadImageList();
+
                 }
             }
-            else
+            else if (btz == false )
             {
+
                 if (hotkeycheck == false)
                 {
                     File.Delete(@"C:\ZMTemp\BWImage_office.jpg");
@@ -1416,17 +1419,21 @@ namespace OCLink
                     File.Delete(@"C:\ZMTemp\Preprocess_Resize_office.jpg");
                 }
 
+
                 //Bitmap bit = new Bitmap(Image.FromFile(@"C:\Temp\CaptureImage.jpg"));
                 using (var fs = new System.IO.FileStream(@"C:\ZMTemp\CaptureImage_office.jpg", System.IO.FileMode.Open))
                 {
                     var bmp = new Bitmap(fs);
                     fs.Close();
                     Bitmap bit = (Bitmap)bmp.Clone();
-
-                    if (File.Exists(@"C:\ZMTemp\BWImage_office.jpg"))
+                    if (hotkeycheck == false)
                     {
-                        bit = new Bitmap(Image.FromFile(@"C:\ZMTemp\BWImage_office.jpg"));
+                        if (File.Exists(@"C:\ZMTemp\BWImage_office.jpg"))
+                        {
+                            bit = new Bitmap(Image.FromFile(@"C:\ZMTemp\BWImage_office.jpg"));
+                        }
                     }
+
                     bit = PreprocesImage(bit, false);
                     Page page = ocr.Process(bit);
                     str = page.GetText();//識別後的內容
@@ -1436,11 +1443,75 @@ namespace OCLink
                     ocr.Dispose();
 
                     LoadImageList();
+
                 }
             }
+            //if (hotkeycheck == true)
+            //{
+            //    try
+            //    {
+            //        using (var fs = new System.IO.FileStream(@"C:\ZMTemp\CaptureImage.jpg", System.IO.FileMode.Open))
+            //        {
+            //            var bmp = new Bitmap(fs);
+            //            fs.Close();
+            //            Bitmap bit = (Bitmap)bmp.Clone();
+
+            //            if (File.Exists(@"C:\ZMTemp\BWImage.jpg"))
+            //            {
+            //                bit = new Bitmap(Image.FromFile(@"C:\ZMTemp\BWImage.jpg"));
+            //            }
+            //            bit = PreprocesImage(bit, false);
+            //            //Ocr(ocr, bit, str);
+            //            Page page = ocr.Process(bit);
+            //            //str = page.GetText();//識別後的內容
+            //            if (myClass.IsNumeric(page.GetText()))
+            //            {
+            //                str = Convert.ToInt32(page.GetText()).ToString();
+            //            }
+            //            page.Dispose();
+            //            bit.Dispose();
+            //            ocr.Dispose();
+            //        }
+            //    }
+            //    catch
+            //    {
+            //        using (var fs1 = new System.IO.FileStream(@"C:\ZMTemp\CaptureImage_office.jpg", System.IO.FileMode.Open))
+            //        {
+            //            var bmp = new Bitmap(fs1);
+            //            fs1.Close();
+            //            Bitmap bit = (Bitmap)bmp.Clone();
+
+            //            if (File.Exists(@"C:\ZMTemp\BWImage_office.jpg"))
+            //            {
+            //                bit = new Bitmap(Image.FromFile(@"C:\ZMTemp\BWImage_office.jpg"));
+            //            }
+            //            bit = PreprocesImage(bit, false);
+            //            //Ocr(ocr, bit,str);
+            //            Page page = ocr.Process(bit);
+            //            //str = page.GetText();//識別後的內容
+            //            if (myClass.IsNumeric(page.GetText()))
+            //            {
+            //                str = Convert.ToInt32(page.GetText()).ToString();
+            //            }
+            //            page.Dispose();
+            //            bit.Dispose();
+            //            ocr.Dispose();
+            //        }
+            //    }               
+            //}
             return (str);
         }
 
+        void Ocr(TesseractEngine ocr , Bitmap bit, string str)
+        {
+            Page page = ocr.Process(bit);
+            //str = page.GetText();//識別後的內容
+            if (myClass.IsNumeric(page.GetText()))
+            {
+                str = Convert.ToInt32(page.GetText()).ToString();
+            }
+            page.Dispose();
+        }
         /// <summary>
         /// 圖片顏色區分，剩下白色和黑色
         /// </summary>
@@ -1798,6 +1869,8 @@ namespace OCLink
         {
             Form1 lForm = new Form1();
             lForm.Owner = this;//重要的一步，主要是使Form2的Owner指標指向Form1
+            lForm.String1 = hisid;//設定Form2中string1的值
+            lForm.SetValue();//設定Form2中Label1的
             lForm.ShowDialog();
             drId = strValue;//顯示返回的值
             this.Text = hisid + "_" + hospname + "_" + publishVersion + "_" + drId;

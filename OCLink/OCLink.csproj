@@ -32,7 +32,7 @@
     <SuiteName>凌醫一鍵連結</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>ZMCMS.html</WebPage>
-    <ApplicationRevision>34</ApplicationRevision>
+    <ApplicationRevision>37</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -324,6 +324,15 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="tessdata\chi_tra.traineddata" />
+    <Content Include="tessdata\eng.cube.bigrams" />
+    <Content Include="tessdata\eng.cube.fold" />
+    <Content Include="tessdata\eng.cube.lm" />
+    <Content Include="tessdata\eng.cube.nn" />
+    <Content Include="tessdata\eng.cube.params" />
+    <Content Include="tessdata\eng.cube.size" />
+    <Content Include="tessdata\eng.cube.word-freq" />
+    <Content Include="tessdata\eng.tesseract_cube.nn" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
