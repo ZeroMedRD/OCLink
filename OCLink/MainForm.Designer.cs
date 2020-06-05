@@ -916,7 +916,6 @@
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Click += new System.EventHandler(this.MainForm_Click);
             this.DoubleClick += new System.EventHandler(this.MainForm_DoubleClick);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm1_KeyDown);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();

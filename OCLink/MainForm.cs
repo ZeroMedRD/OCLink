@@ -24,6 +24,7 @@ using System.Data.OleDb;
 using ZMLib;
 using System.Web.Mvc;
 using System.Deployment.Application;
+using Timer = System.Windows.Forms.Timer;
 
 namespace OCLink
 {
@@ -33,7 +34,7 @@ namespace OCLink
         public string testhis;//判斷資料庫
         public string function1111;//所選項目
         public bool prog_flag;
-        public string hisid;//診所his
+        public string hisid;//醫事機構代碼
         public string hospname;//診所名稱
         public string id;//病人資料代號
         public string name;//病人姓名
@@ -41,16 +42,15 @@ namespace OCLink
         public string tel;//病人電話
         public string Cell;//病人手機
         public string ID;//病人身分證
-        public string patientno;//病人編號
         public string sHospRowid;//資訊面板
         public string drId = "1111";//取得登錄者帳號
-        string publishVersion;//版本號碼
+        string publishVersion;//版本編號
         ArrayList MyMacAddress = new ArrayList();//本機地址
         public bool bCheckID = false;//核對身分後確認是否開啟程式
         Dictionary<string, string> dMAC = new Dictionary<string, string>();//IPMAC位置,診所
-        private ZMCMSEntities db_test = new ZMCMSEntities();
+        //private ZMCMSEntities db_test = new ZMCMSEntities();
         private his3532040438Entities db_0438 = new his3532040438Entities();
-        private ZMCMSconn db_zmcms = new ZMCMSconn();
+        //private ZMCMSconn db_zmcms = new ZMCMSconn();
 
         ZMClass myClass = new ZMClass();
 
@@ -250,7 +250,10 @@ namespace OCLink
                 strValue = value;
             }
         }
-       
+        [DllImport("user32.dll")]
+        private static extern Int32 GetForegroundWindow();
+        [DllImport("user32.dll")]
+        private static extern Int32 GetWindowText(Int32 hWnd, StringBuilder lpsb, Int32 count);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         static extern uint GetPrivateProfileString(string lpAppName,string lpKeyName,string lpDefault,StringBuilder lpReturnedString,uint nSize, string lpFileName);
@@ -258,15 +261,7 @@ namespace OCLink
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]static extern bool WritePrivateProfileString(string lpAppName,string lpKeyName, string lpString, string lpFileName);
 
-        //private void UpdateApplication()
-        //{
-        //    if (ApplicationDeployment.IsNetworkDeployed)
-        //    {
-        //        ApplicationDeployment myVersion = ApplicationDeployment.CurrentDeployment;
-        //        string publishVersion = string.Concat(myVersion.CurrentVersion);
-        //    }
-
-        //}
+       
 
         public void getLocalMacAddress()
         {   // 因為電腦中可能有很多的網卡(包含虛擬的網卡)，存入所有的設備號碼
@@ -284,7 +279,7 @@ namespace OCLink
             hotkey1.OnHotkey += new HotKey.HotkeyEventHandler(hotkey1to4_OnHotkey); //hotkey1~4共用事件
 
             hotkey1 = new HotKey(this.Handle, Keys.Q, Keys.Alt); //註冊Alt + Q為熱鍵, 如果不要組合鍵請傳Keys.None當參數(截圖快捷鍵)
-            hotkey1.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR_Click); //hotkey1~4共用事件(如果沒按 診間或掛號紐  會以預設診間為主)
+            hotkey1.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //hotkey1~4共用事件(如果沒按 診間或掛號紐  會以預設診間為主)
 
 
             if (!Directory.Exists(@"C:\ZMTemp"))
@@ -339,7 +334,7 @@ namespace OCLink
 
                     //以https://social.msdn.microsoft.com/Forums/zh-TW/a3f15a39-c021-4f20-a120-a783a36b67ca/c-29992-getprivateprofilestring-24460-writeprivateprofilestring?forum=233參考
                     //讀取參數
-                    string test = @"C:\ZMTemp\System.ini";
+
                     StringBuilder sb = new StringBuilder(500);
                     uint res1 = GetPrivateProfileString("AppName", "F1", "", sb, (uint)sb.Capacity, test);
                     comboBox1.DisplayMember = "CBDDescription";
@@ -630,7 +625,6 @@ namespace OCLink
             hotkey13 = new HotKey(this.Handle, Keys.F12, Keys.None); //註冊 F12 為熱鍵
             hotkey13.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
             hotkey13.OnHotkey += new HotKey.HotkeyEventHandler(hotkey13_OnHotkey); //獨立事件
-            //return;
         }
 
         void hotkeydispose()//清除熱鍵資訊
@@ -988,17 +982,14 @@ namespace OCLink
 
            
 
-            if(myClass.IsNumeric(str1) && function1111 !="   ")//判斷是否截圖內容為數字
+            if(function1111 !="   ")
             {
-                
-                    this.Hide();
-                    notifyIcon1.ShowBalloonTip(5000);
+                this.Hide();
+                notifyIcon1.ShowBalloonTip(5000);
 
-                    prog_flag = false;
-                    Process.Start(ur);
+                prog_flag = false;
+                Process.Start(ur);
             }
-
-            //gotoSite(url);
         }
 
 
@@ -1028,7 +1019,7 @@ namespace OCLink
         //    proc.Start();
         //}
 
-        bool btz;//判斷診間掛號紐是否按下
+        bool btz = true;//判斷診間掛號紐是否按下
         private void buttonS_Click(object sender, EventArgs e)
         {
             panel1.Visible = true;
@@ -1036,9 +1027,9 @@ namespace OCLink
             btz = true;
             //this.Height = 365;
             buttonS.BackColor = Color.Black;//按鈕按下的顏色
-            buttonS.ForeColor = System.Drawing.Color.White;
+            buttonS.ForeColor = Color.White;
             ButtonZ.BackColor = Color.Gainsboro;
-            ButtonZ.ForeColor = System.Drawing.Color.Black;
+            ButtonZ.ForeColor = Color.Black;
 
             tbResize.Visible = true;
             tbRed.Visible = true;
@@ -1108,19 +1099,35 @@ namespace OCLink
             bool Return;
             Return = WritePrivateProfileString("AppName", "Enabled", btn_OCR.Enabled.ToString(), test);
             hotkeycheck = false;
-            btn_OCR1(sender,e);
+            btn_OCR1(null,null);
         }
+
         // OCR 測試結果顯示
-       
-        public string str1;//截圖出來的內容
+        public string str1;//截圖出來的內容(病歷號)
+        public bool GotOCR = false;//是否取得病歷號 
         private void btn_OCR1(object sender, EventArgs e)
         {
-            string str = GetOCR();
-            str1 = str.Trim();
-            if (hotkeycheck == false)
+            if(testhis == "TECH")
             {
-                MessageBox.Show(str1);
-                hotkeycheck = true;
+                Timer mytimer = new Timer();
+                mytimer.Tick += new EventHandler(mytimer_Tick);
+                mytimer.Start();
+                GotOCR = true;
+                if (hotkeycheck == false)
+                {
+                    MessageBox.Show(str1);
+                    hotkeycheck = true;
+                }
+            }
+            if(GotOCR ==false)
+            {
+                str1 = GetOCR();
+
+                if (hotkeycheck == false)
+                {
+                    MessageBox.Show(str1);
+                    hotkeycheck = true;
+                }
             }
            
             //取得病人資料
@@ -1203,9 +1210,9 @@ namespace OCLink
                     MessageBox.Show("擷取資料錯誤,請重新截圖");
                 }
             }
-            else if (testhis == "TECH")//測試抓oy的his3532040438的資料庫
+            else if (testhis == "TECH")//測試抓oy的his3532040438的資料庫 方頂
             {
-                var hospitalList = (from a in db_0438.patient where a.strUserAccount == "'TX" + str + "'" select new { a.strDisplayName, a.strIdno, a.strTel, a.strCell }).FirstOrDefault();
+                var hospitalList = (from a in db_0438.patient where a.strUserAccount == "'TX" + str1 + "'" select new { a.strDisplayName, a.strIdno, a.strTel, a.strCell }).FirstOrDefault();
                 name = hospitalList.strDisplayName.Trim();
                 ID = hospitalList.strIdno.Trim();
                 tel = hospitalList.strTel.Trim();
@@ -1292,9 +1299,9 @@ namespace OCLink
                     MessageBox.Show("擷取資料錯誤,請重新截圖");
                 }
             }
-            else if (testhis == "KN")//測試抓oy的his3532040438的資料庫
+            else if (testhis == "KN")//測試抓oy的his3532040438的資料庫 開蘭
             {
-                var hospitalList = (from a in db_0438.patient where a.strUserAccount == "'TX" + str + "'" select new { a.strDisplayName, a.strIdno, a.strTel, a.strCell }).FirstOrDefault();
+                var hospitalList = (from a in db_0438.patient where a.strUserAccount == "'TX" + str1 + "'" select new { a.strDisplayName, a.strIdno, a.strTel, a.strCell }).FirstOrDefault();
                 name = hospitalList.strDisplayName.Trim();
                 ID = hospitalList.strIdno.Trim();
                 tel = hospitalList.strTel.Trim();
@@ -1345,7 +1352,6 @@ namespace OCLink
             //testcomm();//連接個人資料
         }
 
-
         private string GetOCR()
         {
             // 依畫面再重新截圖
@@ -1383,7 +1389,7 @@ namespace OCLink
                 }
 
                 //Bitmap bit = new Bitmap(Image.FromFile(@"C:\Temp\CaptureImage.jpg"));
-                using (var fs = new System.IO.FileStream(@"C:\ZMTemp\CaptureImage.jpg", System.IO.FileMode.Open))
+                using (var fs = new FileStream(@"C:\ZMTemp\CaptureImage.jpg",FileMode.Open))
                 {
                     var bmp = new Bitmap(fs);
                     fs.Close();
@@ -1398,20 +1404,25 @@ namespace OCLink
 
                     bit = PreprocesImage(bit, false);
                     Page page = ocr.Process(bit);
-                    str = page.GetText();//識別後的內容
+                    str = page.GetText().Trim().Replace(" ","");//識別後的內容
 
                     page.Dispose();
                     bit.Dispose();
                     ocr.Dispose();
-
-
-                    LoadImageList();
-
+                    
+                    if (hotkeycheck == false)
+                    {
+                       LoadImageList();
+                    }
+                    if(!myClass.IsNumeric(str)&&hotkeycheck == true)
+                    {
+                        btz = false;
+                        str = GetOCR();
+                    }
                 }
             }
-            else if (btz == false )
+            else if (btz == false)
             {
-
                 if (hotkeycheck == false)
                 {
                     File.Delete(@"C:\ZMTemp\BWImage_office.jpg");
@@ -1419,9 +1430,8 @@ namespace OCLink
                     File.Delete(@"C:\ZMTemp\Preprocess_Resize_office.jpg");
                 }
 
-
                 //Bitmap bit = new Bitmap(Image.FromFile(@"C:\Temp\CaptureImage.jpg"));
-                using (var fs = new System.IO.FileStream(@"C:\ZMTemp\CaptureImage_office.jpg", System.IO.FileMode.Open))
+                using (var fs = new FileStream(@"C:\ZMTemp\CaptureImage_office.jpg", FileMode.Open))
                 {
                     var bmp = new Bitmap(fs);
                     fs.Close();
@@ -1436,82 +1446,27 @@ namespace OCLink
 
                     bit = PreprocesImage(bit, false);
                     Page page = ocr.Process(bit);
-                    str = page.GetText();//識別後的內容
+                    str = page.GetText().Trim().Replace(" ", "");//識別後的內容
 
                     page.Dispose();
-                    bit.Dispose();
+                    bit.Dispose(); 
                     ocr.Dispose();
 
-                    LoadImageList();
-
+                    if (hotkeycheck == false)
+                    {
+                        LoadImageList();
+                    }
+                    if (!myClass.IsNumeric(str) && hotkeycheck == true)
+                    {
+                        //str = OcrB();//執行時間 1524.9099ms
+                        btz = true;
+                        str = GetOCR();
+                    }
                 }
             }
-            //if (hotkeycheck == true)
-            //{
-            //    try
-            //    {
-            //        using (var fs = new System.IO.FileStream(@"C:\ZMTemp\CaptureImage.jpg", System.IO.FileMode.Open))
-            //        {
-            //            var bmp = new Bitmap(fs);
-            //            fs.Close();
-            //            Bitmap bit = (Bitmap)bmp.Clone();
-
-            //            if (File.Exists(@"C:\ZMTemp\BWImage.jpg"))
-            //            {
-            //                bit = new Bitmap(Image.FromFile(@"C:\ZMTemp\BWImage.jpg"));
-            //            }
-            //            bit = PreprocesImage(bit, false);
-            //            //Ocr(ocr, bit, str);
-            //            Page page = ocr.Process(bit);
-            //            //str = page.GetText();//識別後的內容
-            //            if (myClass.IsNumeric(page.GetText()))
-            //            {
-            //                str = Convert.ToInt32(page.GetText()).ToString();
-            //            }
-            //            page.Dispose();
-            //            bit.Dispose();
-            //            ocr.Dispose();
-            //        }
-            //    }
-            //    catch
-            //    {
-            //        using (var fs1 = new System.IO.FileStream(@"C:\ZMTemp\CaptureImage_office.jpg", System.IO.FileMode.Open))
-            //        {
-            //            var bmp = new Bitmap(fs1);
-            //            fs1.Close();
-            //            Bitmap bit = (Bitmap)bmp.Clone();
-
-            //            if (File.Exists(@"C:\ZMTemp\BWImage_office.jpg"))
-            //            {
-            //                bit = new Bitmap(Image.FromFile(@"C:\ZMTemp\BWImage_office.jpg"));
-            //            }
-            //            bit = PreprocesImage(bit, false);
-            //            //Ocr(ocr, bit,str);
-            //            Page page = ocr.Process(bit);
-            //            //str = page.GetText();//識別後的內容
-            //            if (myClass.IsNumeric(page.GetText()))
-            //            {
-            //                str = Convert.ToInt32(page.GetText()).ToString();
-            //            }
-            //            page.Dispose();
-            //            bit.Dispose();
-            //            ocr.Dispose();
-            //        }
-            //    }               
-            //}
             return (str);
         }
-
-        void Ocr(TesseractEngine ocr , Bitmap bit, string str)
-        {
-            Page page = ocr.Process(bit);
-            //str = page.GetText();//識別後的內容
-            if (myClass.IsNumeric(page.GetText()))
-            {
-                str = Convert.ToInt32(page.GetText()).ToString();
-            }
-            page.Dispose();
-        }
+        
         /// <summary>
         /// 圖片顏色區分，剩下白色和黑色
         /// </summary>
@@ -1581,7 +1536,6 @@ namespace OCLink
                     newBitmap.Save(@"C:\ZMTemp\BWImage_office.jpg");
                 }
             }
-            
             return newBitmap;
         }
 
@@ -1650,7 +1604,7 @@ namespace OCLink
 
         }
 
-        public static bool bck_box1;
+        public bool bck_box1;
         private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
         {
             if ((checkBox1.Checked).ToString() == "True")
@@ -1660,7 +1614,7 @@ namespace OCLink
             hotkeydispose();
             hotkeycas();
         }
-        public static bool bck_box2;
+        public bool bck_box2;
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBox2.Checked.ToString() == "True")
@@ -1670,7 +1624,7 @@ namespace OCLink
             hotkeydispose();
             hotkeycas();
         }
-        public static bool bck_box3;
+        public bool bck_box3;
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBox3.Checked.ToString() == "True")
@@ -1733,9 +1687,9 @@ namespace OCLink
             btz = false;
             //this.Height = 365;
             ButtonZ.BackColor = Color.Black;
-            ButtonZ.ForeColor = System.Drawing.Color.White;
+            ButtonZ.ForeColor = Color.White;
             buttonS.BackColor = Color.Gainsboro;
-            buttonS.ForeColor = System.Drawing.Color.Black;
+            buttonS.ForeColor = Color.Black;
 
             tbResize.Visible = false;
             tbRed.Visible = false;
@@ -1762,37 +1716,37 @@ namespace OCLink
         {
             
         }
-        public static string combobox1;
+        public string combobox1;
         private void comboBox1_SelectedIndexChanged_1(object sender, EventArgs e)
         {
             combobox1 = comboBox1.Text;
         }
-        public static string combobox2;
+        public string combobox2;
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             combobox2 = comboBox2.Text;
         }
-        public static string combobox3;
+        public string combobox3;
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
             combobox3 = comboBox3.Text;
         }
-        public static string combobox4;
+        public string combobox4;
         private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)
         {
             combobox4 = comboBox4.Text;
         }
-        public static string combobox5;
+        public string combobox5;
         private void comboBox5_SelectedIndexChanged(object sender, EventArgs e)
         {
             combobox5 = comboBox5.Text;
         }
-        public static string combobox6;
+        public string combobox6;
         private void comboBox6_SelectedIndexChanged(object sender, EventArgs e)
         {
             combobox6 = comboBox6.Text;
         }
-        public static string combobox7;
+        public string combobox7;
         private void comboBox7_SelectedIndexChanged(object sender, EventArgs e)
         {
             combobox7 = comboBox7.Text;
@@ -1837,7 +1791,7 @@ namespace OCLink
 
         private void button1_Click(object sender, EventArgs e)
         {
-            System.Environment.Exit(0); //關閉所有程式
+            Environment.Exit(0); //關閉所有程式
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
@@ -1862,7 +1816,7 @@ namespace OCLink
 
         private void 關閉一鍵連結ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Environment.Exit(0);
+            Environment.Exit(0);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -1876,27 +1830,27 @@ namespace OCLink
             this.Text = hisid + "_" + hospname + "_" + publishVersion + "_" + drId;
         }
 
-        public static string combobox8;
+        public string combobox8;
         private void comboBox8_SelectedIndexChanged(object sender, EventArgs e)
         {
             combobox8 = comboBox8.Text;
         }
-        public static string combobox9;
+        public string combobox9;
         private void comboBox9_SelectedIndexChanged(object sender, EventArgs e)
         {
             combobox9 = comboBox9.Text;
         }
-        public static string combobox10;
+        public string combobox10;
         private void comboBox10_SelectedIndexChanged(object sender, EventArgs e)
         {
             combobox10 = comboBox10.Text;
         }
-        public static string combobox11;
+        public string combobox11;
         private void comboBox11_SelectedIndexChanged(object sender, EventArgs e)
         {
             combobox11 = comboBox11.Text;
         }
-        public static string combobox12;
+        public string combobox12;
         private void comboBox12_SelectedIndexChanged(object sender, EventArgs e)
         {
             combobox12 = comboBox12.Text;
@@ -2009,51 +1963,24 @@ namespace OCLink
                 pictureBox4.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
                 photo.Close();
             }
-            //if (btz == true)
-            //{
-            //    FileStream photo = File.OpenRead(@"C:\Temp\CaptureImage.jpg");
-            //    pictureBox1.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
-            //    photo.Close();
-
-            //    photo = File.OpenRead(@"C:\Temp\Preprocess_HighRes.jpg");
-            //    pictureBox2.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
-            //    photo.Close();
-
-            //    photo = File.OpenRead(@"C:\Temp\Preprocess_Resize.jpg");
-            //    pictureBox3.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
-            //    photo.Close();
-
-            //    photo = File.OpenRead(@"C:\Temp\BWImage.jpg");
-            //    pictureBox4.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
-            //    photo.Close();
-            //}
-            //else
-            //{
-            //    FileStream photo = File.OpenRead(@"C:\ZMTemp\CaptureImage_office.jpg");
-            //    pictureBox1.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
-            //    photo.Close();
-
-            //    photo = File.OpenRead(@"C:\ZMTemp\Preprocess_HighRes_office.jpg");
-            //    pictureBox2.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
-            //    photo.Close();
-
-            //    photo = File.OpenRead(@"C:\ZMTemp\Preprocess_Resize_office.jpg");
-            //    pictureBox3.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
-            //    photo.Close();
-
-            //    photo = File.OpenRead(@"C:\ZMTemp\BWImage_office.jpg");
-            //    pictureBox4.Image = (System.Drawing.Bitmap)Image.FromStream(photo);
-            //    photo.Close();
-            //}
         }
         void f2_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.Show();
         }
-
-        private void MainForm1_KeyDown(object sender, KeyEventArgs e)
+        private void mytimer_Tick(object sender, EventArgs e)
         {
-
+            GetCurrentWindow();//取得活動視窗
+        }
+        private void GetCurrentWindow()
+        {
+            Int32 handle = 0;
+            StringBuilder sb = new StringBuilder(256);
+            handle = GetForegroundWindow();
+            if (GetWindowText(handle, sb, sb.Capacity) > 0)
+            {
+                str1 = sb.ToString();
+            }
         }
     }
 }
