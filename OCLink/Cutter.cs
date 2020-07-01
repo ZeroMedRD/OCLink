@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace OCLink
 {
-    public partial class Cutter : Form
+    public partial class Cutter : System.Windows.Forms.Form
     {
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -21,8 +21,10 @@ namespace OCLink
         public Cutter(Bitmap btm, bool btz)
         {
             InitializeComponent();
+            this.TopMost = true;
             btz1 = btz;
             screenBtmp = btm;
+            this.TopMost = true;
             //Rectangle catchRec;//存放擷取範圍
 
             try
@@ -80,7 +82,7 @@ namespace OCLink
                 }
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // Let the user know what went wrong.
                 //MessageBox.Show("參數檔不存在或檔案損壞，請重新設定座標 !" + e.ToString());
@@ -260,7 +262,7 @@ namespace OCLink
             this.BackgroundImage = screenBtmp;
             catchBtmp.Dispose();
             this.DialogResult = DialogResult.OK;
-            this.Close();
+            this.Hide();
         }
 
         private void Cutter_Load(object sender, EventArgs e)
@@ -275,6 +277,12 @@ namespace OCLink
             {
                 CaptureHandle(true);
             }
+        }
+
+        private void Cutter_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = true; // 取消關閉作業
+            Hide();          // 隱藏視窗
         }
     }
 }

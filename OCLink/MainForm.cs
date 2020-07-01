@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
-using System.Data.Odbc;
 using System.Linq;
-using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Drawing;
@@ -22,7 +19,6 @@ using Tesseract;
 using OCLink.Models;
 using System.Data.OleDb;
 using ZMLib;
-using System.Web.Mvc;
 using System.Deployment.Application;
 using Timer = System.Windows.Forms.Timer;
 
@@ -33,7 +29,7 @@ namespace OCLink
         public string Server;//住機位置
         public string testhis;//判斷資料庫
         public string function1111;//所選項目
-        public bool prog_flag;
+        public bool prog_flag;//顯現視窗判斷
         public string hisid;//醫事機構代碼
         public string hospname;//診所名稱
         public string id;//病人資料代號
@@ -205,18 +201,19 @@ namespace OCLink
                 conn1.Open();
                 try
                 {
-                    if (bCheckID == true)
+                    if (bCheckID == true) //select sh.HospID, sh.HospName from SysHospital sh where sh.HospRowid = '9E10E8FE-9D95-4519-942A-0DCC91C54171'
                     {
-                        string sqlstr4 = "select sh.HospRowid , sh.HospID , sh.HospName , shc.HCRClinicRoom, combo.CBDDescription , combo.CBDDisplayOrder, shc.HCRRowid from SysHospital sh inner join SysHospitalClinicRoom shc on sh.HospRowid = shc.HospRowid left join (select cd.CBDCode,cd.CBDDescription,cd.CBDDisplayOrder from ComboMaster cm inner join ComboDetail cd on cm.CBMRowid = cd.CBMRowid where cm.CBMClass = 'CLINICROOM') as combo on shc.HCRClinicRoom = combo.CBDCode where sh.HospRowid = '" + sHospRowid + "' order by combo.CBDDisplayOrder ";
+                        //string sqlstr4 = "select sh.HospRowid , sh.HospID , sh.HospName , shc.HCRClinicRoom, combo.CBDDescription , combo.CBDDisplayOrder, shc.HCRRowid from SysHospital sh inner join SysHospitalClinicRoom shc on sh.HospRowid = shc.HospRowid left join (select cd.CBDCode,cd.CBDDescription,cd.CBDDisplayOrder from ComboMaster cm inner join ComboDetail cd on cm.CBMRowid = cd.CBMRowid where cm.CBMClass = 'CLINICROOM') as combo on shc.HCRClinicRoom = combo.CBDCode where sh.HospRowid = '" + sHospRowid + "' order by combo.CBDDisplayOrder ";
+                        string sqlstr4 = "select sh.HospID, sh.HospName from SysHospital sh where sh.HospRowid = '" + sHospRowid +"'";
                         funCommand(sqlstr4, conn1, 2);//診所名
                     }
                     else
                     {
-                        //MessageBox.Show("您的裝置未經授權，請洽相關業務人員\n\n聯絡電話：(03) 4636913");
+                        //MessageBox.Show("您的裝置未經授權，請洽相關業務人員\n\n聯絡電話：(03) 4636913");沒有綁MACaddress 跳出
                         //System.Environment.Exit(0); //若認證不過關閉所有程式
                         string mac = MyMacAddress[0].ToString();
                         Form2 f2 = new Form2(mac);
-                        f2.FormClosing += new FormClosingEventHandler(f2_FormClosing);
+                        f2.FormClosing += new FormClosingEventHandler(f2_FormClosing);//沒有綁MACaddress 跳出序號頁面
                         this.Hide();
                         f2.ShowDialog();
                     }
@@ -234,16 +231,22 @@ namespace OCLink
         {
             InitializeComponent();
             getLocalMacAddress();
-            //UpdateApplication();
+            System.Int32 dwFlag = new int();
+            if (!InternetGetConnectedState(ref dwFlag, 0))
+            {
+                MessageBox.Show("無法與網際網路連線 請確認網路連線品質是否良好");
+                Environment.Exit(0); //關閉所有程式
+            }
             setdata();
             hotkey();
-            this.MaximizeBox = false;
+            this.MaximizeBox = false;//關閉放大紐
+            this.MinimizeBox = false;//關閉縮小紐
             prog_flag = true;
-            this.TopMost = true;
+            this.TopMost = true;//程式至頂
         }
 
         private string strValue;
-        public string StrValue
+        public string StrValue //mainform form1之間傳值
         {
             set
             {
@@ -261,7 +264,8 @@ namespace OCLink
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]static extern bool WritePrivateProfileString(string lpAppName,string lpKeyName, string lpString, string lpFileName);
 
-       
+        [DllImport("wininet.dll")]
+        private static extern bool InternetGetConnectedState(ref int dwFlag, int dwReserved);//用來測試網路是否可以用
 
         public void getLocalMacAddress()
         {   // 因為電腦中可能有很多的網卡(包含虛擬的網卡)，存入所有的設備號碼
@@ -275,8 +279,6 @@ namespace OCLink
             panel1.Visible = false;
             panel2.Visible = false;
             this.Height = 138;
-            hotkey1 = new HotKey(this.Handle, Keys.D2, Keys.Alt); //註冊Alt + 2為熱鍵, 如果不要組合鍵請傳Keys.None當參數
-            hotkey1.OnHotkey += new HotKey.HotkeyEventHandler(hotkey1to4_OnHotkey); //hotkey1~4共用事件
 
             hotkey1 = new HotKey(this.Handle, Keys.Q, Keys.Alt); //註冊Alt + Q為熱鍵, 如果不要組合鍵請傳Keys.None當參數(截圖快捷鍵)
             hotkey1.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //hotkey1~4共用事件(如果沒按 診間或掛號紐  會以預設診間為主)
@@ -459,6 +461,16 @@ namespace OCLink
                     uint reg27 = GetPrivateProfileString("AppName", "登入帳號", "", sb, (uint)sb.Capacity, test);
                     drId = sb.ToString();
                     this.Text = this.Text + "_" + drId;
+
+                    uint reg28 = GetPrivateProfileString("AppName", "controll", "", sb, (uint)sb.Capacity, test);
+                    comboBox15.Text = sb.ToString();
+
+                    uint reg29 = GetPrivateProfileString("AppName", "number", "", sb, (uint)sb.Capacity, test);
+                    comboBox16.Text = sb.ToString();
+                    UserHotkey();
+
+                    uint reg30 = GetPrivateProfileString("AppName", "展望資料夾位置", "", sb, (uint)sb.Capacity, test);
+                    textBox1.Text = sb.ToString();
                 }
                 catch (Exception ex)
                 {
@@ -949,12 +961,7 @@ namespace OCLink
 
         void openBrowser(string conn)
         {
-           
-            // 打開愛半月網頁F0000
-            string ur = string.Empty;
-            //string url1 = "?hospital=" + ConfigurationManager.AppSettings["HospID"] + "&dr=" + sDrID.Trim() + "&patientno=" + patientno + "&patientname=" + name + "&patientIdno=" + patientIdno + "&patientBirth=" + patientBirth + "&tel=" + tel;
-            //string url1 = "?hospital=" + hisid + "&patientno=" + str1 + "&patientname=" + name + "&patientIdno=" + ID + "&patientBirth=" + Birth + "&tel=" + tel + "&cell=" + Cell;
-
+            // 打開凌醫網頁
             string ur0 = (hisid != "") ? hisid : "";
             
             string ur1 = (drId != "") ?  drId : "";
@@ -977,12 +984,11 @@ namespace OCLink
             string output = names[0] + ", " + names[1] + ", " + names[2] + ", " +
                             names[3] + ", " + names[4] + ", " + names[5] + ", " +
                             names[6] + ", " + names[7];
-            
-            ur = String.Format(conn, names[0], names[1], names[2], names[3], names[4], names[5], names[6],names[7]);
 
+            string ur = String.Format(conn, names[0], names[1], names[2], names[3], names[4], names[5], names[6],names[7]);
            
 
-            if(function1111 !="   ")
+            if(function1111 !="   ")//當不小心按到空白項目會沒有作用
             {
                 this.Hide();
                 notifyIcon1.ShowBalloonTip(5000);
@@ -1107,7 +1113,7 @@ namespace OCLink
         public bool GotOCR = false;//是否取得病歷號 
         private void btn_OCR1(object sender, EventArgs e)
         {
-            if(testhis == "TECH")
+            if(testhis == "TECH")//方頂取title
             {
                 Timer mytimer = new Timer();
                 mytimer.Tick += new EventHandler(mytimer_Tick);
@@ -1115,17 +1121,16 @@ namespace OCLink
                 GotOCR = true;
                 if (hotkeycheck == false)
                 {
-                    MessageBox.Show(str1);
+                    MessageBox.Show(Regex.Replace(str1, "[^0-9]", ""));
                     hotkeycheck = true;
                 }
             }
             if(GotOCR ==false)
             {
                 str1 = GetOCR();
-
                 if (hotkeycheck == false)
                 {
-                    MessageBox.Show(str1);
+                    MessageBox.Show(Regex.Replace(str1, "[^0-9]", ""));//保留數字
                     hotkeycheck = true;
                 }
             }
@@ -1141,8 +1146,8 @@ namespace OCLink
                     OleDbConnection conn = new OleDbConnection("Provider=VFPOLEDB.1;Data Source=" + Server + @":\S\");    //連接字串
                     conn.Open();
 
-                    string query = String.Format("select * from patdb where recno()={0}", nRecno);
-                    OleDbCommand cmd = new OleDbCommand(query, conn);
+                    //string query = String.Format("select * from patdb where recno()={0}", nRecno);
+                    OleDbCommand cmd = new OleDbCommand(String.Format("select * from patdb where recno()={0}", nRecno), conn);
                     OleDbDataAdapter da = new OleDbDataAdapter(cmd);
                     DataTable table = new DataTable();
                     da.Fill(table);
@@ -1155,12 +1160,11 @@ namespace OCLink
                         ID = dr["id"].ToString().Trim();
                         tel = dr["tel"].ToString().Trim();
                         Birth = dr["birth"].ToString().Trim();
-                        //MessageBox.Show(name);
                         try
                         {
                             Cell = dr["mobil"].ToString().Trim();
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             Cell = "";
                         }
@@ -1171,18 +1175,18 @@ namespace OCLink
                     MessageBox.Show("擷取資料錯誤,請重新截圖");
                 }
             }
-            else if (testhis == "VISW" && File.Exists(Server + @":\VISW\CO01M.dbf"))
+            else if (testhis == "VISW" && File.Exists(Server + @":\" + textBox1.Text + @"\CO01M.dbf"))
             {
-                int nRecno = 0;
+                //int nRecno = 0;
                 if (myClass.IsNumeric(str1))//判斷是否截圖內容為數字
                 {
-                    nRecno = Convert.ToInt32(str1);
+                    //nRecno = Convert.ToInt32(str1);
 
                     OleDbConnection conn = new OleDbConnection("Provider=VFPOLEDB.1;Data Source=" + Server + @":\VISW\");    //連接字串
                     conn.Open();
 
-                    string query = ("select * fromCO01m where Kcstmr = '" + nRecno + "'");
-                    OleDbCommand cmd = new OleDbCommand(query, conn);
+                    //string query = ("select * from CO01m where Kcstmr = '" + str1 + "'");
+                    OleDbCommand cmd = new OleDbCommand("select * from CO01m where Kcstmr = '" + str1 + "'", conn);
                     OleDbDataAdapter da = new OleDbDataAdapter(cmd);
                     DataTable table = new DataTable();
                     da.Fill(table);
@@ -1199,7 +1203,7 @@ namespace OCLink
                         {
                             Cell = dr["Mrec"].ToString().Trim();
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             Cell = "";
                         }
@@ -1210,7 +1214,7 @@ namespace OCLink
                     MessageBox.Show("擷取資料錯誤,請重新截圖");
                 }
             }
-            else if (testhis == "TECH")//測試抓oy的his3532040438的資料庫 方頂
+            else if (testhis == "TECH")//測試抓oy的his3532040438的資料庫 方鼎
             {
                 var hospitalList = (from a in db_0438.patient where a.strUserAccount == "'TX" + str1 + "'" select new { a.strDisplayName, a.strIdno, a.strTel, a.strCell }).FirstOrDefault();
                 name = hospitalList.strDisplayName.Trim();
@@ -1221,18 +1225,15 @@ namespace OCLink
                     Cell = hospitalList.strCell.Trim();
                 }
             }
-            else if (testhis == "DHA" && File.Exists(Server + @":\DATA\PD011M1.dbf"))
+            else if (testhis == "DHA" && File.Exists(Server + @":\DATA\PD011M1.dbf"))//常誠
             {
-                int nRecno = 0;
                 if (myClass.IsNumeric(str1))//判斷是否截圖內容為數字
                 {
-                    nRecno = Convert.ToInt32(str1);
-
                     OleDbConnection conn = new OleDbConnection("Provider=VFPOLEDB.1;Data Source=" + Server + @":\DATA\");    //連接字串
                     conn.Open();
 
-                    string query = ("select * from PD011M1 where Num = '" + nRecno + "'");
-                    OleDbCommand cmd = new OleDbCommand(query, conn);
+                    //string query = ("select * from PD011M1 where Num = '" + str1 + "'");
+                    OleDbCommand cmd = new OleDbCommand("select * from PD011M1 where Num = '" + str1 + "'", conn);
                     OleDbDataAdapter da = new OleDbDataAdapter(cmd);
                     DataTable table = new DataTable();
                     da.Fill(table);
@@ -1249,7 +1250,7 @@ namespace OCLink
                         {
                             Cell = dr["act_tel"].ToString().Trim();
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             Cell = "";
                         }
@@ -1262,16 +1263,16 @@ namespace OCLink
             }
             else if (testhis == "SC" && File.Exists(Server + @":\SC\Dat\User.dat"))
             {
-                int nRecno = 0;
+                //int nRecno = 0;
                 if (myClass.IsNumeric(str1))//判斷是否截圖內容為數字
                 {
-                    nRecno = Convert.ToInt32(str1);
+                    //nRecno = Convert.ToInt32(str1);
 
                     OleDbConnection conn = new OleDbConnection("Provider=VFPOLEDB.1;Data Source=" + Server + @":\SC\Dat");    //連接字串
                     conn.Open();
 
-                    string query = ("select * from User.dat where MEDICAL_NO = '" + nRecno + "'");
-                    OleDbCommand cmd = new OleDbCommand(query, conn);
+                    //string query = ("select * from User.dat where MEDICAL_NO = '" + str1 + "'");
+                    OleDbCommand cmd = new OleDbCommand("select * from User.dat where MEDICAL_NO = '" + str1 + "'", conn);
                     OleDbDataAdapter da = new OleDbDataAdapter(cmd);
                     DataTable table = new DataTable();
                     da.Fill(table);
@@ -1288,7 +1289,7 @@ namespace OCLink
                         {
                             Cell = dr["TEL2"].ToString().Trim();
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             Cell = "";
                         }
@@ -1312,16 +1313,16 @@ namespace OCLink
             }
             else if (testhis == "MTR" && File.Exists(Server + @"\MTR\DBF\Client.dbf"))
             {
-                int nRecno = 0;
+                //int nRecno = 0;
                 if (myClass.IsNumeric(str1))//判斷是否截圖內容為數字
                 {
-                    nRecno = Convert.ToInt32(str1);
+                    //nRecno = Convert.ToInt32(str1);
 
                     OleDbConnection conn = new OleDbConnection("Provider=VFPOLEDB.1;Data Source=" + Server + @":\MTR\DBF");    //連接字串
                     conn.Open();
 
-                    string query = ("select * from client where medical_no = '" + nRecno + "'");
-                    OleDbCommand cmd = new OleDbCommand(query, conn);
+                    //string query = ("select * from client where medical_no = '" + str1 + "'");
+                    OleDbCommand cmd = new OleDbCommand("select * from client where medical_no = '" + str1 + "'", conn);
                     OleDbDataAdapter da = new OleDbDataAdapter(cmd);
                     DataTable table = new DataTable();
                     da.Fill(table);
@@ -1338,7 +1339,7 @@ namespace OCLink
                         {
                             Cell = dr["bigtel"].ToString().Trim();
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             Cell = "";
                         }
@@ -1363,7 +1364,7 @@ namespace OCLink
 
             Cutter cutter = new Cutter(btm, btz); //傳送截圖
 
-            if (!File.Exists(@"C:\ZMTemp\TestFile.TXT"))
+            if (btz == true &&(!File.Exists(@"C:\ZMTemp\TestFile.TXT"))|| (btz == false && !File.Exists(@"C:\ZMTemp\TestFile_office.TXT")))
             {
                 //cutter.FormBorderStyle = FormBorderStyle.None; //截圖全屏，無邊框
                 cutter.BackgroundImage = btm; //新的窗體截圖做背景
@@ -1372,9 +1373,9 @@ namespace OCLink
 
             // 開始OCR
             //string s = ocr.Recognize(@"C:\Temp\CaptureImage.jpg", -1, startX, startY, width, height, AspriseOCR.RECOGNIZE_TYPE_ALL, AspriseOCR.OUTPUT_FORMAT_PLAINTEXT);
-            TesseractEngine ocr;
+            TesseractEngine ocr = new TesseractEngine("./tessdata", "eng", EngineMode.TesseractAndCube);//設定語言   英文;
             //ocr = new TesseractEngine("./tessdata", "chi_tra");//設定語言   中文
-            ocr = new TesseractEngine("./tessdata", "eng", EngineMode.TesseractAndCube);//設定語言   英文
+            //ocr = new TesseractEngine("./tessdata", "eng", EngineMode.TesseractAndCube);//設定語言   英文
 
             string str = String.Empty;
 
@@ -1404,7 +1405,7 @@ namespace OCLink
 
                     bit = PreprocesImage(bit, false);
                     Page page = ocr.Process(bit);
-                    str = page.GetText().Trim().Replace(" ","");//識別後的內容
+                    str = page.GetText().Trim().Replace(" ","");//識別後的內容   testStr = Regex.Replace(testStr, "[^0-9]", "");
 
                     page.Dispose();
                     bit.Dispose();
@@ -1487,7 +1488,15 @@ namespace OCLink
             Color actualColor;
 
             //make an empty bitmap the same size as scrBitmap
-            nResize = (IsNumeric(tbResize.Text)) ? int.Parse(tbResize.Text.Trim()) : 1;
+            if(btz == true)
+            {
+                nResize = (IsNumeric(tbResize.Text)) ? int.Parse(tbResize.Text.Trim()) : 1;
+            }
+            else
+            {
+                nResize = (IsNumeric(tresize.Text)) ? int.Parse(tresize.Text.Trim()) : 1;
+            }
+            
             image = ResizeImage(image, image.Width * nResize, image.Height * nResize);
             if(hotkeycheck == false)
             {
@@ -1512,9 +1521,19 @@ namespace OCLink
                     // > 150 because.. Images edges can be of low pixel colr. if we set all pixel color to new then there will be no smoothness left.
 
                     // 判斷 RGB 值
-                    nRed = (IsNumeric(tbRed.Text)) ? int.Parse(tbRed.Text.Trim()) : 0;
-                    nGreen = (IsNumeric(tbGreen.Text)) ? int.Parse(tbRed.Text.Trim()) : 0;
-                    nBlue = (IsNumeric(tbBlue.Text)) ? int.Parse(tbRed.Text.Trim()) : 0;
+                    if(btz ==true)
+                    {
+                        nRed = (IsNumeric(tbRed.Text)) ? int.Parse(tbRed.Text.Trim()) : 0;
+                        nGreen = (IsNumeric(tbGreen.Text)) ? int.Parse(tbRed.Text.Trim()) : 0;
+                        nBlue = (IsNumeric(tbBlue.Text)) ? int.Parse(tbRed.Text.Trim()) : 0;
+                    }
+                    else
+                    {
+                        nRed = (IsNumeric(tred.Text)) ? int.Parse(tred.Text.Trim()) : 0;
+                        nGreen = (IsNumeric(tgreen.Text)) ? int.Parse(tred.Text.Trim()) : 0;
+                        nBlue = (IsNumeric(tblue.Text)) ? int.Parse(tred.Text.Trim()) : 0;
+                    }
+                    
 
                     if (actualColor.R > nRed && actualColor.G > nGreen && actualColor.B > nBlue)    //在這裡設定RGB
                         newBitmap.SetPixel(i, j, cForeColor);
@@ -1596,6 +1615,10 @@ namespace OCLink
             Return = WritePrivateProfileString("AppName", "g_office", tgreen.Text, test);
             Return = WritePrivateProfileString("AppName", "b_office", tblue.Text, test);
             Return = WritePrivateProfileString("AppName", "登入帳號", drId, test);
+            Return = WritePrivateProfileString("AppName", "controll", comboBox15.Text, test);
+            Return = WritePrivateProfileString("AppName", "number", comboBox16.Text, test);
+            Return = WritePrivateProfileString("AppName", "展望資料夾位置", textBox1.Text, test);
+            UserHotkey();
             MessageBox.Show("儲存成功");
         }
 
@@ -1604,7 +1627,7 @@ namespace OCLink
 
         }
 
-        public bool bck_box1;
+        public bool bck_box1;//判斷有沒有勾選
         private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
         {
             if ((checkBox1.Checked).ToString() == "True")
@@ -1614,7 +1637,7 @@ namespace OCLink
             hotkeydispose();
             hotkeycas();
         }
-        public bool bck_box2;
+        public bool bck_box2;//判斷有沒有勾選
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBox2.Checked.ToString() == "True")
@@ -1624,7 +1647,7 @@ namespace OCLink
             hotkeydispose();
             hotkeycas();
         }
-        public bool bck_box3;
+        public bool bck_box3;//判斷有沒有勾選
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBox3.Checked.ToString() == "True")
@@ -1664,7 +1687,7 @@ namespace OCLink
 
             using (var graphics = Graphics.FromImage(destImage))
             {
-                graphics.CompositingMode = CompositingMode.SourceOver;
+                
                 graphics.CompositingQuality = CompositingQuality.HighQuality;
                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 graphics.SmoothingMode = SmoothingMode.HighQuality;
@@ -1686,12 +1709,12 @@ namespace OCLink
             panel2.Visible = false;
             btz = false;
             //this.Height = 365;
-            ButtonZ.BackColor = Color.Black;
+            ButtonZ.BackColor = Color.Black;//按鈕顏色
             ButtonZ.ForeColor = Color.White;
             buttonS.BackColor = Color.Gainsboro;
             buttonS.ForeColor = Color.Black;
 
-            tbResize.Visible = false;
+            tbResize.Visible = false;//RGB參數
             tbRed.Visible = false;
             tbGreen.Visible = false;
             tbBlue.Visible = false;
@@ -1716,6 +1739,7 @@ namespace OCLink
         {
             
         }
+
         public string combobox1;
         private void comboBox1_SelectedIndexChanged_1(object sender, EventArgs e)
         {
@@ -1757,30 +1781,37 @@ namespace OCLink
             if(comboBox13.Text == "耀聖資訊")
             {
                 testhis = "RS";
+                textBox1.Enabled = false;
             }
             if(comboBox13.Text == "展望資訊")
             {
                 testhis = "VISW";
+                textBox1.Enabled = true;
             }
             if (comboBox13.Text == "方鼎資訊")
             {
                 testhis = "TECH";
+                textBox1.Enabled = false;
             }
             if (comboBox13.Text == "常誠資料")
             {
                 testhis = "DHA";
+                textBox1.Enabled = false;
             }
             if (comboBox13.Text == "醫聖資訊")
             {
                 testhis = "SC";
+                textBox1.Enabled = false;
             }
             if (comboBox13.Text == "開蘭安心")
             {
                 testhis = "KN";
+                textBox1.Enabled = false;
             }
             if (comboBox13.Text == "蒙利特")
             {
                 testhis = "MTR";
+                textBox1.Enabled = false;
             }
         }
 
@@ -1830,6 +1861,10 @@ namespace OCLink
             this.Text = hisid + "_" + hospname + "_" + publishVersion + "_" + drId;
         }
 
+        private void comboBox15_SelectedIndexChanged(object sender, EventArgs e)//string ur6 = (tel != "") ?  tel : "";
+        {
+            
+        }
         public string combobox8;
         private void comboBox8_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1981,6 +2016,133 @@ namespace OCLink
             {
                 str1 = sb.ToString();
             }
+        }
+        public void UserHotkey()
+        {
+            if (!String.IsNullOrEmpty(comboBox15.Text) && !String.IsNullOrEmpty(comboBox16.Text))
+            {
+                if (comboBox15.Text == "Alt")
+                {
+                    int intNum = Convert.ToInt32(comboBox16.Text);
+                    switch (intNum)
+                    {
+                        case 0:
+                            hotkey1 = new HotKey(this.Handle, Keys.D0, Keys.Alt); //註冊Alt + 0為熱鍵
+                            break;
+                        case 1:
+                            hotkey1 = new HotKey(this.Handle, Keys.D1, Keys.Alt); //註冊Alt + 1為熱鍵
+                            break;
+                        case 2:
+                            hotkey1 = new HotKey(this.Handle, Keys.D2, Keys.Alt); //註冊Alt + 2為熱鍵
+                            break;
+                        case 3:
+                            hotkey1 = new HotKey(this.Handle, Keys.D3, Keys.Alt); //註冊Alt + 3為熱鍵
+                            break;
+                        case 4:
+                            hotkey1 = new HotKey(this.Handle, Keys.D4, Keys.Alt); //註冊Alt + 4為熱鍵
+                            break;
+                        case 5:
+                            hotkey1 = new HotKey(this.Handle, Keys.D5, Keys.Alt); //註冊Alt + 5為熱鍵
+                            break;
+                        case 6:
+                            hotkey1 = new HotKey(this.Handle, Keys.D6, Keys.Alt); //註冊Alt + 6為熱鍵
+                            break;
+                        case 7:
+                            hotkey1 = new HotKey(this.Handle, Keys.D7, Keys.Alt); //註冊Alt + 7為熱鍵
+                            break;
+                        case 8:
+                            hotkey1 = new HotKey(this.Handle, Keys.D8, Keys.Alt); //註冊Alt + 8為熱鍵
+                            break;
+                        case 9:
+                            hotkey1 = new HotKey(this.Handle, Keys.D9, Keys.Alt); //註冊Alt + 9為熱鍵
+                            break;
+                    }
+                }
+                if (comboBox15.Text == "Ctrl")
+                {
+                    int intNum = Convert.ToInt32(comboBox16.Text);
+                    switch (intNum)
+                    {
+                        case 0:
+                            hotkey1 = new HotKey(this.Handle, Keys.D0, Keys.Control); //註冊Alt + 0為熱鍵
+                            break;
+                        case 1:
+                            hotkey1 = new HotKey(this.Handle, Keys.D1, Keys.Control); //註冊Alt + 1為熱鍵
+                            break;
+                        case 2:
+                            hotkey1 = new HotKey(this.Handle, Keys.D2, Keys.Control); //註冊Alt + 2為熱鍵
+                            break;
+                        case 3:
+                            hotkey1 = new HotKey(this.Handle, Keys.D3, Keys.Control); //註冊Alt + 3為熱鍵
+                            break;
+                        case 4:
+                            hotkey1 = new HotKey(this.Handle, Keys.D4, Keys.Control); //註冊Alt + 4為熱鍵
+                            break;
+                        case 5:
+                            hotkey1 = new HotKey(this.Handle, Keys.D5, Keys.Control); //註冊Alt + 5為熱鍵
+                            break;
+                        case 6:
+                            hotkey1 = new HotKey(this.Handle, Keys.D6, Keys.Control); //註冊Alt + 6為熱鍵
+                            break;
+                        case 7:
+                            hotkey1 = new HotKey(this.Handle, Keys.D7, Keys.Control); //註冊Alt + 7為熱鍵
+                            break;
+                        case 8:
+                            hotkey1 = new HotKey(this.Handle, Keys.D8, Keys.Control); //註冊Alt + 8為熱鍵
+                            break;
+                        case 9:
+                            hotkey1 = new HotKey(this.Handle, Keys.D9, Keys.Control); //註冊Alt + 9為熱鍵
+                            break;
+                    }
+                }
+                if (comboBox15.Text == "Shift")
+                {
+                    int intNum = Convert.ToInt32(comboBox16.Text);
+                    switch (intNum)
+                    {
+                        case 0:
+                            hotkey1 = new HotKey(this.Handle, Keys.D0, Keys.Shift); //註冊Alt + 0為熱鍵
+                            break;
+                        case 1:
+                            hotkey1 = new HotKey(this.Handle, Keys.D1, Keys.Shift); //註冊Alt + 1為熱鍵
+                            break;
+                        case 2:
+                            hotkey1 = new HotKey(this.Handle, Keys.D2, Keys.Shift); //註冊Alt + 2為熱鍵
+                            break;
+                        case 3:
+                            hotkey1 = new HotKey(this.Handle, Keys.D3, Keys.Shift); //註冊Alt + 3為熱鍵
+                            break;
+                        case 4:
+                            hotkey1 = new HotKey(this.Handle, Keys.D4, Keys.Shift); //註冊Alt + 4為熱鍵
+                            break;
+                        case 5:
+                            hotkey1 = new HotKey(this.Handle, Keys.D5, Keys.Shift); //註冊Alt + 5為熱鍵
+                            break;
+                        case 6:
+                            hotkey1 = new HotKey(this.Handle, Keys.D6, Keys.Shift); //註冊Alt + 6為熱鍵
+                            break;
+                        case 7:
+                            hotkey1 = new HotKey(this.Handle, Keys.D7, Keys.Shift); //註冊Alt + 7為熱鍵
+                            break;
+                        case 8:
+                            hotkey1 = new HotKey(this.Handle, Keys.D8, Keys.Shift); //註冊Alt + 8為熱鍵
+                            break;
+                        case 9:
+                            hotkey1 = new HotKey(this.Handle, Keys.D9, Keys.Shift); //註冊Alt + 9為熱鍵
+                            break;
+                    }
+                }
+                if(comboBox15.Text ==""||comboBox16.Text =="")
+                {
+                     hotkey1 = new HotKey(this.Handle, Keys.D, Keys.Control); //註冊CTRL + D為熱鍵
+                }
+            }
+            else
+            {
+                hotkey1 = new HotKey(this.Handle, Keys.D, Keys.Control); //註冊CTRL + D為熱鍵
+            }
+
+            hotkey1.OnHotkey += new HotKey.HotkeyEventHandler(hotkey1to4_OnHotkey); //獨立事件
         }
     }
 }

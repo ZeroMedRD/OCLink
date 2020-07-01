@@ -13,10 +13,15 @@ namespace OCLink
 {
     public partial class Form1 : Form
     {
-        public string drid;
+        public string hisid;
         public Form1()
         {
             InitializeComponent();
+            this.Text = "使用者登入";
+            this.ControlBox = false;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.TopMost = true;
         }
         private string string1;
         public string String1
@@ -28,16 +33,16 @@ namespace OCLink
         }
         public void SetValue()
         {
-            drid = string1;
+            hisid = string1;
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            string sql = "server=23.97.65.134,1933;database=his" + drid + ";user=sa;password=I@ntif@t;";
-            string strcon = "select * from employee where emp_account = '" + textBox1.Text + "'";
+            string sql = "server=23.97.65.134,1933;database=his" + hisid + ";user=sa;password=I@ntif@t;";
+            string strcon = "select top 1 * from employee where emp_account = '" + textBox1.Text + "'";
             SqlConnection conn = new SqlConnection(sql);
             conn.Open();
             SqlCommand cmd = new SqlCommand(strcon, conn);
-            SqlDataReader clinic = cmd.ExecuteReader();
+            SqlDataReader clinic = cmd.ExecuteReader(); 
             while (clinic.Read())
             {
                 if (textBox2.Text == clinic["pwd"].ToString())

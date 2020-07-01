@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OCLink", "OCLink\OCLink.csproj", "{3E633232-1AC0-4BCB-BEEE-CCBC873C58C7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZMLib", "..\ZMLib\ZMLib\ZMLib.csproj", "{E22315F3-0F28-4D8E-9F98-9F827990E05A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,18 @@ Global
 		{3E633232-1AC0-4BCB-BEEE-CCBC873C58C7}.Release|x64.Build.0 = Release|x64
 		{3E633232-1AC0-4BCB-BEEE-CCBC873C58C7}.Release|x86.ActiveCfg = Release|x86
 		{3E633232-1AC0-4BCB-BEEE-CCBC873C58C7}.Release|x86.Build.0 = Release|x86
+		{E22315F3-0F28-4D8E-9F98-9F827990E05A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E22315F3-0F28-4D8E-9F98-9F827990E05A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E22315F3-0F28-4D8E-9F98-9F827990E05A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E22315F3-0F28-4D8E-9F98-9F827990E05A}.Debug|x64.Build.0 = Debug|Any CPU
+		{E22315F3-0F28-4D8E-9F98-9F827990E05A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E22315F3-0F28-4D8E-9F98-9F827990E05A}.Debug|x86.Build.0 = Debug|Any CPU
+		{E22315F3-0F28-4D8E-9F98-9F827990E05A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E22315F3-0F28-4D8E-9F98-9F827990E05A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E22315F3-0F28-4D8E-9F98-9F827990E05A}.Release|x64.ActiveCfg = Release|Any CPU
+		{E22315F3-0F28-4D8E-9F98-9F827990E05A}.Release|x64.Build.0 = Release|Any CPU
+		{E22315F3-0F28-4D8E-9F98-9F827990E05A}.Release|x86.ActiveCfg = Release|Any CPU
+		{E22315F3-0F28-4D8E-9F98-9F827990E05A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

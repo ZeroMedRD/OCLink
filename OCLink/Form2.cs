@@ -15,6 +15,9 @@ namespace OCLink
         public Form2()
         {
             InitializeComponent();
+            this.Text = "登入授權";
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
         }
 
         public Form2(string mac)

@@ -34,9 +34,10 @@
             // btnCutter
             // 
             this.btnCutter.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btnCutter.Location = new System.Drawing.Point(986, 598);
+            this.btnCutter.Location = new System.Drawing.Point(1315, 748);
+            this.btnCutter.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnCutter.Name = "btnCutter";
-            this.btnCutter.Size = new System.Drawing.Size(68, 40);
+            this.btnCutter.Size = new System.Drawing.Size(91, 50);
             this.btnCutter.TabIndex = 0;
             this.btnCutter.Text = "截圖";
             this.btnCutter.UseVisualStyleBackColor = true;
@@ -44,12 +45,14 @@
             // 
             // Cutter
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1065, 647);
+            this.ClientSize = new System.Drawing.Size(1420, 809);
             this.Controls.Add(this.btnCutter);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Cutter";
             this.Text = "Cutters";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Cutter_FormClosing);
             this.Load += new System.EventHandler(this.Cutter_Load);
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Cutter_MouseClick);
             this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Cutter_MouseDoubleClick);
