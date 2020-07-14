@@ -994,7 +994,7 @@ namespace OCLink
                 notifyIcon1.ShowBalloonTip(5000);
 
                 prog_flag = false;
-                Process.Start(ur);
+                Process.Start("chrome.exe", ur);
             }
         }
 
@@ -1708,7 +1708,6 @@ namespace OCLink
             panel1.Visible = true;
             panel2.Visible = false;
             btz = false;
-            //this.Height = 365;
             ButtonZ.BackColor = Color.Black;//按鈕顏色
             ButtonZ.ForeColor = Color.White;
             buttonS.BackColor = Color.Gainsboro;
