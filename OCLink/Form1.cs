@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,6 +14,9 @@ namespace OCLink
 {
     public partial class Form1 : Form
     {
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        static extern uint GetPrivateProfileString(string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpReturnedString, uint nSize, string lpFileName);
+
         public string hisid;
         public Form1()
         {
@@ -57,10 +61,6 @@ namespace OCLink
                     MessageBox.Show("帳號或密碼錯誤 請重新輸入");
                 }
             }
-            //MainForm lForm1 = (MainForm)this.Owner;//把Form2的父視窗指標賦給lForm1
-            //lForm1.StrValue = textBox1.Text;//使用父視窗指標賦值
-            //MessageBox.Show("登入成功");
-            //this.Close();
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -71,6 +71,16 @@ namespace OCLink
         private void Form1_Load(object sender, EventArgs e)
         {
            
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string test = @"C:\ZMTemp\System.ini";
+            StringBuilder sb = new StringBuilder(500);
+            uint res1 = GetPrivateProfileString("AppName", "登入帳號", "", sb, (uint)sb.Capacity, test);
+            MainForm mF = (MainForm)this.Owner;//把Form2的父視窗指標賦給lForm1
+            mF.StrValue = sb.ToString();//使用父視窗指標賦值
+            this.Close();
         }
     }
 }
