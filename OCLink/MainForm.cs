@@ -21,6 +21,7 @@ using System.Data.OleDb;
 using ZMLib;
 using System.Deployment.Application;
 using Timer = System.Windows.Forms.Timer;
+using System.Configuration;
 
 namespace OCLink
 {
@@ -39,14 +40,46 @@ namespace OCLink
         public string ID;//病人身分證
         public string sHospRowid;//資訊面板
         public string drId = "1111";//取得登錄者帳號
+        public string sqlIP;
+        public string StrValueIP //form3傳值
+        {
+            set
+            {
+                sqlIP = value;
+            }
+        }
+        public string sqldatabace;
+        public string StrValuedb //form3傳值
+        {
+            set
+            {
+                sqldatabace = value;
+            }
+        }
+        public string sqlID;
+        public string StrValueid //form3傳值
+        {
+            set
+            {
+                sqlID = value;
+            }
+        }
+        public string sqlpw;
+        public string StrValuepw //form3傳值
+        {
+            set
+            {
+                sqlpw = value;
+            }
+        }
         string publishVersion;//版本編號
         Stopwatch sw = new System.Diagnostics.Stopwatch();//程式計時
         ArrayList MyMacAddress = new ArrayList();//本機地址
         public bool bCheckID = false;//核對身分後確認是否開啟程式
         Dictionary<string, string> dMAC = new Dictionary<string, string>();//IPMAC位置,診所
         private his3532040438Entities db_0438 = new his3532040438Entities();
-
         ZMClass myClass = new ZMClass();
+        tgkEntities tgkEntities = new tgkEntities();
 
         class HotKey : IMessageFilter, IDisposable
         {
@@ -469,6 +502,24 @@ namespace OCLink
 
                     uint reg30 = GetPrivateProfileString("AppName", "展望資料夾位置", "", sb, (uint)sb.Capacity, test);
                     textBox1.Text = sb.ToString();
+
+                    uint reg31= GetPrivateProfileString("AppName", "sqlIP", "", sb, (uint)sb.Capacity, test);
+                    sqlIP = sb.ToString();
+
+                    uint reg32 = GetPrivateProfileString("AppName", "sql資料庫", "", sb, (uint)sb.Capacity, test);
+                    sqldatabace = sb.ToString();
+
+                    uint reg33= GetPrivateProfileString("AppName", "sql帳號", "", sb, (uint)sb.Capacity, test);
+                    sqlID = sb.ToString();
+
+                    uint reg34= GetPrivateProfileString("AppName", "sql密碼", "", sb, (uint)sb.Capacity, test);
+                    sqlpw = sb.ToString();
+
+                    uint reg35 = GetPrivateProfileString("AppName", "Enableddb", "", sb, (uint)sb.Capacity, test);
+                    if (sb.ToString() == "True")
+                    {
+                        button3.Enabled = true;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -999,7 +1050,6 @@ namespace OCLink
             }
         }
 
-
         //public JsonResult GetCombos(string stext)
         //{
         //    var result =
@@ -1116,18 +1166,18 @@ namespace OCLink
         private void btn_OCR1(object sender, EventArgs e)
         {
             ZMwebside = true;
-            if (testhis == "TECH")//方頂取title
-            {
-                Timer mytimer = new Timer();
-                mytimer.Tick += new EventHandler(mytimer_Tick);
-                mytimer.Start();
-                GotOCR = true;
-                if (hotkeycheck == false)
-                {
-                    MessageBox.Show(Regex.Replace(str1, "[^0-9]", ""));
-                    hotkeycheck = true;
-                }
-            }
+            //if (testhis == "TECH")//方頂取title
+            //{
+            //    Timer mytimer = new Timer();
+            //    mytimer.Tick += new EventHandler(mytimer_Tick);
+            //    mytimer.Start();
+            //    GotOCR = true;
+            //    if (hotkeycheck == false)
+            //    {
+            //        MessageBox.Show(Regex.Replace(str1, "[^0-9]", ""));
+            //        hotkeycheck = true;
+            //    }
+            //}
             if(GotOCR ==false && function1111 !="凌醫首頁")
             {
                 i = 0;
@@ -1141,7 +1191,7 @@ namespace OCLink
             sw.Reset();//碼表歸零
             sw.Start();//碼表開始計時
             //取得病人資料
-            if (testhis == "RS" && File.Exists(Server + @":\S\patdb.dbf") && function1111 != "凌醫首頁")
+            if (testhis == "RS" && File.Exists(Server + @":\S\patdb.dbf") && function1111 != "凌醫首頁")//耀聖
             {
                 int nRecno = 0;
                 if (myClass.IsNumeric(str1))//判斷是否截圖內容為數字
@@ -1193,7 +1243,7 @@ namespace OCLink
                     //}
                 }
             }
-            else if (testhis == "VISW" && File.Exists(Server + @":\" + textBox1.Text + @"\CO01M.dbf") && function1111 != "凌醫首頁")
+            else if (testhis == "VISW" && File.Exists(Server + @":\" + textBox1.Text + @"\CO01M.dbf") && function1111 != "凌醫首頁")//展望
             {
                 if (myClass.IsNumeric(str1))//判斷是否截圖內容為數字
                 {
@@ -1229,15 +1279,34 @@ namespace OCLink
                 //    MessageBox.Show("擷取資料錯誤,請重新截圖");
                 //}
             }
-            else if (testhis == "TECH")//測試抓oy的his3532040438的資料庫 方鼎
+            else if (testhis == "TECH" && function1111 != "凌醫首頁")//方鼎
             {
-                var hospitalList = (from a in db_0438.patient where a.strUserAccount == "'TX" + str1 + "'" select new { a.strDisplayName, a.strIdno, a.strTel, a.strCell }).FirstOrDefault();
-                name = hospitalList.strDisplayName.Trim();
-                ID = hospitalList.strIdno.Trim();
-                tel = hospitalList.strTel.Trim();
-                if (hospitalList.strCell != "")
+                //var hospitalList = (from a in tgkEntities.病患檔 where a.病歷號碼 == str1 select new { a.姓名, a.身份證字號, a.電話H, a.電話O }).FirstOrDefault();
+                //name = hospitalList.姓名.Trim();
+                //ID = hospitalList.身份證字號.Trim();
+                //tel = hospitalList.電話H.Trim();
+                //if (hospitalList.電話O != "")
+                //{
+                //    Cell = hospitalList.電話O.Trim();
+                //}
+                string strCon2 = "server=" + sqlIP +";database=" + sqldatabace + ";user=" + sqlID + ";password=" +sqlpw +";";
+                using (SqlConnection conn = new SqlConnection(strCon2))
                 {
-                    Cell = hospitalList.strCell.Trim();
+                    string sqlconn = "select top 1 姓名,身份證字號,生日,電話H,電話O from 病患檔 where 病歷號碼 = '" + str1 +"'";
+                    conn.Open();
+                    SqlCommand sda = new SqlCommand(sqlconn, conn);
+                    SqlDataReader clinic = sda.ExecuteReader();
+                    while (clinic.Read())
+                    {
+                        name = clinic["姓名"].ToString().Trim();
+                        ID = clinic["身份證字號"].ToString().Trim();
+                        Birth = clinic["生日"].ToString().Trim();
+                        tel = clinic["電話H"].ToString().Trim();
+                        if(clinic["電話O"].ToString() !="")
+                        {
+                            Cell = clinic["電話O"].ToString().Trim();
+                        }
+                    }
                 }
             }
             else if (testhis == "DHA" && File.Exists(Server + @":\DATA\PD011M1.dbf") && function1111 != "凌醫首頁")//常誠
@@ -1276,7 +1345,7 @@ namespace OCLink
                 //    MessageBox.Show("擷取資料錯誤,請重新截圖");
                 //}
             }
-            else if (testhis == "SC" && File.Exists(Server + @":\SC\Dat\User.dat") && function1111 != "凌醫首頁")
+            else if (testhis == "SC" && File.Exists(Server + @":\SC\Dat\User.dat") && function1111 != "凌醫首頁")//醫聖
             {
                 if (myClass.IsNumeric(str1))//判斷是否截圖內容為數字
                 {
@@ -1324,7 +1393,7 @@ namespace OCLink
                     Cell = hospitalList.strCell.Trim();
                 }
             }
-            else if (testhis == "MTR" && File.Exists(Server + @"\MTR\DBF\Client.dbf") && function1111 != "凌醫首頁")
+            else if (testhis == "MTR" && File.Exists(Server + @"\MTR\DBF\Client.dbf") && function1111 != "凌醫首頁")//蒙利特
             {
                 if (myClass.IsNumeric(str1))//判斷是否截圖內容為數字
                 {
@@ -1638,6 +1707,11 @@ namespace OCLink
             Return = WritePrivateProfileString("AppName", "controll", comboBox15.Text, test);
             Return = WritePrivateProfileString("AppName", "number", comboBox16.Text, test);
             Return = WritePrivateProfileString("AppName", "展望資料夾位置", textBox1.Text, test);
+            Return = WritePrivateProfileString("AppName", "sqlIP", sqlIP, test);
+            Return = WritePrivateProfileString("AppName", "sql資料庫", sqldatabace, test);
+            Return = WritePrivateProfileString("AppName", "sql帳號", sqlID, test);
+            Return = WritePrivateProfileString("AppName", "sql密碼", sqlpw, test);
+            Return = WritePrivateProfileString("AppName", "sql密碼", sqlpw, test);
             UserHotkey();
             MessageBox.Show("儲存成功");
         }
@@ -1801,36 +1875,50 @@ namespace OCLink
             {
                 testhis = "RS";
                 textBox1.Enabled = false;
+                button3.Enabled = false;
             }
             if(comboBox13.Text == "展望資訊")
             {
                 testhis = "VISW";
                 textBox1.Enabled = true;
+                button3.Enabled = false;
             }
             if (comboBox13.Text == "方鼎資訊")
             {
                 testhis = "TECH";
                 textBox1.Enabled = false;
+                if(sqlIP ==""&&sqldatabace ==""&&sqlID ==""&& sqlpw =="")
+                {
+                    Form3 lForm = new Form3();
+                    lForm.Owner = this;//重要的一步，主要是使Form2的Owner指針指向Form1  
+                    lForm.ShowDialog();
+                }
+                button3.Enabled = true;
+                bool Return = WritePrivateProfileString("AppName", "Enableddb", button3.Enabled.ToString(), test);
             }
             if (comboBox13.Text == "常誠資料")
             {
                 testhis = "DHA";
                 textBox1.Enabled = false;
+                button3.Enabled = false;
             }
             if (comboBox13.Text == "醫聖資訊")
             {
                 testhis = "SC";
                 textBox1.Enabled = false;
+                button3.Enabled = false;
             }
             if (comboBox13.Text == "開蘭安心")
             {
                 testhis = "KN";
                 textBox1.Enabled = false;
+                button3.Enabled = false;
             }
             if (comboBox13.Text == "蒙利特")
             {
                 testhis = "MTR";
                 textBox1.Enabled = false;
+                button3.Enabled = false;
             }
         }
 
@@ -1889,6 +1977,14 @@ namespace OCLink
         {
             combobox8 = comboBox8.Text;
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Form3 lForm = new Form3();
+            lForm.Owner = this;
+            lForm.ShowDialog();
+        }
+
         public string combobox9;
         private void comboBox9_SelectedIndexChanged(object sender, EventArgs e)
         {

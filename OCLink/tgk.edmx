@@ -1,0 +1,953 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="tgkModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--產生期間發現錯誤:
+警告 6002: 資料表/檢視 'tgk.dbo.病患檔' 未定義主索引鍵。已推斷此索引鍵，並將定義建立成唯讀的資料表/檢視。-->
+        <EntityType Name="病患檔">
+          <Key>
+            <PropertyRef Name="Counter" />
+          </Key>
+          <Property Name="ts" Type="timestamp" StoreGeneratedPattern="Computed" />
+          <Property Name="Counter" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="病歷號碼" Type="varchar" MaxLength="10" />
+          <Property Name="姓名" Type="varchar" MaxLength="20" />
+          <Property Name="生日" Type="varchar" MaxLength="7" />
+          <Property Name="優免身份代碼" Type="smallint" />
+          <Property Name="身份證字號" Type="varchar" MaxLength="10" />
+          <Property Name="婚姻代碼" Type="smallint" />
+          <Property Name="性別代碼" Type="smallint" />
+          <Property Name="血型代碼" Type="smallint" />
+          <Property Name="體重" Type="real" />
+          <Property Name="電話H" Type="varchar" MaxLength="9" />
+          <Property Name="電話O" Type="varchar" MaxLength="9" />
+          <Property Name="BBC" Type="varchar" MaxLength="9" />
+          <Property Name="簡碼" Type="varchar" MaxLength="5" />
+          <Property Name="過敏" Type="varchar" MaxLength="100" />
+          <Property Name="地址" Type="varchar" MaxLength="70" />
+          <Property Name="備註事項" Type="varchar" MaxLength="40" />
+          <Property Name="既往歷" Type="varchar" MaxLength="100" />
+          <Property Name="初診日期" Type="varchar" MaxLength="7" />
+          <Property Name="欠款金額" Type="real" />
+          <Property Name="籍貫" Type="varchar" MaxLength="10" />
+          <Property Name="職業" Type="varchar" MaxLength="16" />
+          <Property Name="最近就診日" Type="varchar" MaxLength="7" />
+          <Property Name="最近檢驗日" Type="varchar" MaxLength="7" />
+          <Property Name="預約未到診次數" Type="smallint" />
+          <Property Name="過敏原1" Type="varchar" MaxLength="10" />
+          <Property Name="過敏原2" Type="varchar" MaxLength="10" />
+          <Property Name="過敏原3" Type="varchar" MaxLength="10" />
+          <Property Name="過敏原4" Type="varchar" MaxLength="10" />
+          <Property Name="欠單數" Type="smallint" />
+          <Property Name="刪除否" Type="smallint" />
+          <Property Name="預設就診身份代碼" Type="smallint" />
+          <Property Name="郵地區號" Type="varchar" MaxLength="5" />
+          <Property Name="單位別代碼" Type="smallint" />
+          <Property Name="階級代碼" Type="smallint" />
+          <Property Name="軍種代碼" Type="smallint" />
+          <Property Name="護照號碼" Type="varchar" MaxLength="8" />
+          <Property Name="下次應診項目" Type="varchar" MaxLength="10" />
+          <Property Name="活動狀態代碼" Type="smallint" />
+          <Property Name="經手記錄" Type="varchar" MaxLength="250" />
+          <Property Name="最近爽約日期" Type="varchar" MaxLength="7" />
+          <Property Name="死亡日期" Type="varchar" MaxLength="7" />
+          <Property Name="行動電話" Type="varchar" MaxLength="10" />
+          <Property Name="分機號碼" Type="varchar" MaxLength="6" />
+          <Property Name="傳染病" Type="varchar" MaxLength="50" />
+          <Property Name="補助證號" Type="varchar" MaxLength="12" />
+          <Property Name="重大傷病證號" Type="varchar" MaxLength="12" />
+          <Property Name="重大傷病效期" Type="varchar" MaxLength="7" />
+          <Property Name="電話O分機" Type="varchar" MaxLength="6" />
+          <Property Name="電話H分機" Type="varchar" MaxLength="6" />
+          <Property Name="外籍" Type="smallint" />
+          <Property Name="重病卡生效日" Type="varchar" MaxLength="7" />
+          <Property Name="重病卡備註" Type="varchar" MaxLength="250" />
+          <Property Name="活動狀態歸檔日期" Type="varchar" MaxLength="7" />
+          <Property Name="在本院輸血次數累計" Type="smallint" />
+          <Property Name="低收入戶證號" Type="varchar" MaxLength="20" />
+          <Property Name="緊急聯絡人姓名" Type="varchar" MaxLength="20" />
+          <Property Name="緊急聯絡人電話" Type="varchar" MaxLength="10" />
+          <Property Name="Email帳號" Type="varchar" MaxLength="60" />
+          <Property Name="傳真電話" Type="varchar" MaxLength="10" />
+          <Property Name="最初洗腎日" Type="varchar" MaxLength="7" />
+          <Property Name="隔離起日" Type="varchar" MaxLength="7" />
+          <Property Name="隔離迄日" Type="varchar" MaxLength="7" />
+          <Property Name="病歷本院區代號" Type="varchar" MaxLength="10" />
+          <Property Name="當地居民否" Type="smallint" />
+          <Property Name="原住民否" Type="smallint" />
+          <Property Name="身高" Type="real" />
+          <Property Name="識字否" Type="smallint" />
+          <Property Name="修改日期時間" Type="varchar" MaxLength="13" />
+          <Property Name="地址O" Type="varchar" MaxLength="60" />
+          <Property Name="郵地區號O" Type="varchar" MaxLength="5" />
+          <Property Name="戶籍地址" Type="varchar" MaxLength="60" />
+          <Property Name="戶籍地郵地區號" Type="varchar" MaxLength="5" />
+          <Property Name="國籍" Type="varchar" MaxLength="20" />
+          <Property Name="家戶病患" Type="smallint" />
+          <Property Name="巡迴註記" Type="smallint" />
+          <Property Name="家戶會員責任醫師代號" Type="varchar" MaxLength="8" />
+          <Property Name="預產期" Type="varchar" MaxLength="7" />
+          <Property Name="癌登否" Type="smallint" />
+          <Property Name="統一編號" Type="varchar" MaxLength="10" />
+          <Property Name="父或母身份證字號" Type="varchar" MaxLength="11" />
+          <Property Name="父或母counter" Type="int" />
+          <Property Name="同胎次序" Type="int" />
+          <Property Name="曾經接種流感疫苗" Type="smallint" />
+          <Property Name="教育程度代碼" Type="smallint" />
+          <Property Name="宗教信仰代碼" Type="smallint" />
+          <Property Name="家戶收案日期" Type="varchar" MaxLength="7" />
+          <Property Name="緊急聯絡人關係" Type="varchar" MaxLength="20" />
+          <Property Name="介紹醫師" Type="varchar" MaxLength="20" />
+          <Property Name="最新子宮頸檢查日期" Type="varchar" MaxLength="7" />
+          <Property Name="最新子宮頸檢查醫院" Type="varchar" MaxLength="20" />
+          <Property Name="最後一次月經日期" Type="varchar" MaxLength="7" />
+          <Property Name="平均經期天數" Type="smallint" />
+          <Property Name="依附父或母生日" Type="varchar" MaxLength="7" />
+          <Property Name="前家戶病患" Type="smallint" />
+          <Property Name="下次產檢日期" Type="varchar" MaxLength="7" />
+          <Property Name="照護網" Type="varchar" MaxLength="20" />
+          <Property Name="照護衛教" Type="varchar" MaxLength="100" />
+          <Property Name="影像序號" Type="varchar" MaxLength="10" />
+          <Property Name="病人安全註記" Type="varchar" MaxLength="50" />
+          <Property Name="抗體" Type="varchar" MaxLength="8" />
+          <Property Name="代謝症候群收案註記" Type="varchar" MaxLength="1" />
+          <Property Name="重病診斷1" Type="varchar" MaxLength="7" />
+          <Property Name="重病診斷2" Type="varchar" MaxLength="7" />
+          <Property Name="重病診斷3" Type="varchar" MaxLength="7" />
+          <Property Name="重病診斷4" Type="varchar" MaxLength="7" />
+          <Property Name="重病診斷5" Type="varchar" MaxLength="7" />
+          <Property Name="重病診斷6" Type="varchar" MaxLength="7" />
+          <Property Name="最近修改過敏日" Type="varchar" MaxLength="7" />
+          <Property Name="美容會員" Type="smallint" />
+          <Property Name="重病紙卡診斷1" Type="varchar" MaxLength="7" />
+          <Property Name="重病紙卡診斷2" Type="varchar" MaxLength="7" />
+          <Property Name="重病紙卡診斷3" Type="varchar" MaxLength="7" />
+          <Property Name="重病紙卡診斷4" Type="varchar" MaxLength="7" />
+          <Property Name="重病紙卡診斷5" Type="varchar" MaxLength="7" />
+          <Property Name="重病紙卡診斷6" Type="varchar" MaxLength="7" />
+          <Property Name="殘障否" Type="smallint" />
+          <Property Name="健保卡片號碼" Type="varchar" MaxLength="12" />
+          <Property Name="最新成人老人健檢日期" Type="varchar" MaxLength="7" />
+          <Property Name="最新成人老人健檢醫院" Type="varchar" MaxLength="20" />
+          <Property Name="重病卡生效日2" Type="varchar" MaxLength="7" />
+          <Property Name="重病卡生效日3" Type="varchar" MaxLength="7" />
+          <Property Name="重病卡生效日4" Type="varchar" MaxLength="7" />
+          <Property Name="重病卡生效日5" Type="varchar" MaxLength="7" />
+          <Property Name="重病卡生效日6" Type="varchar" MaxLength="7" />
+          <Property Name="重大傷病效期2" Type="varchar" MaxLength="7" />
+          <Property Name="重大傷病效期3" Type="varchar" MaxLength="7" />
+          <Property Name="重大傷病效期4" Type="varchar" MaxLength="7" />
+          <Property Name="重大傷病效期5" Type="varchar" MaxLength="7" />
+          <Property Name="重大傷病效期6" Type="varchar" MaxLength="7" />
+          <Property Name="養護機構名稱" Type="varchar" MaxLength="24" />
+          <Property Name="養護機構代號" Type="varchar" MaxLength="12" />
+          <Property Name="重病IC卡生效日1" Type="varchar" MaxLength="7" />
+          <Property Name="重病IC卡生效日2" Type="varchar" MaxLength="7" />
+          <Property Name="重病IC卡生效日3" Type="varchar" MaxLength="7" />
+          <Property Name="重病IC卡生效日4" Type="varchar" MaxLength="7" />
+          <Property Name="重病IC卡生效日5" Type="varchar" MaxLength="7" />
+          <Property Name="重病IC卡生效日6" Type="varchar" MaxLength="7" />
+          <Property Name="重病IC卡效期1" Type="varchar" MaxLength="7" />
+          <Property Name="重病IC卡效期2" Type="varchar" MaxLength="7" />
+          <Property Name="重病IC卡效期3" Type="varchar" MaxLength="7" />
+          <Property Name="重病IC卡效期4" Type="varchar" MaxLength="7" />
+          <Property Name="重病IC卡效期5" Type="varchar" MaxLength="7" />
+          <Property Name="重病IC卡效期6" Type="varchar" MaxLength="7" />
+          <Property Name="MIPHR會員等級" Type="varchar" MaxLength="1" />
+          <Property Name="照護族群" Type="smallint" />
+          <Property Name="最新糞便檢查日期" Type="varchar" MaxLength="7" />
+          <Property Name="最新糞便檢查醫院" Type="varchar" MaxLength="20" />
+          <Property Name="家戶結案日期" Type="varchar" MaxLength="7" />
+          <Property Name="家戶結案原因" Type="smallint" />
+          <Property Name="最新乳篩檢查日期" Type="varchar" MaxLength="7" />
+          <Property Name="最新乳篩檢查醫院" Type="varchar" MaxLength="20" />
+          <Property Name="家戶結案原因代碼" Type="smallint" />
+          <Property Name="證件繳交" Type="varchar" MaxLength="11" />
+          <Property Name="最新口腔篩檢日期" Type="varchar" MaxLength="7" />
+          <Property Name="最新口腔篩檢醫院" Type="varchar" MaxLength="12" />
+          <Property Name="抽菸否" Type="smallint" />
+          <Property Name="檳榔否" Type="smallint" />
+          <Property Name="骨科備註" Type="varchar" MaxLength="200" />
+          <Property Name="已戒檳榔" Type="smallint" />
+          <Property Name="無嚼檳榔及吸菸" Type="smallint" />
+          <Property Name="口篩填選日期" Type="varchar" MaxLength="7" />
+          <Property Name="依病人為中心整合照護" Type="smallint" />
+          <Property Name="上次呼吸器日期" Type="varchar" MaxLength="7" />
+          <Property Name="器官安寧註記" Type="char" MaxLength="1" />
+          <Property Name="最近30天內超過100支" Type="smallint" />
+          <Property Name="管制病歷註記" Type="smallint" />
+          <Property Name="油症註記" Type="char" MaxLength="1" />
+          <Property Name="過敏原5" Type="varchar" MaxLength="20" />
+          <Property Name="過敏原6" Type="varchar" MaxLength="20" />
+          <Property Name="過敏原7" Type="varchar" MaxLength="20" />
+          <Property Name="過敏原8" Type="varchar" MaxLength="20" />
+          <Property Name="照護機構入住日期" Type="varchar" MaxLength="7" />
+          <Property Name="照護機構離院日期" Type="varchar" MaxLength="7" />
+          <Property Name="過去病史" Type="varchar" MaxLength="50" />
+          <Property Name="家族史" Type="varchar" MaxLength="50" />
+          <Property Name="健康行為" Type="varchar" MaxLength="50" />
+          <Property Name="旅遊史" Type="varchar" MaxLength="50" />
+          <Property Name="住診顯示全名" Type="smallint" />
+          <Property Name="APP密碼" Type="varchar" MaxLength="20" />
+          <Property Name="緊急聯絡人手機" Type="varchar" MaxLength="10" />
+          <Property Name="替代役男有效起日" Type="varchar" MaxLength="7" />
+          <Property Name="替代役男有效迄日" Type="varchar" MaxLength="7" />
+          <Property Name="矯正機關代號" Type="varchar" MaxLength="12" />
+          <Property Name="矯正機關名稱" Type="varchar" MaxLength="24" />
+          <Property Name="醫缺地區" Type="smallint" />
+          <Property Name="腦血管疾病診斷日" Type="varchar" MaxLength="7" />
+          <Property Name="已戒菸" Type="smallint" />
+          <Property Name="自述血型代碼" Type="smallint" />
+          <Property Name="最近看診醫師" Type="varchar" MaxLength="10" />
+          <Property Name="禁止預掛" Type="smallint" />
+          <Property Name="器官安寧註記日期時間" Type="varchar" MaxLength="13" />
+          <Property Name="指定醫師" Type="varchar" MaxLength="8" />
+          <Property Name="指定美容師" Type="varchar" MaxLength="8" />
+          <Property Name="安寧修改經手記錄" Type="varchar" MaxLength="250" />
+          <Property Name="器官安寧圖片路徑" Type="varchar" MaxLength="55" />
+          <Property Name="安寧代碼" Type="smallint" />
+          <Property Name="是否勸戒菸" Type="char" MaxLength="1" />
+          <Property Name="特殊備註" Type="varchar" MaxLength="100" />
+          <Property Name="病史獲取對象" Type="varchar" MaxLength="50" />
+          <Property Name="同意書起日" Type="varchar" MaxLength="7" />
+          <Property Name="同意書迄日" Type="varchar" MaxLength="7" />
+          <Property Name="糖尿病照護" Type="smallint" />
+          <Property Name="自選病人" Type="smallint" />
+          <Property Name="最後體重衛教日期" Type="varchar" MaxLength="7" />
+          <Property Name="血液陽性反應" Type="smallint" />
+          <Property Name="血液陽性種類" Type="varchar" MaxLength="10" />
+          <Property Name="主治醫師" Type="varchar" MaxLength="10" />
+          <Property Name="外文姓名" Type="varchar" MaxLength="40" />
+          <Property Name="他國身份證" Type="varchar" MaxLength="30" />
+          <Property Name="他國電話" Type="varchar" MaxLength="20" />
+          <Property Name="胚胎培養" Type="varchar" MaxLength="1" />
+          <Property Name="性行為否" Type="smallint" />
+          <Property Name="DM發病起始年" Type="varchar" MaxLength="3" />
+          <Property Name="最新流感提示日期" Type="varchar" MaxLength="7" />
+          <Property Name="流感施打否" Type="smallint" />
+          <Property Name="流感註記" Type="varchar" MaxLength="30" />
+          <Property Name="新增特殊交班" Type="char" MaxLength="1" />
+          <Property Name="傳染病註記" Type="varchar" MaxLength="20" />
+          <Property Name="特別身份代碼" Type="varchar" MaxLength="11" />
+        </EntityType>
+        <EntityContainer Name="tgkModelStoreContainer">
+          <EntitySet Name="病患檔" EntityType="Self.病患檔" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [病患檔].[ts] AS [ts], 
+    [病患檔].[Counter] AS [Counter], 
+    [病患檔].[病歷號碼] AS [病歷號碼], 
+    [病患檔].[姓名] AS [姓名], 
+    [病患檔].[生日] AS [生日], 
+    [病患檔].[優免身份代碼] AS [優免身份代碼], 
+    [病患檔].[身份證字號] AS [身份證字號], 
+    [病患檔].[婚姻代碼] AS [婚姻代碼], 
+    [病患檔].[性別代碼] AS [性別代碼], 
+    [病患檔].[血型代碼] AS [血型代碼], 
+    [病患檔].[體重] AS [體重], 
+    [病患檔].[電話H] AS [電話H], 
+    [病患檔].[電話O] AS [電話O], 
+    [病患檔].[BBC] AS [BBC], 
+    [病患檔].[簡碼] AS [簡碼], 
+    [病患檔].[過敏] AS [過敏], 
+    [病患檔].[地址] AS [地址], 
+    [病患檔].[備註事項] AS [備註事項], 
+    [病患檔].[既往歷] AS [既往歷], 
+    [病患檔].[初診日期] AS [初診日期], 
+    [病患檔].[欠款金額] AS [欠款金額], 
+    [病患檔].[籍貫] AS [籍貫], 
+    [病患檔].[職業] AS [職業], 
+    [病患檔].[最近就診日] AS [最近就診日], 
+    [病患檔].[最近檢驗日] AS [最近檢驗日], 
+    [病患檔].[預約未到診次數] AS [預約未到診次數], 
+    [病患檔].[過敏原1] AS [過敏原1], 
+    [病患檔].[過敏原2] AS [過敏原2], 
+    [病患檔].[過敏原3] AS [過敏原3], 
+    [病患檔].[過敏原4] AS [過敏原4], 
+    [病患檔].[欠單數] AS [欠單數], 
+    [病患檔].[刪除否] AS [刪除否], 
+    [病患檔].[預設就診身份代碼] AS [預設就診身份代碼], 
+    [病患檔].[郵地區號] AS [郵地區號], 
+    [病患檔].[單位別代碼] AS [單位別代碼], 
+    [病患檔].[階級代碼] AS [階級代碼], 
+    [病患檔].[軍種代碼] AS [軍種代碼], 
+    [病患檔].[護照號碼] AS [護照號碼], 
+    [病患檔].[下次應診項目] AS [下次應診項目], 
+    [病患檔].[活動狀態代碼] AS [活動狀態代碼], 
+    [病患檔].[經手記錄] AS [經手記錄], 
+    [病患檔].[最近爽約日期] AS [最近爽約日期], 
+    [病患檔].[死亡日期] AS [死亡日期], 
+    [病患檔].[行動電話] AS [行動電話], 
+    [病患檔].[分機號碼] AS [分機號碼], 
+    [病患檔].[傳染病] AS [傳染病], 
+    [病患檔].[補助證號] AS [補助證號], 
+    [病患檔].[重大傷病證號] AS [重大傷病證號], 
+    [病患檔].[重大傷病效期] AS [重大傷病效期], 
+    [病患檔].[電話O分機] AS [電話O分機], 
+    [病患檔].[電話H分機] AS [電話H分機], 
+    [病患檔].[外籍] AS [外籍], 
+    [病患檔].[重病卡生效日] AS [重病卡生效日], 
+    [病患檔].[重病卡備註] AS [重病卡備註], 
+    [病患檔].[活動狀態歸檔日期] AS [活動狀態歸檔日期], 
+    [病患檔].[在本院輸血次數累計] AS [在本院輸血次數累計], 
+    [病患檔].[低收入戶證號] AS [低收入戶證號], 
+    [病患檔].[緊急聯絡人姓名] AS [緊急聯絡人姓名], 
+    [病患檔].[緊急聯絡人電話] AS [緊急聯絡人電話], 
+    [病患檔].[Email帳號] AS [Email帳號], 
+    [病患檔].[傳真電話] AS [傳真電話], 
+    [病患檔].[最初洗腎日] AS [最初洗腎日], 
+    [病患檔].[隔離起日] AS [隔離起日], 
+    [病患檔].[隔離迄日] AS [隔離迄日], 
+    [病患檔].[病歷本院區代號] AS [病歷本院區代號], 
+    [病患檔].[當地居民否] AS [當地居民否], 
+    [病患檔].[原住民否] AS [原住民否], 
+    [病患檔].[身高] AS [身高], 
+    [病患檔].[識字否] AS [識字否], 
+    [病患檔].[修改日期時間] AS [修改日期時間], 
+    [病患檔].[地址O] AS [地址O], 
+    [病患檔].[郵地區號O] AS [郵地區號O], 
+    [病患檔].[戶籍地址] AS [戶籍地址], 
+    [病患檔].[戶籍地郵地區號] AS [戶籍地郵地區號], 
+    [病患檔].[國籍] AS [國籍], 
+    [病患檔].[家戶病患] AS [家戶病患], 
+    [病患檔].[巡迴註記] AS [巡迴註記], 
+    [病患檔].[家戶會員責任醫師代號] AS [家戶會員責任醫師代號], 
+    [病患檔].[預產期] AS [預產期], 
+    [病患檔].[癌登否] AS [癌登否], 
+    [病患檔].[統一編號] AS [統一編號], 
+    [病患檔].[父或母身份證字號] AS [父或母身份證字號], 
+    [病患檔].[父或母counter] AS [父或母counter], 
+    [病患檔].[同胎次序] AS [同胎次序], 
+    [病患檔].[曾經接種流感疫苗] AS [曾經接種流感疫苗], 
+    [病患檔].[教育程度代碼] AS [教育程度代碼], 
+    [病患檔].[宗教信仰代碼] AS [宗教信仰代碼], 
+    [病患檔].[家戶收案日期] AS [家戶收案日期], 
+    [病患檔].[緊急聯絡人關係] AS [緊急聯絡人關係], 
+    [病患檔].[介紹醫師] AS [介紹醫師], 
+    [病患檔].[最新子宮頸檢查日期] AS [最新子宮頸檢查日期], 
+    [病患檔].[最新子宮頸檢查醫院] AS [最新子宮頸檢查醫院], 
+    [病患檔].[最後一次月經日期] AS [最後一次月經日期], 
+    [病患檔].[平均經期天數] AS [平均經期天數], 
+    [病患檔].[依附父或母生日] AS [依附父或母生日], 
+    [病患檔].[前家戶病患] AS [前家戶病患], 
+    [病患檔].[下次產檢日期] AS [下次產檢日期], 
+    [病患檔].[照護網] AS [照護網], 
+    [病患檔].[照護衛教] AS [照護衛教], 
+    [病患檔].[影像序號] AS [影像序號], 
+    [病患檔].[病人安全註記] AS [病人安全註記], 
+    [病患檔].[抗體] AS [抗體], 
+    [病患檔].[代謝症候群收案註記] AS [代謝症候群收案註記], 
+    [病患檔].[重病診斷1] AS [重病診斷1], 
+    [病患檔].[重病診斷2] AS [重病診斷2], 
+    [病患檔].[重病診斷3] AS [重病診斷3], 
+    [病患檔].[重病診斷4] AS [重病診斷4], 
+    [病患檔].[重病診斷5] AS [重病診斷5], 
+    [病患檔].[重病診斷6] AS [重病診斷6], 
+    [病患檔].[最近修改過敏日] AS [最近修改過敏日], 
+    [病患檔].[美容會員] AS [美容會員], 
+    [病患檔].[重病紙卡診斷1] AS [重病紙卡診斷1], 
+    [病患檔].[重病紙卡診斷2] AS [重病紙卡診斷2], 
+    [病患檔].[重病紙卡診斷3] AS [重病紙卡診斷3], 
+    [病患檔].[重病紙卡診斷4] AS [重病紙卡診斷4], 
+    [病患檔].[重病紙卡診斷5] AS [重病紙卡診斷5], 
+    [病患檔].[重病紙卡診斷6] AS [重病紙卡診斷6], 
+    [病患檔].[殘障否] AS [殘障否], 
+    [病患檔].[健保卡片號碼] AS [健保卡片號碼], 
+    [病患檔].[最新成人老人健檢日期] AS [最新成人老人健檢日期], 
+    [病患檔].[最新成人老人健檢醫院] AS [最新成人老人健檢醫院], 
+    [病患檔].[重病卡生效日2] AS [重病卡生效日2], 
+    [病患檔].[重病卡生效日3] AS [重病卡生效日3], 
+    [病患檔].[重病卡生效日4] AS [重病卡生效日4], 
+    [病患檔].[重病卡生效日5] AS [重病卡生效日5], 
+    [病患檔].[重病卡生效日6] AS [重病卡生效日6], 
+    [病患檔].[重大傷病效期2] AS [重大傷病效期2], 
+    [病患檔].[重大傷病效期3] AS [重大傷病效期3], 
+    [病患檔].[重大傷病效期4] AS [重大傷病效期4], 
+    [病患檔].[重大傷病效期5] AS [重大傷病效期5], 
+    [病患檔].[重大傷病效期6] AS [重大傷病效期6], 
+    [病患檔].[養護機構名稱] AS [養護機構名稱], 
+    [病患檔].[養護機構代號] AS [養護機構代號], 
+    [病患檔].[重病IC卡生效日1] AS [重病IC卡生效日1], 
+    [病患檔].[重病IC卡生效日2] AS [重病IC卡生效日2], 
+    [病患檔].[重病IC卡生效日3] AS [重病IC卡生效日3], 
+    [病患檔].[重病IC卡生效日4] AS [重病IC卡生效日4], 
+    [病患檔].[重病IC卡生效日5] AS [重病IC卡生效日5], 
+    [病患檔].[重病IC卡生效日6] AS [重病IC卡生效日6], 
+    [病患檔].[重病IC卡效期1] AS [重病IC卡效期1], 
+    [病患檔].[重病IC卡效期2] AS [重病IC卡效期2], 
+    [病患檔].[重病IC卡效期3] AS [重病IC卡效期3], 
+    [病患檔].[重病IC卡效期4] AS [重病IC卡效期4], 
+    [病患檔].[重病IC卡效期5] AS [重病IC卡效期5], 
+    [病患檔].[重病IC卡效期6] AS [重病IC卡效期6], 
+    [病患檔].[MIPHR會員等級] AS [MIPHR會員等級], 
+    [病患檔].[照護族群] AS [照護族群], 
+    [病患檔].[最新糞便檢查日期] AS [最新糞便檢查日期], 
+    [病患檔].[最新糞便檢查醫院] AS [最新糞便檢查醫院], 
+    [病患檔].[家戶結案日期] AS [家戶結案日期], 
+    [病患檔].[家戶結案原因] AS [家戶結案原因], 
+    [病患檔].[最新乳篩檢查日期] AS [最新乳篩檢查日期], 
+    [病患檔].[最新乳篩檢查醫院] AS [最新乳篩檢查醫院], 
+    [病患檔].[家戶結案原因代碼] AS [家戶結案原因代碼], 
+    [病患檔].[證件繳交] AS [證件繳交], 
+    [病患檔].[最新口腔篩檢日期] AS [最新口腔篩檢日期], 
+    [病患檔].[最新口腔篩檢醫院] AS [最新口腔篩檢醫院], 
+    [病患檔].[抽菸否] AS [抽菸否], 
+    [病患檔].[檳榔否] AS [檳榔否], 
+    [病患檔].[骨科備註] AS [骨科備註], 
+    [病患檔].[已戒檳榔] AS [已戒檳榔], 
+    [病患檔].[無嚼檳榔及吸菸] AS [無嚼檳榔及吸菸], 
+    [病患檔].[口篩填選日期] AS [口篩填選日期], 
+    [病患檔].[依病人為中心整合照護] AS [依病人為中心整合照護], 
+    [病患檔].[上次呼吸器日期] AS [上次呼吸器日期], 
+    [病患檔].[器官安寧註記] AS [器官安寧註記], 
+    [病患檔].[最近30天內超過100支] AS [最近30天內超過100支], 
+    [病患檔].[管制病歷註記] AS [管制病歷註記], 
+    [病患檔].[油症註記] AS [油症註記], 
+    [病患檔].[過敏原5] AS [過敏原5], 
+    [病患檔].[過敏原6] AS [過敏原6], 
+    [病患檔].[過敏原7] AS [過敏原7], 
+    [病患檔].[過敏原8] AS [過敏原8], 
+    [病患檔].[照護機構入住日期] AS [照護機構入住日期], 
+    [病患檔].[照護機構離院日期] AS [照護機構離院日期], 
+    [病患檔].[過去病史] AS [過去病史], 
+    [病患檔].[家族史] AS [家族史], 
+    [病患檔].[健康行為] AS [健康行為], 
+    [病患檔].[旅遊史] AS [旅遊史], 
+    [病患檔].[住診顯示全名] AS [住診顯示全名], 
+    [病患檔].[APP密碼] AS [APP密碼], 
+    [病患檔].[緊急聯絡人手機] AS [緊急聯絡人手機], 
+    [病患檔].[替代役男有效起日] AS [替代役男有效起日], 
+    [病患檔].[替代役男有效迄日] AS [替代役男有效迄日], 
+    [病患檔].[矯正機關代號] AS [矯正機關代號], 
+    [病患檔].[矯正機關名稱] AS [矯正機關名稱], 
+    [病患檔].[醫缺地區] AS [醫缺地區], 
+    [病患檔].[腦血管疾病診斷日] AS [腦血管疾病診斷日], 
+    [病患檔].[已戒菸] AS [已戒菸], 
+    [病患檔].[自述血型代碼] AS [自述血型代碼], 
+    [病患檔].[最近看診醫師] AS [最近看診醫師], 
+    [病患檔].[禁止預掛] AS [禁止預掛], 
+    [病患檔].[器官安寧註記日期時間] AS [器官安寧註記日期時間], 
+    [病患檔].[指定醫師] AS [指定醫師], 
+    [病患檔].[指定美容師] AS [指定美容師], 
+    [病患檔].[安寧修改經手記錄] AS [安寧修改經手記錄], 
+    [病患檔].[器官安寧圖片路徑] AS [器官安寧圖片路徑], 
+    [病患檔].[安寧代碼] AS [安寧代碼], 
+    [病患檔].[是否勸戒菸] AS [是否勸戒菸], 
+    [病患檔].[特殊備註] AS [特殊備註], 
+    [病患檔].[病史獲取對象] AS [病史獲取對象], 
+    [病患檔].[同意書起日] AS [同意書起日], 
+    [病患檔].[同意書迄日] AS [同意書迄日], 
+    [病患檔].[糖尿病照護] AS [糖尿病照護], 
+    [病患檔].[自選病人] AS [自選病人], 
+    [病患檔].[最後體重衛教日期] AS [最後體重衛教日期], 
+    [病患檔].[血液陽性反應] AS [血液陽性反應], 
+    [病患檔].[血液陽性種類] AS [血液陽性種類], 
+    [病患檔].[主治醫師] AS [主治醫師], 
+    [病患檔].[外文姓名] AS [外文姓名], 
+    [病患檔].[他國身份證] AS [他國身份證], 
+    [病患檔].[他國電話] AS [他國電話], 
+    [病患檔].[胚胎培養] AS [胚胎培養], 
+    [病患檔].[性行為否] AS [性行為否], 
+    [病患檔].[DM發病起始年] AS [DM發病起始年], 
+    [病患檔].[最新流感提示日期] AS [最新流感提示日期], 
+    [病患檔].[流感施打否] AS [流感施打否], 
+    [病患檔].[流感註記] AS [流感註記], 
+    [病患檔].[新增特殊交班] AS [新增特殊交班], 
+    [病患檔].[傳染病註記] AS [傳染病註記], 
+    [病患檔].[特別身份代碼] AS [特別身份代碼]
+    FROM [dbo].[病患檔] AS [病患檔]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="tgkModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="病患檔">
+          <Key>
+            <PropertyRef Name="Counter" />
+          </Key>
+          <Property Name="ts" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Counter" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="病歷號碼" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="姓名" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="生日" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="優免身份代碼" Type="Int16" />
+          <Property Name="身份證字號" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="婚姻代碼" Type="Int16" />
+          <Property Name="性別代碼" Type="Int16" />
+          <Property Name="血型代碼" Type="Int16" />
+          <Property Name="體重" Type="Single" />
+          <Property Name="電話H" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="電話O" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="BBC" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="簡碼" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="過敏" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="地址" Type="String" MaxLength="70" FixedLength="false" Unicode="false" />
+          <Property Name="備註事項" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="既往歷" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="初診日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="欠款金額" Type="Single" />
+          <Property Name="籍貫" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="職業" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+          <Property Name="最近就診日" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="最近檢驗日" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="預約未到診次數" Type="Int16" />
+          <Property Name="過敏原1" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="過敏原2" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="過敏原3" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="過敏原4" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="欠單數" Type="Int16" />
+          <Property Name="刪除否" Type="Int16" />
+          <Property Name="預設就診身份代碼" Type="Int16" />
+          <Property Name="郵地區號" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="單位別代碼" Type="Int16" />
+          <Property Name="階級代碼" Type="Int16" />
+          <Property Name="軍種代碼" Type="Int16" />
+          <Property Name="護照號碼" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="下次應診項目" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="活動狀態代碼" Type="Int16" />
+          <Property Name="經手記錄" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="最近爽約日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="死亡日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="行動電話" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="分機號碼" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="傳染病" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="補助證號" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="重大傷病證號" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="重大傷病效期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="電話O分機" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="電話H分機" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="外籍" Type="Int16" />
+          <Property Name="重病卡生效日" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病卡備註" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="活動狀態歸檔日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="在本院輸血次數累計" Type="Int16" />
+          <Property Name="低收入戶證號" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="緊急聯絡人姓名" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="緊急聯絡人電話" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Email帳號" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="傳真電話" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="最初洗腎日" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="隔離起日" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="隔離迄日" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="病歷本院區代號" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="當地居民否" Type="Int16" />
+          <Property Name="原住民否" Type="Int16" />
+          <Property Name="身高" Type="Single" />
+          <Property Name="識字否" Type="Int16" />
+          <Property Name="修改日期時間" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
+          <Property Name="地址O" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="郵地區號O" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="戶籍地址" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="戶籍地郵地區號" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="國籍" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="家戶病患" Type="Int16" />
+          <Property Name="巡迴註記" Type="Int16" />
+          <Property Name="家戶會員責任醫師代號" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="預產期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="癌登否" Type="Int16" />
+          <Property Name="統一編號" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="父或母身份證字號" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="父或母counter" Type="Int32" />
+          <Property Name="同胎次序" Type="Int32" />
+          <Property Name="曾經接種流感疫苗" Type="Int16" />
+          <Property Name="教育程度代碼" Type="Int16" />
+          <Property Name="宗教信仰代碼" Type="Int16" />
+          <Property Name="家戶收案日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="緊急聯絡人關係" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="介紹醫師" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="最新子宮頸檢查日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="最新子宮頸檢查醫院" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="最後一次月經日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="平均經期天數" Type="Int16" />
+          <Property Name="依附父或母生日" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="前家戶病患" Type="Int16" />
+          <Property Name="下次產檢日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="照護網" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="照護衛教" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="影像序號" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="病人安全註記" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="抗體" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="代謝症候群收案註記" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="重病診斷1" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病診斷2" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病診斷3" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病診斷4" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病診斷5" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病診斷6" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="最近修改過敏日" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="美容會員" Type="Int16" />
+          <Property Name="重病紙卡診斷1" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病紙卡診斷2" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病紙卡診斷3" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病紙卡診斷4" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病紙卡診斷5" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病紙卡診斷6" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="殘障否" Type="Int16" />
+          <Property Name="健保卡片號碼" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="最新成人老人健檢日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="最新成人老人健檢醫院" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="重病卡生效日2" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病卡生效日3" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病卡生效日4" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病卡生效日5" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病卡生效日6" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重大傷病效期2" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重大傷病效期3" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重大傷病效期4" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重大傷病效期5" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重大傷病效期6" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="養護機構名稱" Type="String" MaxLength="24" FixedLength="false" Unicode="false" />
+          <Property Name="養護機構代號" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="重病IC卡生效日1" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病IC卡生效日2" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病IC卡生效日3" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病IC卡生效日4" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病IC卡生效日5" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病IC卡生效日6" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病IC卡效期1" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病IC卡效期2" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病IC卡效期3" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病IC卡效期4" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病IC卡效期5" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="重病IC卡效期6" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="MIPHR會員等級" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="照護族群" Type="Int16" />
+          <Property Name="最新糞便檢查日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="最新糞便檢查醫院" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="家戶結案日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="家戶結案原因" Type="Int16" />
+          <Property Name="最新乳篩檢查日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="最新乳篩檢查醫院" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="家戶結案原因代碼" Type="Int16" />
+          <Property Name="證件繳交" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="最新口腔篩檢日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="最新口腔篩檢醫院" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="抽菸否" Type="Int16" />
+          <Property Name="檳榔否" Type="Int16" />
+          <Property Name="骨科備註" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="已戒檳榔" Type="Int16" />
+          <Property Name="無嚼檳榔及吸菸" Type="Int16" />
+          <Property Name="口篩填選日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="依病人為中心整合照護" Type="Int16" />
+          <Property Name="上次呼吸器日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="器官安寧註記" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="最近30天內超過100支" Type="Int16" />
+          <Property Name="管制病歷註記" Type="Int16" />
+          <Property Name="油症註記" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="過敏原5" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="過敏原6" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="過敏原7" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="過敏原8" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="照護機構入住日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="照護機構離院日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="過去病史" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="家族史" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="健康行為" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="旅遊史" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="住診顯示全名" Type="Int16" />
+          <Property Name="APP密碼" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="緊急聯絡人手機" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="替代役男有效起日" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="替代役男有效迄日" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="矯正機關代號" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="矯正機關名稱" Type="String" MaxLength="24" FixedLength="false" Unicode="false" />
+          <Property Name="醫缺地區" Type="Int16" />
+          <Property Name="腦血管疾病診斷日" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="已戒菸" Type="Int16" />
+          <Property Name="自述血型代碼" Type="Int16" />
+          <Property Name="最近看診醫師" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="禁止預掛" Type="Int16" />
+          <Property Name="器官安寧註記日期時間" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
+          <Property Name="指定醫師" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="指定美容師" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="安寧修改經手記錄" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="器官安寧圖片路徑" Type="String" MaxLength="55" FixedLength="false" Unicode="false" />
+          <Property Name="安寧代碼" Type="Int16" />
+          <Property Name="是否勸戒菸" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="特殊備註" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="病史獲取對象" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="同意書起日" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="同意書迄日" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="糖尿病照護" Type="Int16" />
+          <Property Name="自選病人" Type="Int16" />
+          <Property Name="最後體重衛教日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="血液陽性反應" Type="Int16" />
+          <Property Name="血液陽性種類" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="主治醫師" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="外文姓名" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="他國身份證" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="他國電話" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="胚胎培養" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="性行為否" Type="Int16" />
+          <Property Name="DM發病起始年" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="最新流感提示日期" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="流感施打否" Type="Int16" />
+          <Property Name="流感註記" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="新增特殊交班" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="傳染病註記" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="特別身份代碼" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityContainer Name="tgkEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="病患檔" EntityType="Self.病患檔" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="tgkModelStoreContainer" CdmEntityContainer="tgkEntities">
+          <EntitySetMapping Name="病患檔">
+            <EntityTypeMapping TypeName="tgkModel.病患檔">
+              <MappingFragment StoreEntitySet="病患檔">
+                <ScalarProperty Name="ts" ColumnName="ts" />
+                <ScalarProperty Name="Counter" ColumnName="Counter" />
+                <ScalarProperty Name="病歷號碼" ColumnName="病歷號碼" />
+                <ScalarProperty Name="姓名" ColumnName="姓名" />
+                <ScalarProperty Name="生日" ColumnName="生日" />
+                <ScalarProperty Name="優免身份代碼" ColumnName="優免身份代碼" />
+                <ScalarProperty Name="身份證字號" ColumnName="身份證字號" />
+                <ScalarProperty Name="婚姻代碼" ColumnName="婚姻代碼" />
+                <ScalarProperty Name="性別代碼" ColumnName="性別代碼" />
+                <ScalarProperty Name="血型代碼" ColumnName="血型代碼" />
+                <ScalarProperty Name="體重" ColumnName="體重" />
+                <ScalarProperty Name="電話H" ColumnName="電話H" />
+                <ScalarProperty Name="電話O" ColumnName="電話O" />
+                <ScalarProperty Name="BBC" ColumnName="BBC" />
+                <ScalarProperty Name="簡碼" ColumnName="簡碼" />
+                <ScalarProperty Name="過敏" ColumnName="過敏" />
+                <ScalarProperty Name="地址" ColumnName="地址" />
+                <ScalarProperty Name="備註事項" ColumnName="備註事項" />
+                <ScalarProperty Name="既往歷" ColumnName="既往歷" />
+                <ScalarProperty Name="初診日期" ColumnName="初診日期" />
+                <ScalarProperty Name="欠款金額" ColumnName="欠款金額" />
+                <ScalarProperty Name="籍貫" ColumnName="籍貫" />
+                <ScalarProperty Name="職業" ColumnName="職業" />
+                <ScalarProperty Name="最近就診日" ColumnName="最近就診日" />
+                <ScalarProperty Name="最近檢驗日" ColumnName="最近檢驗日" />
+                <ScalarProperty Name="預約未到診次數" ColumnName="預約未到診次數" />
+                <ScalarProperty Name="過敏原1" ColumnName="過敏原1" />
+                <ScalarProperty Name="過敏原2" ColumnName="過敏原2" />
+                <ScalarProperty Name="過敏原3" ColumnName="過敏原3" />
+                <ScalarProperty Name="過敏原4" ColumnName="過敏原4" />
+                <ScalarProperty Name="欠單數" ColumnName="欠單數" />
+                <ScalarProperty Name="刪除否" ColumnName="刪除否" />
+                <ScalarProperty Name="預設就診身份代碼" ColumnName="預設就診身份代碼" />
+                <ScalarProperty Name="郵地區號" ColumnName="郵地區號" />
+                <ScalarProperty Name="單位別代碼" ColumnName="單位別代碼" />
+                <ScalarProperty Name="階級代碼" ColumnName="階級代碼" />
+                <ScalarProperty Name="軍種代碼" ColumnName="軍種代碼" />
+                <ScalarProperty Name="護照號碼" ColumnName="護照號碼" />
+                <ScalarProperty Name="下次應診項目" ColumnName="下次應診項目" />
+                <ScalarProperty Name="活動狀態代碼" ColumnName="活動狀態代碼" />
+                <ScalarProperty Name="經手記錄" ColumnName="經手記錄" />
+                <ScalarProperty Name="最近爽約日期" ColumnName="最近爽約日期" />
+                <ScalarProperty Name="死亡日期" ColumnName="死亡日期" />
+                <ScalarProperty Name="行動電話" ColumnName="行動電話" />
+                <ScalarProperty Name="分機號碼" ColumnName="分機號碼" />
+                <ScalarProperty Name="傳染病" ColumnName="傳染病" />
+                <ScalarProperty Name="補助證號" ColumnName="補助證號" />
+                <ScalarProperty Name="重大傷病證號" ColumnName="重大傷病證號" />
+                <ScalarProperty Name="重大傷病效期" ColumnName="重大傷病效期" />
+                <ScalarProperty Name="電話O分機" ColumnName="電話O分機" />
+                <ScalarProperty Name="電話H分機" ColumnName="電話H分機" />
+                <ScalarProperty Name="外籍" ColumnName="外籍" />
+                <ScalarProperty Name="重病卡生效日" ColumnName="重病卡生效日" />
+                <ScalarProperty Name="重病卡備註" ColumnName="重病卡備註" />
+                <ScalarProperty Name="活動狀態歸檔日期" ColumnName="活動狀態歸檔日期" />
+                <ScalarProperty Name="在本院輸血次數累計" ColumnName="在本院輸血次數累計" />
+                <ScalarProperty Name="低收入戶證號" ColumnName="低收入戶證號" />
+                <ScalarProperty Name="緊急聯絡人姓名" ColumnName="緊急聯絡人姓名" />
+                <ScalarProperty Name="緊急聯絡人電話" ColumnName="緊急聯絡人電話" />
+                <ScalarProperty Name="Email帳號" ColumnName="Email帳號" />
+                <ScalarProperty Name="傳真電話" ColumnName="傳真電話" />
+                <ScalarProperty Name="最初洗腎日" ColumnName="最初洗腎日" />
+                <ScalarProperty Name="隔離起日" ColumnName="隔離起日" />
+                <ScalarProperty Name="隔離迄日" ColumnName="隔離迄日" />
+                <ScalarProperty Name="病歷本院區代號" ColumnName="病歷本院區代號" />
+                <ScalarProperty Name="當地居民否" ColumnName="當地居民否" />
+                <ScalarProperty Name="原住民否" ColumnName="原住民否" />
+                <ScalarProperty Name="身高" ColumnName="身高" />
+                <ScalarProperty Name="識字否" ColumnName="識字否" />
+                <ScalarProperty Name="修改日期時間" ColumnName="修改日期時間" />
+                <ScalarProperty Name="地址O" ColumnName="地址O" />
+                <ScalarProperty Name="郵地區號O" ColumnName="郵地區號O" />
+                <ScalarProperty Name="戶籍地址" ColumnName="戶籍地址" />
+                <ScalarProperty Name="戶籍地郵地區號" ColumnName="戶籍地郵地區號" />
+                <ScalarProperty Name="國籍" ColumnName="國籍" />
+                <ScalarProperty Name="家戶病患" ColumnName="家戶病患" />
+                <ScalarProperty Name="巡迴註記" ColumnName="巡迴註記" />
+                <ScalarProperty Name="家戶會員責任醫師代號" ColumnName="家戶會員責任醫師代號" />
+                <ScalarProperty Name="預產期" ColumnName="預產期" />
+                <ScalarProperty Name="癌登否" ColumnName="癌登否" />
+                <ScalarProperty Name="統一編號" ColumnName="統一編號" />
+                <ScalarProperty Name="父或母身份證字號" ColumnName="父或母身份證字號" />
+                <ScalarProperty Name="父或母counter" ColumnName="父或母counter" />
+                <ScalarProperty Name="同胎次序" ColumnName="同胎次序" />
+                <ScalarProperty Name="曾經接種流感疫苗" ColumnName="曾經接種流感疫苗" />
+                <ScalarProperty Name="教育程度代碼" ColumnName="教育程度代碼" />
+                <ScalarProperty Name="宗教信仰代碼" ColumnName="宗教信仰代碼" />
+                <ScalarProperty Name="家戶收案日期" ColumnName="家戶收案日期" />
+                <ScalarProperty Name="緊急聯絡人關係" ColumnName="緊急聯絡人關係" />
+                <ScalarProperty Name="介紹醫師" ColumnName="介紹醫師" />
+                <ScalarProperty Name="最新子宮頸檢查日期" ColumnName="最新子宮頸檢查日期" />
+                <ScalarProperty Name="最新子宮頸檢查醫院" ColumnName="最新子宮頸檢查醫院" />
+                <ScalarProperty Name="最後一次月經日期" ColumnName="最後一次月經日期" />
+                <ScalarProperty Name="平均經期天數" ColumnName="平均經期天數" />
+                <ScalarProperty Name="依附父或母生日" ColumnName="依附父或母生日" />
+                <ScalarProperty Name="前家戶病患" ColumnName="前家戶病患" />
+                <ScalarProperty Name="下次產檢日期" ColumnName="下次產檢日期" />
+                <ScalarProperty Name="照護網" ColumnName="照護網" />
+                <ScalarProperty Name="照護衛教" ColumnName="照護衛教" />
+                <ScalarProperty Name="影像序號" ColumnName="影像序號" />
+                <ScalarProperty Name="病人安全註記" ColumnName="病人安全註記" />
+                <ScalarProperty Name="抗體" ColumnName="抗體" />
+                <ScalarProperty Name="代謝症候群收案註記" ColumnName="代謝症候群收案註記" />
+                <ScalarProperty Name="重病診斷1" ColumnName="重病診斷1" />
+                <ScalarProperty Name="重病診斷2" ColumnName="重病診斷2" />
+                <ScalarProperty Name="重病診斷3" ColumnName="重病診斷3" />
+                <ScalarProperty Name="重病診斷4" ColumnName="重病診斷4" />
+                <ScalarProperty Name="重病診斷5" ColumnName="重病診斷5" />
+                <ScalarProperty Name="重病診斷6" ColumnName="重病診斷6" />
+                <ScalarProperty Name="最近修改過敏日" ColumnName="最近修改過敏日" />
+                <ScalarProperty Name="美容會員" ColumnName="美容會員" />
+                <ScalarProperty Name="重病紙卡診斷1" ColumnName="重病紙卡診斷1" />
+                <ScalarProperty Name="重病紙卡診斷2" ColumnName="重病紙卡診斷2" />
+                <ScalarProperty Name="重病紙卡診斷3" ColumnName="重病紙卡診斷3" />
+                <ScalarProperty Name="重病紙卡診斷4" ColumnName="重病紙卡診斷4" />
+                <ScalarProperty Name="重病紙卡診斷5" ColumnName="重病紙卡診斷5" />
+                <ScalarProperty Name="重病紙卡診斷6" ColumnName="重病紙卡診斷6" />
+                <ScalarProperty Name="殘障否" ColumnName="殘障否" />
+                <ScalarProperty Name="健保卡片號碼" ColumnName="健保卡片號碼" />
+                <ScalarProperty Name="最新成人老人健檢日期" ColumnName="最新成人老人健檢日期" />
+                <ScalarProperty Name="最新成人老人健檢醫院" ColumnName="最新成人老人健檢醫院" />
+                <ScalarProperty Name="重病卡生效日2" ColumnName="重病卡生效日2" />
+                <ScalarProperty Name="重病卡生效日3" ColumnName="重病卡生效日3" />
+                <ScalarProperty Name="重病卡生效日4" ColumnName="重病卡生效日4" />
+                <ScalarProperty Name="重病卡生效日5" ColumnName="重病卡生效日5" />
+                <ScalarProperty Name="重病卡生效日6" ColumnName="重病卡生效日6" />
+                <ScalarProperty Name="重大傷病效期2" ColumnName="重大傷病效期2" />
+                <ScalarProperty Name="重大傷病效期3" ColumnName="重大傷病效期3" />
+                <ScalarProperty Name="重大傷病效期4" ColumnName="重大傷病效期4" />
+                <ScalarProperty Name="重大傷病效期5" ColumnName="重大傷病效期5" />
+                <ScalarProperty Name="重大傷病效期6" ColumnName="重大傷病效期6" />
+                <ScalarProperty Name="養護機構名稱" ColumnName="養護機構名稱" />
+                <ScalarProperty Name="養護機構代號" ColumnName="養護機構代號" />
+                <ScalarProperty Name="重病IC卡生效日1" ColumnName="重病IC卡生效日1" />
+                <ScalarProperty Name="重病IC卡生效日2" ColumnName="重病IC卡生效日2" />
+                <ScalarProperty Name="重病IC卡生效日3" ColumnName="重病IC卡生效日3" />
+                <ScalarProperty Name="重病IC卡生效日4" ColumnName="重病IC卡生效日4" />
+                <ScalarProperty Name="重病IC卡生效日5" ColumnName="重病IC卡生效日5" />
+                <ScalarProperty Name="重病IC卡生效日6" ColumnName="重病IC卡生效日6" />
+                <ScalarProperty Name="重病IC卡效期1" ColumnName="重病IC卡效期1" />
+                <ScalarProperty Name="重病IC卡效期2" ColumnName="重病IC卡效期2" />
+                <ScalarProperty Name="重病IC卡效期3" ColumnName="重病IC卡效期3" />
+                <ScalarProperty Name="重病IC卡效期4" ColumnName="重病IC卡效期4" />
+                <ScalarProperty Name="重病IC卡效期5" ColumnName="重病IC卡效期5" />
+                <ScalarProperty Name="重病IC卡效期6" ColumnName="重病IC卡效期6" />
+                <ScalarProperty Name="MIPHR會員等級" ColumnName="MIPHR會員等級" />
+                <ScalarProperty Name="照護族群" ColumnName="照護族群" />
+                <ScalarProperty Name="最新糞便檢查日期" ColumnName="最新糞便檢查日期" />
+                <ScalarProperty Name="最新糞便檢查醫院" ColumnName="最新糞便檢查醫院" />
+                <ScalarProperty Name="家戶結案日期" ColumnName="家戶結案日期" />
+                <ScalarProperty Name="家戶結案原因" ColumnName="家戶結案原因" />
+                <ScalarProperty Name="最新乳篩檢查日期" ColumnName="最新乳篩檢查日期" />
+                <ScalarProperty Name="最新乳篩檢查醫院" ColumnName="最新乳篩檢查醫院" />
+                <ScalarProperty Name="家戶結案原因代碼" ColumnName="家戶結案原因代碼" />
+                <ScalarProperty Name="證件繳交" ColumnName="證件繳交" />
+                <ScalarProperty Name="最新口腔篩檢日期" ColumnName="最新口腔篩檢日期" />
+                <ScalarProperty Name="最新口腔篩檢醫院" ColumnName="最新口腔篩檢醫院" />
+                <ScalarProperty Name="抽菸否" ColumnName="抽菸否" />
+                <ScalarProperty Name="檳榔否" ColumnName="檳榔否" />
+                <ScalarProperty Name="骨科備註" ColumnName="骨科備註" />
+                <ScalarProperty Name="已戒檳榔" ColumnName="已戒檳榔" />
+                <ScalarProperty Name="無嚼檳榔及吸菸" ColumnName="無嚼檳榔及吸菸" />
+                <ScalarProperty Name="口篩填選日期" ColumnName="口篩填選日期" />
+                <ScalarProperty Name="依病人為中心整合照護" ColumnName="依病人為中心整合照護" />
+                <ScalarProperty Name="上次呼吸器日期" ColumnName="上次呼吸器日期" />
+                <ScalarProperty Name="器官安寧註記" ColumnName="器官安寧註記" />
+                <ScalarProperty Name="最近30天內超過100支" ColumnName="最近30天內超過100支" />
+                <ScalarProperty Name="管制病歷註記" ColumnName="管制病歷註記" />
+                <ScalarProperty Name="油症註記" ColumnName="油症註記" />
+                <ScalarProperty Name="過敏原5" ColumnName="過敏原5" />
+                <ScalarProperty Name="過敏原6" ColumnName="過敏原6" />
+                <ScalarProperty Name="過敏原7" ColumnName="過敏原7" />
+                <ScalarProperty Name="過敏原8" ColumnName="過敏原8" />
+                <ScalarProperty Name="照護機構入住日期" ColumnName="照護機構入住日期" />
+                <ScalarProperty Name="照護機構離院日期" ColumnName="照護機構離院日期" />
+                <ScalarProperty Name="過去病史" ColumnName="過去病史" />
+                <ScalarProperty Name="家族史" ColumnName="家族史" />
+                <ScalarProperty Name="健康行為" ColumnName="健康行為" />
+                <ScalarProperty Name="旅遊史" ColumnName="旅遊史" />
+                <ScalarProperty Name="住診顯示全名" ColumnName="住診顯示全名" />
+                <ScalarProperty Name="APP密碼" ColumnName="APP密碼" />
+                <ScalarProperty Name="緊急聯絡人手機" ColumnName="緊急聯絡人手機" />
+                <ScalarProperty Name="替代役男有效起日" ColumnName="替代役男有效起日" />
+                <ScalarProperty Name="替代役男有效迄日" ColumnName="替代役男有效迄日" />
+                <ScalarProperty Name="矯正機關代號" ColumnName="矯正機關代號" />
+                <ScalarProperty Name="矯正機關名稱" ColumnName="矯正機關名稱" />
+                <ScalarProperty Name="醫缺地區" ColumnName="醫缺地區" />
+                <ScalarProperty Name="腦血管疾病診斷日" ColumnName="腦血管疾病診斷日" />
+                <ScalarProperty Name="已戒菸" ColumnName="已戒菸" />
+                <ScalarProperty Name="自述血型代碼" ColumnName="自述血型代碼" />
+                <ScalarProperty Name="最近看診醫師" ColumnName="最近看診醫師" />
+                <ScalarProperty Name="禁止預掛" ColumnName="禁止預掛" />
+                <ScalarProperty Name="器官安寧註記日期時間" ColumnName="器官安寧註記日期時間" />
+                <ScalarProperty Name="指定醫師" ColumnName="指定醫師" />
+                <ScalarProperty Name="指定美容師" ColumnName="指定美容師" />
+                <ScalarProperty Name="安寧修改經手記錄" ColumnName="安寧修改經手記錄" />
+                <ScalarProperty Name="器官安寧圖片路徑" ColumnName="器官安寧圖片路徑" />
+                <ScalarProperty Name="安寧代碼" ColumnName="安寧代碼" />
+                <ScalarProperty Name="是否勸戒菸" ColumnName="是否勸戒菸" />
+                <ScalarProperty Name="特殊備註" ColumnName="特殊備註" />
+                <ScalarProperty Name="病史獲取對象" ColumnName="病史獲取對象" />
+                <ScalarProperty Name="同意書起日" ColumnName="同意書起日" />
+                <ScalarProperty Name="同意書迄日" ColumnName="同意書迄日" />
+                <ScalarProperty Name="糖尿病照護" ColumnName="糖尿病照護" />
+                <ScalarProperty Name="自選病人" ColumnName="自選病人" />
+                <ScalarProperty Name="最後體重衛教日期" ColumnName="最後體重衛教日期" />
+                <ScalarProperty Name="血液陽性反應" ColumnName="血液陽性反應" />
+                <ScalarProperty Name="血液陽性種類" ColumnName="血液陽性種類" />
+                <ScalarProperty Name="主治醫師" ColumnName="主治醫師" />
+                <ScalarProperty Name="外文姓名" ColumnName="外文姓名" />
+                <ScalarProperty Name="他國身份證" ColumnName="他國身份證" />
+                <ScalarProperty Name="他國電話" ColumnName="他國電話" />
+                <ScalarProperty Name="胚胎培養" ColumnName="胚胎培養" />
+                <ScalarProperty Name="性行為否" ColumnName="性行為否" />
+                <ScalarProperty Name="DM發病起始年" ColumnName="DM發病起始年" />
+                <ScalarProperty Name="最新流感提示日期" ColumnName="最新流感提示日期" />
+                <ScalarProperty Name="流感施打否" ColumnName="流感施打否" />
+                <ScalarProperty Name="流感註記" ColumnName="流感註記" />
+                <ScalarProperty Name="新增特殊交班" ColumnName="新增特殊交班" />
+                <ScalarProperty Name="傳染病註記" ColumnName="傳染病註記" />
+                <ScalarProperty Name="特別身份代碼" ColumnName="特別身份代碼" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="無" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

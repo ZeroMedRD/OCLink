@@ -49,7 +49,7 @@ namespace OCLink
             SqlDataReader clinic = cmd.ExecuteReader(); 
             while (clinic.Read())
             {
-                if (textBox2.Text == clinic["pwd"].ToString())
+                if (textBox2.Text == clinic["pwd"].ToString().Trim())
                 {
                     MainForm mF = (MainForm)this.Owner;//把Form2的父視窗指標賦給lForm1
                     mF.StrValue = textBox1.Text;//使用父視窗指標賦值
@@ -81,6 +81,11 @@ namespace OCLink
             MainForm mF = (MainForm)this.Owner;//把Form2的父視窗指標賦給lForm1
             mF.StrValue = sb.ToString();//使用父視窗指標賦值
             this.Close();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
