@@ -76,7 +76,7 @@ namespace OCLink
         ArrayList MyMacAddress = new ArrayList();//本機地址
         public bool bCheckID = false;//核對身分後確認是否開啟程式
         Dictionary<string, string> dMAC = new Dictionary<string, string>();//IPMAC位置,診所
-        private his3532040438Entities db_0438 = new his3532040438Entities();//
+        private his3532040438Entities db_0438 = new his3532040438Entities();//測試用抓oy的目前用在開蘭那
         ZMClass myClass = new ZMClass();//引用歐陽程式判斷是否為數字
 
         class HotKey : IMessageFilter, IDisposable //註冊熱鍵程式(一般都不需要更改)
@@ -305,7 +305,7 @@ namespace OCLink
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            panel1.Visible = false;
+            panel1.Visible = false;//把功能版隱藏
             panel2.Visible = false;
             this.Height = 138;
 
@@ -341,7 +341,7 @@ namespace OCLink
                     DataTable dt10 = new DataTable();
                     DataTable dt11 = new DataTable();
                     DataTable dt12 = new DataTable();
-                    sda.Fill(dt); //創一個空間dt給sql放 
+                    sda.Fill(dt); //創一個空間把sda放到dt裡面 
                     sda.Fill(dt1);
                     sda.Fill(dt2);
                     sda.Fill(dt3);
@@ -366,7 +366,7 @@ namespace OCLink
                     comboBox1.Text = sb.ToString();
                     if(sb.ToString() =="")
                     {
-                        hotkey2.Dispose();//如果沒設定功能 會註銷熱鍵以免會跟期的HIS的快捷鍵衝突
+                        hotkey2.Dispose();//如果沒設定功能會註銷熱鍵以免會跟其他的HIS的快捷鍵衝突
                     }
 
                     uint res2 = GetPrivateProfileString("AppName", "F2", "", sb, (uint)sb.Capacity, test);
@@ -556,7 +556,7 @@ namespace OCLink
                     uint reg35 = GetPrivateProfileString("AppName", "Enableddb", "", sb, (uint)sb.Capacity, test);
                     if (sb.ToString() == "True")
                     {
-                        button3.Enabled = true;
+                        button3.Enabled = true;//展望切換資料庫鈕
                     }
                     uint reg36 = GetPrivateProfileString("AppName", "REG", "", sb, (uint)sb.Capacity, test);
                     if(sb.ToString() == "")
@@ -574,7 +574,7 @@ namespace OCLink
                     MessageBox.Show("SQL error ," + ex.ToString());//回報錯誤
                 }
             }
-            // 下列參數則一律儲存在使用者端的 C:\ZeroMed 目錄內,若檔案不在或參數變數不在則一律帶預設值
+            // 下列RGB參數有一個是空白則一律帶預設值
             if(tbResize.Text == "" || tbRed.Text == "" || tbGreen.Text == "" || tbBlue.Text =="")
             {
                 tbResize.Text = "1";
@@ -944,7 +944,7 @@ namespace OCLink
 
         private void hotkeyF1(object sender, HotKeyEventArgs e)
         {
-            function1111 = combobox1;
+            function1111 = combobox1;//把所選的值放在function1111裡面
         }
 
         private void hotkeyF2(object sender, HotKeyEventArgs e)
@@ -1006,7 +1006,7 @@ namespace OCLink
         {
             
                 string ur2 = comboBox1.SelectedValue.ToString();
-                openBrowser(ur2);
+                openBrowser(ur2);//開連結
             
         }
 
@@ -1118,11 +1118,11 @@ namespace OCLink
                             names[3] + ", " + names[4] + ", " + names[5] + ", " +
                             names[6] + ", " + names[7];
 
-            string ur = String.Format(conn, names[0], names[1], names[2], names[3], names[4], names[5], names[6],names[7]);//這個在65後台一鍵連結功能設定上面會有數字那個數字就是帶剛剛取的值
+            string ur = String.Format(conn, names[0], names[1], names[2], names[3], names[4], names[5], names[6],names[7]);//這個在資訊平台一鍵連結功能設定上面會有數字那個數字就是帶剛剛取的值
 
-            if (function1111 !="   ")//當不小心按到空白項目會沒有作用
+            if (function1111 !="   ")//當不小心按到空白項目會沒有作用(3個空白的原因是在齁台的空白選項是3個空白如果後台改掉這邊就要改)
             {
-                if(myClass.IsNumeric(str1))
+                if(myClass.IsNumeric(str1))//判斷str1是否為數字
                 {
                     this.Hide();
                     notifyIcon1.ShowBalloonTip(5000);
@@ -1248,7 +1248,7 @@ namespace OCLink
         //    }
         //}
         
-        private void btn_OCR_Click(object sender, EventArgs e)//OCR鈕會問為甚麼不寫在裡面因為我要區分按的OCR和塊捷鍵的OCR
+        private void btn_OCR_Click(object sender, EventArgs e)//OCR鈕會問為甚麼不寫在裡面因為我要區分按的OCR和快捷鍵的OCR
         {
             bool Return;
             Return = WritePrivateProfileString("AppName", "Enabled", btn_OCR.Enabled.ToString(), test);
@@ -1287,8 +1287,8 @@ namespace OCLink
             sw.Reset();//碼表歸零
             sw.Start();//碼表開始計時
             //取得病人資料
-            if (testhis == "RS" && File.Exists(Server + @":\S\patdb.dbf") && function1111 != "凌醫首頁" && function1111 != "   ")//耀聖
-            {
+            if (testhis == "RS" && File.Exists(Server + @":\S\patdb.dbf") && function1111 != "凌醫首頁" && function1111 != "   ")//耀聖 
+            {//以vfpoledb的方式取耀聖資料 跟sql取的方式類似
                 int nRecno = 0;
                 if (myClass.IsNumeric(str1))//判斷是否截圖內容為數字
                 {
@@ -1301,25 +1301,25 @@ namespace OCLink
                     {
                         sw.Stop();//碼錶停止
                         string savetime1 = sw.Elapsed.TotalMilliseconds.ToString();
-                        bool Returnt = WritePrivateProfileString("AppName", "開啟", savetime1, test);
+                        bool Returnt = WritePrivateProfileString("AppName", "開啟", savetime1, test);//這個是要看程式跑的時間
                         sw.Reset();//碼表歸零
                         sw.Start();//碼表開始計時
-                        OleDbCommand cmd = new OleDbCommand(String.Format("select name ,id ,tel, birth  from patdb where recno()={0}", nRecno), conn);
+                        OleDbCommand cmd = new OleDbCommand(String.Format("select name ,id ,tel, birth  from patdb where recno()={0}", nRecno), conn);//指令跟sql語法一樣
                         OleDbDataAdapter da = new OleDbDataAdapter(cmd);
                         DataTable table = new DataTable();
                         da.Fill(table);
                         sw.Stop();//碼錶停止
                         string savetime2 = sw.Elapsed.TotalMilliseconds.ToString();
-                        Returnt = WritePrivateProfileString("AppName", "取資料", savetime2, test);
+                        Returnt = WritePrivateProfileString("AppName", "取資料", savetime2, test);//這個是要看程式跑的時間
                         conn.Close();
                         sw.Reset();//碼表歸零
                         sw.Start();//碼表開始計時
-                        foreach (DataRow dr in table.Rows)
+                        foreach (DataRow dr in table.Rows)//取得病人資料
                         {
                             name = dr["name"].ToString().Trim();
                             ID = dr["id"].ToString().Trim();
                             tel = dr["tel"].ToString().Trim();
-                            Birth = dr["birth"].ToString().Trim().Replace("A", "10").Replace("B", "11").Replace("C", "12").Replace("D", "13");
+                            Birth = dr["birth"].ToString().Trim().Replace("A", "10").Replace("B", "11").Replace("C", "12").Replace("D", "13");//為什麼要ReplaceABC因為耀聖民國100年以A為代號民國110為B類推目前只用到民國130年 ex:耀聖生日資料A3 = 民國103年
                             try
                             {
                                 Cell = dr["mobil"].ToString().Trim();
@@ -1331,7 +1331,7 @@ namespace OCLink
                         }
                         sw.Stop();//碼錶停止
                         string savetime3 = sw.Elapsed.TotalMilliseconds.ToString();
-                        Returnt = WritePrivateProfileString("AppName", "個人資料", savetime3, test);
+                        Returnt = WritePrivateProfileString("AppName", "個人資料", savetime3, test);//這個是要看程式跑的時間
                     }
                 }
                 else
@@ -1354,7 +1354,7 @@ namespace OCLink
 
                     conn.Close();
 
-                    foreach (DataRow dr in table.Rows)
+                    foreach (DataRow dr in table.Rows)//取欄位內的病人資料
                     {
                         name = dr["Mname"].ToString().Trim();
                         ID = dr["Mpersonid"].ToString().Trim();
@@ -1375,7 +1375,7 @@ namespace OCLink
                     MessageBox.Show("擷取資料錯誤,請重新截圖");
                 }
             }
-            else if (testhis == "TECH" && function1111 != "凌醫首頁" && function1111 != "   ")//方鼎
+            else if (testhis == "TECH" && function1111 != "凌醫首頁" && function1111 != "   ")//方鼎 Sql連接方法 變數是自己打的
             {
                 string strCon2 = "server=" + sqlIP +";database=" + sqldatabace + ";user=" + sqlID + ";password=" +sqlpw +";";
                 using (SqlConnection conn = new SqlConnection(strCon2))
@@ -1641,7 +1641,7 @@ namespace OCLink
             }
             sw.Stop();//碼錶停止
             string savetime = sw.Elapsed.TotalMilliseconds.ToString();
-            bool Return = WritePrivateProfileString("AppName", "OCR時間(ms)", savetime, test);
+            bool Return = WritePrivateProfileString("AppName", "OCR時間(ms)", savetime, test);//紀錄OCR運行時間
             return (str);
         }
         
@@ -1745,7 +1745,7 @@ namespace OCLink
 
         }
 
-        private void ButtonHotKey_Click(object sender, EventArgs e)
+        private void ButtonHotKey_Click(object sender, EventArgs e)//快捷鍵設定鈕
         {
            // this.Height = 335;
             if (panel2.Visible == false)

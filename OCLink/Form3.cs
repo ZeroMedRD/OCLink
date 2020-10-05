@@ -30,5 +30,10 @@ namespace OCLink
             lForm1.StrValuepw = textBox4.Text.Trim();//使用父窗口指針賦值
             this.Close();
         }
+
+        private void Form3_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
