@@ -16,7 +16,7 @@
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>ftp://65.52.165.109/</PublishUrl>
+    <PublishUrl>ftp://oy.asuscomm.com/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -26,13 +26,13 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://65.52.165.109:8888/</InstallUrl>
+    <InstallUrl>http://oy.asuscomm.com/</InstallUrl>
     <ProductName>凌醫一鍵連結</ProductName>
     <PublisherName>凌醫科技</PublisherName>
     <SuiteName>凌醫一鍵連結</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>ZMCMS.html</WebPage>
-    <ApplicationRevision>75</ApplicationRevision>
+    <ApplicationRevision>76</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -78,7 +78,7 @@
     <ManifestKeyFile>OCLink_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>a060d-aaku2-001.ico</ApplicationIcon>
@@ -126,6 +126,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -267,6 +270,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ZMCMSModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="obj\Debug\.NETFramework,Version=v4.6.AssemblyAttributes.cs" />
+    <Compile Include="obj\Release\.NETFramework,Version=v4.6.AssemblyAttributes.cs" />
+    <Compile Include="obj\x64\Debug\.NETFramework,Version=v4.6.AssemblyAttributes.cs" />
+    <Compile Include="obj\x64\Release\.NETFramework,Version=v4.6.AssemblyAttributes.cs" />
+    <Compile Include="obj\x86\Debug\.NETFramework,Version=v4.6.AssemblyAttributes.cs" />
+    <Compile Include="obj\x86\Release\.NETFramework,Version=v4.6.AssemblyAttributes.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="tgk.Context.cs">
@@ -288,6 +297,10 @@
       <DependentUpon>tgk.tt</DependentUpon>
     </Compile>
     <Content Include="a060d-aaku2-001.ico" />
+    <Content Include="obj\Release\OCLink.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Release\OCLink.exe" />
+    <Content Include="obj\Release\OCLink.pdb" />
+    <Content Include="obj\Release\OCLink.TrustInfo.xml" />
     <Content Include="tessdata\eng.traineddata" />
     <Content Include="tgk.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -318,6 +331,12 @@
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="obj\Release\OCLink.Cutter.resources" />
+    <EmbeddedResource Include="obj\Release\OCLink.Form1.resources" />
+    <EmbeddedResource Include="obj\Release\OCLink.Form2.resources" />
+    <EmbeddedResource Include="obj\Release\OCLink.Form3.resources" />
+    <EmbeddedResource Include="obj\Release\OCLink.MainForm.resources" />
+    <EmbeddedResource Include="obj\Release\OCLink.Properties.Resources.resources" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -344,7 +363,26 @@
     <None Include="Models\ZMCMSModel.edmx.diagram">
       <DependentUpon>ZMCMSModel.edmx</DependentUpon>
     </None>
-    <None Include="OCLink_TemporaryKey.pfx" />
+    <None Include="obj\Debug\OCLink.csprojAssemblyReference.cache" />
+    <None Include="obj\Release\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="obj\Release\edmxResourcesToEmbed\Models\connModel.csdl" />
+    <None Include="obj\Release\edmxResourcesToEmbed\Models\connModel.msl" />
+    <None Include="obj\Release\edmxResourcesToEmbed\Models\connModel.ssdl" />
+    <None Include="obj\Release\edmxResourcesToEmbed\Models\Model1.csdl" />
+    <None Include="obj\Release\edmxResourcesToEmbed\Models\Model1.msl" />
+    <None Include="obj\Release\edmxResourcesToEmbed\Models\Model1.ssdl" />
+    <None Include="obj\Release\edmxResourcesToEmbed\Models\ZMCMSModel.csdl" />
+    <None Include="obj\Release\edmxResourcesToEmbed\Models\ZMCMSModel.msl" />
+    <None Include="obj\Release\edmxResourcesToEmbed\Models\ZMCMSModel.ssdl" />
+    <None Include="obj\Release\edmxResourcesToEmbed\tgk.csdl" />
+    <None Include="obj\Release\edmxResourcesToEmbed\tgk.msl" />
+    <None Include="obj\Release\edmxResourcesToEmbed\tgk.ssdl" />
+    <None Include="obj\Release\OCLink.application" />
+    <None Include="obj\Release\OCLink.csproj.CopyComplete" />
+    <None Include="obj\Release\OCLink.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Release\OCLink.csproj.GenerateResource.cache" />
+    <None Include="obj\Release\OCLink.csprojAssemblyReference.cache" />
+    <None Include="obj\Release\OCLink.exe.manifest" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -401,6 +439,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\Debug\zh-Hant\" />
+    <Folder Include="obj\Release\TempPE\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="amkkb-w4cgf-001.ico" />
