@@ -72,14 +72,14 @@ namespace OCLink
             }
         }
         string publishVersion;//版本編號
-        Stopwatch sw = new System.Diagnostics.Stopwatch();//程式計時
-        ArrayList MyMacAddress = new ArrayList();//本機地址
-        public bool bCheckID = false;//核對身分後確認是否開啟程式
-        Dictionary<string, string> dMAC = new Dictionary<string, string>();//IPMAC位置,診所
-        private his3532040438Entities db_0438 = new his3532040438Entities();//測試用抓oy的目前用在開蘭那
-        ZMClass myClass = new ZMClass();//引用歐陽程式判斷是否為數字
+        Stopwatch sw = new System.Diagnostics.Stopwatch();                      //程式計時器
+        ArrayList MyMacAddress = new ArrayList();                               //本機地址
+        public bool bCheckID = false;                                           //核對身分後確認是否開啟程式
+        Dictionary<string, string> dMAC = new Dictionary<string, string>();     //IPMAC位置,診所
+        private his3532040438Entities db_0438 = new his3532040438Entities();    //測試用抓oy的目前用在開蘭那
+        ZMClass myClass = new ZMClass();                                        //引用函式庫判斷是否為數字
 
-        class HotKey : IMessageFilter, IDisposable //註冊熱鍵程式(一般都不需要更改)
+        class HotKey : IMessageFilter, IDisposable                              //註冊熱鍵程式(一般都不需要更改)
         {
             [System.Runtime.InteropServices.DllImport("kernel32.dll")]
             public static extern UInt32 GlobalAddAtom(String lpString);
@@ -95,6 +95,10 @@ namespace OCLink
             UInt32 _hotKeyID;
             Keys _hotKey = Keys.None;
             Keys _comboKey = Keys.None;
+
+            public delegate void HotkeyEventHandler(object sender, HotKeyEventArgs e);      //HotKeyEventArgs是自訂事件參數
+            public event HotkeyEventHandler OnHotkey;                                       //自訂事件
+            const int WM_GLOBALHOTKEYDOWN = 0x312;                                          //當按下系統熱鍵時, 系統會發送的訊息
 
             public HotKey(IntPtr formHandle, Keys hotKey, Keys comboKey)
             {
@@ -121,36 +125,30 @@ namespace OCLink
                         uint_comboKey = 0x0;
                         break;
                 }
-                _hotKeyID = GlobalAddAtom(Guid.NewGuid().ToString()); //向系統取得一組id
-                RegisterHotKey((IntPtr)_hWnd, _hotKeyID, uint_comboKey, (UInt32)hotKey); //使用Form Handle與id註冊系統熱鍵
-                Application.AddMessageFilter(this); //使用HotKey類別來監視訊息
+                _hotKeyID = GlobalAddAtom(Guid.NewGuid().ToString());                       //向系統取得一組id
+                RegisterHotKey((IntPtr)_hWnd, _hotKeyID, uint_comboKey, (UInt32)hotKey);    //使用Form Handle與id註冊系統熱鍵
+                Application.AddMessageFilter(this);                                         //使用HotKey類別來監視訊息
             }
-
-            public delegate void HotkeyEventHandler(object sender, HotKeyEventArgs e); //HotKeyEventArgs是自訂事件參數
-            public event HotkeyEventHandler OnHotkey; //自訂事件
-
-            const int WM_GLOBALHOTKEYDOWN = 0x312; //當按下系統熱鍵時, 系統會發送的訊息
 
             public bool PreFilterMessage(ref Message m)
             {
-                if (OnHotkey != null && m.Msg == WM_GLOBALHOTKEYDOWN && (UInt32)m.WParam == _hotKeyID) //如果接收到系統熱鍵訊息且id相符時
+                if (OnHotkey != null && m.Msg == WM_GLOBALHOTKEYDOWN && (UInt32)m.WParam == _hotKeyID)  //如果接收到系統熱鍵訊息且id相符時
                 {
-                    OnHotkey(this, new HotKeyEventArgs(_hotKey, _comboKey)); //呼叫自訂事件, 傳遞自訂參數
-                    return true; //並攔截這個訊息, Form將不再接收到這個訊息
+                    OnHotkey(this, new HotKeyEventArgs(_hotKey, _comboKey));                            //呼叫自訂事件, 傳遞自訂參數
+                    return true;                                                                        //並攔截這個訊息, Form將不再接收到這個訊息
                 }
                 return false;
             }
 
             private bool disposed = false;
-
             public void Dispose()
             {
                 if (!disposed)
                 {
-                    UnregisterHotKey(_hWnd, _hotKeyID); //取消熱鍵
-                    GlobalDeleteAtom(_hotKeyID); //刪除id
-                    OnHotkey = null; //取消所有關聯的事件
-                    Application.RemoveMessageFilter(this); //不再使用HotKey類別監視訊息
+                    UnregisterHotKey(_hWnd, _hotKeyID);     //取消熱鍵
+                    GlobalDeleteAtom(_hotKeyID);            //刪除id
+                    OnHotkey = null;                        //取消所有關聯的事件
+                    Application.RemoveMessageFilter(this);  //不再使用HotKey類別監視訊息
 
                     GC.SuppressFinalize(this);
                     disposed = true;
@@ -323,6 +321,7 @@ namespace OCLink
             {
                 try
                 {
+                    #region 在 Combo 裡取得 F1-F12 的下拉選單需要顯示的功能項目
                     string sql = "select cd.CBDCode,cd.CBDDescription from ComboMaster cm join ComboDetail cd on cm.CBMRowid = cd.CBMRowid where cm.CBMClass = 'OCL' order by cd.CBDDisplayOrder";
                     //SqlCommand cmd = new SqlCommand(sql, conn);//執行SQL來源到cmd
                     //SqlDataReader sqlDataReader = cmd.ExecuteReader();//擷取資料
@@ -354,10 +353,12 @@ namespace OCLink
                     sda.Fill(dt10);
                     sda.Fill(dt11);
                     sda.Fill(dt12);
+                    #endregion
 
                     //以https://social.msdn.microsoft.com/Forums/zh-TW/a3f15a39-c021-4f20-a120-a783a36b67ca/c-29992-getprivateprofilestring-24460-writeprivateprofilestring?forum=233參考
                     //讀取參數
-
+                    #region 設定下拉選單的內容並且若是沒選項目則必需把 Hostkey 給 Dispose
+                    #region Hot Key F1 : hotkey2
                     StringBuilder sb = new StringBuilder(500);
                     uint res1 = GetPrivateProfileString("AppName", "F1", "", sb, (uint)sb.Capacity, test);
                     comboBox1.DisplayMember = "CBDDescription";
@@ -368,7 +369,9 @@ namespace OCLink
                     {
                         hotkey2.Dispose();//如果沒設定功能會註銷熱鍵以免會跟其他的HIS的快捷鍵衝突
                     }
+                    #endregion
 
+                    #region Hot Key F2 : hotkey3
                     uint res2 = GetPrivateProfileString("AppName", "F2", "", sb, (uint)sb.Capacity, test);
                     comboBox2.DisplayMember = "CBDDescription";
                     comboBox2.ValueMember = "CBDCode";
@@ -378,7 +381,9 @@ namespace OCLink
                     {
                         hotkey3.Dispose();
                     }
+                    #endregion
 
+                    #region Hot Key F3 : hotkey4
                     uint res3 = GetPrivateProfileString("AppName", "F3", "", sb, (uint)sb.Capacity, test);
                     comboBox3.DisplayMember = "CBDDescription";
                     comboBox3.ValueMember = "CBDCode";
@@ -388,7 +393,9 @@ namespace OCLink
                     {
                         hotkey4.Dispose();
                     }
+                    #endregion
 
+                    #region Hot Key F4 : hotkey5
                     uint res4 = GetPrivateProfileString("AppName", "F4", "", sb, (uint)sb.Capacity, test);
                     comboBox4.DisplayMember = "CBDDescription";
                     comboBox4.ValueMember = "CBDCode";
@@ -398,7 +405,9 @@ namespace OCLink
                     {
                         hotkey5.Dispose();
                     }
+                    #endregion
 
+                    #region Hot Key F5 : hotkey6
                     uint reg5 = GetPrivateProfileString("AppName", "F5", "", sb, (uint)sb.Capacity, test);
                     comboBox5.DisplayMember = "CBDDescription";
                     comboBox5.ValueMember = "CBDCode";
@@ -408,7 +417,9 @@ namespace OCLink
                     {
                         hotkey6.Dispose();
                     }
+                    #endregion
 
+                    #region Hot Key F6 : hotkey7
                     uint reg6 = GetPrivateProfileString("AppName", "F6", "", sb, (uint)sb.Capacity, test);
                     comboBox6.DisplayMember = "CBDDescription";
                     comboBox6.ValueMember = "CBDCode";
@@ -418,7 +429,9 @@ namespace OCLink
                     {
                         hotkey7.Dispose();
                     }
+                    #endregion
 
+                    #region Hot Key F7 : hotkey8
                     uint reg7 = GetPrivateProfileString("AppName", "F7", "", sb, (uint)sb.Capacity, test);
                     comboBox7.DisplayMember = "CBDDescription";
                     comboBox7.ValueMember = "CBDCode";
@@ -428,7 +441,9 @@ namespace OCLink
                     {
                         hotkey8.Dispose();
                     }
+                    #endregion
 
+                    #region Hot Key F8 : hotkey9
                     uint reg8 = GetPrivateProfileString("AppName", "F8", "", sb, (uint)sb.Capacity, test);
                     comboBox8.DisplayMember = "CBDDescription";
                     comboBox8.ValueMember = "CBDCode";
@@ -438,7 +453,9 @@ namespace OCLink
                     {
                         hotkey9.Dispose();
                     }
+                    #endregion
 
+                    #region Hot Key F9 : hotkey10
                     uint reg9 = GetPrivateProfileString("AppName", "F9", "", sb, (uint)sb.Capacity, test);
                     comboBox9.DisplayMember = "CBDDescription";
                     comboBox9.ValueMember = "CBDCode";
@@ -448,7 +465,9 @@ namespace OCLink
                     {
                         hotkey10.Dispose();
                     }
+                    #endregion
 
+                    #region Hot Key F10 : hotkey11
                     uint reg10 = GetPrivateProfileString("AppName", "F10", "", sb, (uint)sb.Capacity, test);
                     comboBox10.DisplayMember = "CBDDescription";
                     comboBox10.ValueMember = "CBDCode";
@@ -458,7 +477,9 @@ namespace OCLink
                     {
                         hotkey11.Dispose();
                     }
+                    #endregion
 
+                    #region Hot Key F11 : hotkey12
                     uint reg11 = GetPrivateProfileString("AppName", "F11", "", sb, (uint)sb.Capacity, test);
                     comboBox11.DisplayMember = "CBDDescription";
                     comboBox11.ValueMember = "CBDCode";
@@ -468,7 +489,9 @@ namespace OCLink
                     {
                         hotkey12.Dispose();
                     }
+                    #endregion
 
+                    #region Hot Key F12 : hotkey13
                     uint reg12 = GetPrivateProfileString("AppName", "F12", "", sb, (uint)sb.Capacity, test);
                     comboBox12.DisplayMember = "CBDDescription";
                     comboBox12.ValueMember = "CBDCode";
@@ -478,7 +501,10 @@ namespace OCLink
                     {
                         hotkey13.Dispose();
                     }
+                    #endregion
+                    #endregion
 
+                    #region 依據外部 System.ini 取得 Ctrl、Shift、Alt及其它相關參數並顯示在相對應的View上面
                     uint reg13 = GetPrivateProfileString("AppName", "ctrl", "", sb, (uint)sb.Capacity, test);
                     if ((sb.ToString()) == "True")//判斷是否要勾CTRL等等
                         checkBox1.Checked = true;
@@ -568,6 +594,7 @@ namespace OCLink
                     {
                         MessageBox.Show("請設定診間截圖路徑 避免連結錯誤");
                     }
+                    #endregion
                 }
                 catch (Exception ex)
                 {
@@ -593,6 +620,8 @@ namespace OCLink
         }
         
         private bool hotkeycheck = true;//判斷快捷鍵截圖是否要messagebox顯現
+
+        #region hotkey() -- 設並註冊功能鍵
         void hotkey() // 設定功能鍵
         {
             // 設定 F1~F12 Key 的內容
@@ -660,7 +689,9 @@ namespace OCLink
             hotkey12.OnHotkey += new HotKey.HotkeyEventHandler(btn_OCR1); //獨立事件
             hotkey13.OnHotkey += new HotKey.HotkeyEventHandler(hotkey13_OnHotkey); //獨立事件
         }
+        #endregion
 
+        #region hotkeydispose( -- 清除熱鍵資訊
         void hotkeydispose()//清除熱鍵資訊
         {
             hotkey2.Dispose();
@@ -676,6 +707,7 @@ namespace OCLink
             hotkey12.Dispose();
             hotkey13.Dispose();
         }
+        #endregion
 
         void hotkeycas() // 設定功能鍵(新增Control Alt shift鍵)
         {
@@ -1545,6 +1577,8 @@ namespace OCLink
             // 開始OCR
             //string s = ocr.Recognize(@"C:\Temp\CaptureImage.jpg", -1, startX, startY, width, height, AspriseOCR.RECOGNIZE_TYPE_ALL, AspriseOCR.OUTPUT_FORMAT_PLAINTEXT);
             TesseractEngine ocr = new TesseractEngine("./tessdata", "eng", EngineMode.TesseractAndCube);//設定語言   英文;
+            // 測試時可以把這解開 
+            //TesseractEngine ocr = new TesseractEngine(@"D:\ZeroMedRD\OCLink\OCLink\tessdata", "eng", EngineMode.TesseractAndCube);//設定語言   英文;
             //ocr = new TesseractEngine("./tessdata", "chi_tra");//設定語言   中文
             //ocr = new TesseractEngine("./tessdata", "eng", EngineMode.TesseractAndCube);//設定語言   英文
 
@@ -1686,36 +1720,62 @@ namespace OCLink
                     image.Save(@"C:\ZMTemp\Preprocess_Resize_office.jpg");
                 }
             }
-            
-
+                        
             Bitmap newBitmap = new Bitmap(image.Width, image.Height);
+            int type = 2;       //加權平均值法
             for (int i = 0; i < image.Width; i++)
             {
                 for (int j = 0; j < image.Height; j++)
                 {
                     //get the pixel from the scrBitmap image
+                    //actualColor = image.GetPixel(i, j);
+
                     actualColor = image.GetPixel(i, j);
+                    int r, g, b, Result = 0;
+                    r = actualColor.R;
+                    g = actualColor.G;
+                    b = actualColor.B;
+                    switch (type)
+                    {
+                        case 0://平均值法
+                            Result = ((r + g + b) / 3);
+                            break;
+                        case 1://最大值法
+                            Result = r > g ? r : g;
+                            Result = Result > b ? Result : b;
+                            break;
+                        case 2://加權平均值法
+                            Result = ((int)(0.3 * r) + (int)(0.59 * g) + (int)(0.11 * b));
+                            break;
+                    }
+                    newBitmap.SetPixel(i, j, Color.FromArgb(Result, Result, Result));
+
+
+
+                    //int avg = (actualColor.R + actualColor.G + actualColor.B) / 3; //RGB同除3就會變成灰階
+                    //newBitmap.SetPixel(i, j, Color.FromArgb(avg, avg, avg));
+
                     // > 150 because.. Images edges can be of low pixel colr. if we set all pixel color to new then there will be no smoothness left.
 
                     // 判斷 RGB 值
-                    if(btz ==true)
-                    {
-                        nRed = (IsNumeric(tbRed.Text)) ? int.Parse(tbRed.Text.Trim()) : 0;
-                        nGreen = (IsNumeric(tbGreen.Text)) ? int.Parse(tbRed.Text.Trim()) : 0;
-                        nBlue = (IsNumeric(tbBlue.Text)) ? int.Parse(tbRed.Text.Trim()) : 0;
-                    }
-                    else
-                    {
-                        nRed = (IsNumeric(tred.Text)) ? int.Parse(tred.Text.Trim()) : 0;
-                        nGreen = (IsNumeric(tgreen.Text)) ? int.Parse(tred.Text.Trim()) : 0;
-                        nBlue = (IsNumeric(tblue.Text)) ? int.Parse(tred.Text.Trim()) : 0;
-                    }
-                    
+                    //if (btz ==true)
+                    //{
+                    //    nRed = (IsNumeric(tbRed.Text)) ? int.Parse(tbRed.Text.Trim()) : 0;
+                    //    nGreen = (IsNumeric(tbGreen.Text)) ? int.Parse(tbRed.Text.Trim()) : 0;
+                    //    nBlue = (IsNumeric(tbBlue.Text)) ? int.Parse(tbRed.Text.Trim()) : 0;
+                    //}
+                    //else
+                    //{
+                    //    nRed = (IsNumeric(tred.Text)) ? int.Parse(tred.Text.Trim()) : 0;
+                    //    nGreen = (IsNumeric(tgreen.Text)) ? int.Parse(tred.Text.Trim()) : 0;
+                    //    nBlue = (IsNumeric(tblue.Text)) ? int.Parse(tred.Text.Trim()) : 0;
+                    //}
 
-                    if (actualColor.R > nRed && actualColor.G > nGreen && actualColor.B > nBlue)    //在這裡設定RGB
-                        newBitmap.SetPixel(i, j, cForeColor);
-                    else
-                        newBitmap.SetPixel(i, j, cBackColor);
+
+                    //if (actualColor.R > nRed && actualColor.G > nGreen && actualColor.B > nBlue)    //在這裡設定RGB
+                    //    newBitmap.SetPixel(i, j, cForeColor);
+                    //else
+                    //newBitmap.SetPixel(i, j, cBackColor);
                 }
             }
 
