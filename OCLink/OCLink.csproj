@@ -16,7 +16,7 @@
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>ftp://65.52.165.109/</PublishUrl>
+    <PublishUrl>ftp://zmcms.cloud/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -26,13 +26,13 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://65.52.165.109:8888/</InstallUrl>
+    <InstallUrl>http://zmcms.cloud:8888/</InstallUrl>
     <ProductName>凌醫一鍵連結</ProductName>
     <PublisherName>凌醫科技</PublisherName>
     <SuiteName>凌醫一鍵連結</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>ZMCMS.html</WebPage>
-    <ApplicationRevision>80</ApplicationRevision>
+    <ApplicationRevision>88</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -63,7 +63,7 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <TargetZone>LocalIntranet</TargetZone>
+    <TargetZone>Internet</TargetZone>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -78,7 +78,7 @@
     <ManifestKeyFile>OCLink_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>a060d-aaku2-001.ico</ApplicationIcon>
@@ -178,6 +178,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commountity.cs" />
     <Compile Include="Cutter.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -231,8 +232,39 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>connModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\HISEntities.cs" />
+    <Compile Include="Models\HISModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HISModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\HISModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\HISModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HISModel.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Models\HospInfo.cs">
       <DependentUpon>ZMCMSModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LogModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LogModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LogModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LogModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LogModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LogModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Model1.Context.cs">
       <AutoGen>True</AutoGen>
@@ -249,8 +281,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model1.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\OCLinkLog.cs">
+      <DependentUpon>LogModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\patient.cs">
-      <DependentUpon>connModel.tt</DependentUpon>
+      <DependentUpon>HISModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SysHospital.cs">
       <DependentUpon>ZMCMSModel.tt</DependentUpon>
@@ -291,6 +326,26 @@
       <DependentUpon>tgk.tt</DependentUpon>
     </Compile>
     <Content Include="a060d-aaku2-001.ico" />
+    <Content Include="Models\HISModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>HISModel.edmx</DependentUpon>
+      <LastGenOutput>HISModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\HISModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>HISModel.edmx</DependentUpon>
+      <LastGenOutput>HISModel.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\LogModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>LogModel.edmx</DependentUpon>
+      <LastGenOutput>LogModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\LogModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>LogModel.edmx</DependentUpon>
+      <LastGenOutput>LogModel.cs</LastGenOutput>
+    </Content>
     <Content Include="tessdata\eng.traineddata" />
     <Content Include="tgk.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -341,6 +396,20 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Model1.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <EntityDeploy Include="Models\LogModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>LogModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <EntityDeploy Include="Models\HISModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>HISModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Models\HISModel.edmx.diagram">
+      <DependentUpon>HISModel.edmx</DependentUpon>
+    </None>
+    <None Include="Models\LogModel.edmx.diagram">
+      <DependentUpon>LogModel.edmx</DependentUpon>
+    </None>
     <None Include="Models\Model1.edmx.diagram">
       <DependentUpon>Model1.edmx</DependentUpon>
     </None>
@@ -402,7 +471,7 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="bin\Debug\zh-Hant\" />
+    <Folder Include="bin\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="amkkb-w4cgf-001.ico" />

@@ -4,8 +4,8 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="2adc1109730b459393f0730c9c28a2dd" Name="Diagram1" ZoomLevel="66">
-        <EntityTypeShape EntityType="his3532040438Model.patient" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+      <Diagram DiagramId="a8becc9276e342e6961e7f4e1bab05df" Name="Diagram1">
+        <EntityTypeShape EntityType="LogDBModel.OCLinkLog" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

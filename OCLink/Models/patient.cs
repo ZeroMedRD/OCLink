@@ -61,9 +61,9 @@ namespace OCLink.Models
         public Nullable<bool> isPrivate { get; set; }
         public Nullable<bool> isFreezen { get; set; }
         public string hospital_no { get; set; }
+        public string g8_mode { get; set; }
         public string employee_id { get; set; }
         public string doctor_id { get; set; }
         public string doctorG8_id { get; set; }
-        public string g8_mode { get; set; }
     }
 }

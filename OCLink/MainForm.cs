@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Configuration;
 using System.Linq;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -76,7 +77,7 @@ namespace OCLink
         ArrayList MyMacAddress = new ArrayList();                               //本機地址
         public bool bCheckID = false;                                           //核對身分後確認是否開啟程式
         Dictionary<string, string> dMAC = new Dictionary<string, string>();     //IPMAC位置,診所
-        private his3532040438Entities db_0438 = new his3532040438Entities();    //測試用抓oy的目前用在開蘭那
+        //private his3532040438Entities db_0438 = new his3532040438Entities();    //測試用抓oy的目前用在開蘭那
         ZMClass myClass = new ZMClass();                                        //引用函式庫判斷是否為數字
 
         class HotKey : IMessageFilter, IDisposable                              //註冊熱鍵程式(一般都不需要更改)
@@ -303,6 +304,15 @@ namespace OCLink
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            tresize.Visible = false;
+            tred.Visible = false;
+            tgreen.Visible = false;
+            tblue.Visible = false;
+            tbResize.Visible = false;
+            tbRed.Visible = false;
+            tbGreen.Visible = false;
+            tbBlue.Visible = false;
+
             panel1.Visible = false;//把功能版隱藏
             panel2.Visible = false;
             this.Height = 138;
@@ -616,7 +626,6 @@ namespace OCLink
                 tgreen.Text = "40";
                 tblue.Text = "40";
             }
-            
         }
         
         private bool hotkeycheck = true;//判斷快捷鍵截圖是否要messagebox顯現
@@ -1144,15 +1153,17 @@ namespace OCLink
             string ur7 = (Cell != "") ?  Cell : "";
 
 
-
-            string[] names = { ur0, ur1, ur2, ur3, ur4, ur5, ur6 ,ur7 };//把上面的值放在Nnames裡面
+            // output url Format example : 
+            // http://www.weightobserver.com.tw:8080/antifat/his?hospital={0}&dr={1}&patientno={2}&patientname={3}&patientIdno={4}&patientBirth={5}&tel={6}&cell={7}
+            // 0=醫事機構代碼 1=登錄帳號 2=病歷號 3=名子 4=身分證5=生日 6=家電 7=手機
+            string[] names = { ur0, ur1, ur2, ur3, ur4, ur5, ur6 ,ur7 };//把上面的值放在Names裡面
             string output = names[0] + ", " + names[1] + ", " + names[2] + ", " +//幫他們設定名子
                             names[3] + ", " + names[4] + ", " + names[5] + ", " +
                             names[6] + ", " + names[7];
 
             string ur = String.Format(conn, names[0], names[1], names[2], names[3], names[4], names[5], names[6],names[7]);//這個在資訊平台一鍵連結功能設定上面會有數字那個數字就是帶剛剛取的值
 
-            if (function1111 !="   ")//當不小心按到空白項目會沒有作用(3個空白的原因是在齁台的空白選項是3個空白如果後台改掉這邊就要改)
+            if (function1111 !="   ")//當不小心按到空白項目會沒有作用(3個空白的原因是在後台的空白選項是3個空白如果後台改掉這邊就要改)
             {
                 if(myClass.IsNumeric(str1))//判斷str1是否為數字
                 {
@@ -1163,6 +1174,9 @@ namespace OCLink
                     string savetime = sw.Elapsed.TotalMilliseconds.ToString();
                     bool Return = WritePrivateProfileString("AppName", "開連結時間(ms)", savetime, test);
                     Process.Start("chrome", ur);//用chrome開網頁 如過用們預設的瀏覽器會有出錯問題
+
+                    // 儲存使用者按了一鍵連結的相關資訊
+                    Save2LogDB(names[0], names[1], names[2], ur);
                 }
                 else if(function1111 == "凌醫首頁")
                 {
@@ -1175,8 +1189,27 @@ namespace OCLink
                 {
                     Process.Start("chrome", "http://www.weightobserver.com.tw:8080/antifat/#");//截圖內容不正確(不為數字)會開啟這個網址
                 }
-                
             }
+        }
+
+        private void Save2LogDB(string sHospID, string sLoginUser, string sCode, string sUrl)
+        {
+            // EF SaveData
+            LogDBEntities db_log = new LogDBEntities();
+
+            OCLinkLog oc = new OCLinkLog();
+
+            oc.OCLRowid = Guid.NewGuid().ToString();
+            oc.OCLHospID = sHospID;
+            oc.OCLLoginUser = sLoginUser;
+            oc.OCLCode = sCode;
+            oc.OCLUrl = sUrl;
+            oc.OCLCreateTime = DateTime.Now;
+
+            db_log.OCLinkLog.Add(oc);
+            db_log.SaveChanges();
+
+            return;
         }
 
         //public JsonResult GetCombos(string stext)
@@ -1217,14 +1250,14 @@ namespace OCLink
             ButtonZ.BackColor = Color.Gainsboro;
             ButtonZ.ForeColor = Color.Black;
 
-            tbResize.Visible = true;
-            tbRed.Visible = true;
-            tbGreen.Visible = true;
-            tbBlue.Visible = true;
-            tresize.Visible = false;
-            tred.Visible = false;
-            tgreen.Visible = false;
-            tblue.Visible = false;
+            //tbResize.Visible = true;
+            //tbRed.Visible = true;
+            //tbGreen.Visible = true;
+            //tbBlue.Visible = true;
+            //tresize.Visible = false;
+            //tred.Visible = false;
+            //tgreen.Visible = false;
+            //tblue.Visible = false;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -1293,6 +1326,15 @@ namespace OCLink
         public bool GotOCR = false;//是否取得病歷號 
         private void btn_OCR1(object sender, EventArgs e)//這裡取病人資料OCR核心
         {
+            //string appDataSource = Configuration(AppContext[""]);
+            //string sDataSource = myClass.AESDecrypt(appDataSource, "z1r@m1d!@#$%^&*(");
+            //HISEntities db_his = new HISEntities();
+            //var result = from p in db_his.patient where p.strIdno == 身份證字號 select p;
+            // 取得 his1234567890 資料庫的 patient 資料
+            // 欄位
+
+
+
             //if (testhis == "TECH")//方頂取title
             //{
             //    Timer mytimer = new Timer();
@@ -1501,17 +1543,17 @@ namespace OCLink
                     MessageBox.Show("擷取資料錯誤,請重新截圖");
                 }
             }
-            else if (testhis == "KN")//測試抓oy的his3532040438的資料庫 開蘭*未使用*
-            {
-                var hospitalList = (from a in db_0438.patient where a.strUserAccount == "'TX" + str1 + "'" select new { a.strDisplayName, a.strIdno, a.strTel, a.strCell }).FirstOrDefault();
-                name = hospitalList.strDisplayName.Trim();
-                ID = hospitalList.strIdno.Trim();
-                tel = hospitalList.strTel.Trim();
-                if (hospitalList.strCell != "")
-                {
-                    Cell = hospitalList.strCell.Trim();
-                }
-            }
+            //else if (testhis == "KN")//測試抓oy的his3532040438的資料庫 開蘭*未使用*
+            //{
+            //    var hospitalList = (from a in db_0438.patient where a.strUserAccount == "'TX" + str1 + "'" select new { a.strDisplayName, a.strIdno, a.strTel, a.strCell }).FirstOrDefault();
+            //    name = hospitalList.strDisplayName.Trim();
+            //    ID = hospitalList.strIdno.Trim();
+            //    tel = hospitalList.strTel.Trim();
+            //    if (hospitalList.strCell != "")
+            //    {
+            //        Cell = hospitalList.strCell.Trim();
+            //    }
+            //}
             else if (testhis == "MTR" && File.Exists(Server + @"\MTR\DBF\Client.dbf") && function1111 != "凌醫首頁" && function1111 != "   ")//蒙利特(沒測試過但應該沒問題)
             {
                 if (myClass.IsNumeric(str1))//判斷是否截圖內容為數字
@@ -1576,6 +1618,7 @@ namespace OCLink
 
             // 開始OCR
             //string s = ocr.Recognize(@"C:\Temp\CaptureImage.jpg", -1, startX, startY, width, height, AspriseOCR.RECOGNIZE_TYPE_ALL, AspriseOCR.OUTPUT_FORMAT_PLAINTEXT);
+            // 正式環境需把這解開 
             TesseractEngine ocr = new TesseractEngine("./tessdata", "eng", EngineMode.TesseractAndCube);//設定語言   英文;
             // 測試時可以把這解開 
             //TesseractEngine ocr = new TesseractEngine(@"D:\ZeroMedRD\OCLink\OCLink\tessdata", "eng", EngineMode.TesseractAndCube);//設定語言   英文;
@@ -1611,8 +1654,9 @@ namespace OCLink
 
                     bit = PreprocesImage(bit, false);
                     Page page = ocr.Process(bit);
-                    str = page.GetText().Trim().Replace(" ","").Replace("O","0").Replace("l","1").Replace("S","5");//識別後的內容  "重要" 這裡是常常被反應辨識不佳   要改善就從這裡改善
-                    str = Regex.Replace(str, "[^0-9]", "");//保留數字
+                    //MessageBox.Show(page.GetText().Trim());
+                    str = page.GetText().Trim().ToUpper().Replace(" ","").Replace("O","0").Replace("l","1").Replace("S","5").Replace("P","0");//識別後的內容  "重要" 這裡是常常被反應辨識不佳   要改善就從這裡改善
+                    str = Regex.Replace(str, "[^0-9][^-][^/]", "");//保留數字
                     page.Dispose();
                     bit.Dispose();
                     ocr.Dispose();
@@ -1655,8 +1699,9 @@ namespace OCLink
 
                     bit = PreprocesImage(bit, false);
                     Page page = ocr.Process(bit);
-                    str = page.GetText().Trim().Replace(" ", "").Replace("O", "0").Replace("l", "1").Replace("S", "5");//識別後的內容 "重要" 這裡是常常被反應辨識不佳   要改善就從這裡改善
-                    str = Regex.Replace(str, "[^0-9]", "");//保留數字
+                    //MessageBox.Show(page.GetText().Trim());
+                    str = page.GetText().Trim().ToUpper().Replace(" ", "").Replace("O", "0").Replace("l", "1").Replace("S", "5").Replace("P", "0");//識別後的內容 "重要" 這裡是常常被反應辨識不佳   要改善就從這裡改善
+                    str = Regex.Replace(str, "[^0-9][^-][^/]", "");//保留數字
                     page.Dispose();
                     bit.Dispose(); 
                     ocr.Dispose();
@@ -2092,14 +2137,14 @@ namespace OCLink
             buttonS.BackColor = Color.Gainsboro;
             buttonS.ForeColor = Color.Black;
 
-            tbResize.Visible = false;//RGB參數
-            tbRed.Visible = false;
-            tbGreen.Visible = false;
-            tbBlue.Visible = false;
-            tresize.Visible = true;
-            tred.Visible = true;
-            tgreen.Visible = true;
-            tblue.Visible = true;
+            //tbResize.Visible = false;//RGB參數
+            //tbRed.Visible = false;
+            //tbGreen.Visible = false;
+            //tbBlue.Visible = false;
+            //tresize.Visible = true;
+            //tred.Visible = true;
+            //tgreen.Visible = true;
+            //tblue.Visible = true;
         }
 
         public bool IsNumeric(String strNumber)
