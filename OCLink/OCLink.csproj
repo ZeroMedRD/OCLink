@@ -16,7 +16,7 @@
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>ftp://zmcms.cloud/</PublishUrl>
+    <PublishUrl>ftp://oy.asuscomm.com/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -26,13 +26,13 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://zmcms.cloud:8888/</InstallUrl>
+    <InstallUrl>http://oy.asuscomm.com/</InstallUrl>
     <ProductName>凌醫一鍵連結</ProductName>
     <PublisherName>凌醫科技</PublisherName>
     <SuiteName>凌醫一鍵連結</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>ZMCMS.html</WebPage>
-    <ApplicationRevision>88</ApplicationRevision>
+    <ApplicationRevision>92</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -170,15 +170,14 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tesseract, Version=3.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tesseract.3.3.0\lib\net45\Tesseract.dll</HintPath>
+    <Reference Include="Tesseract, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tesseract.4.1.1\lib\net45\Tesseract.dll</HintPath>
     </Reference>
     <Reference Include="ZMLib">
       <HintPath>..\..\ZMLib\ZMLib\bin\Debug\ZMLib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commountity.cs" />
     <Compile Include="Cutter.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -211,43 +210,6 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="HotKey.cs" />
-    <Compile Include="Models\ComboDetail.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ComboMaster.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\connModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>connModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\connModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>connModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\connModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>connModel.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\HISEntities.cs" />
-    <Compile Include="Models\HISModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>HISModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\HISModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>HISModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\HISModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>HISModel.edmx</DependentUpon>
-    </Compile>
     <Compile Include="Models\HospInfo.cs">
       <DependentUpon>ZMCMSModel.tt</DependentUpon>
     </Compile>
@@ -266,26 +228,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LogModel.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\Model1.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Model1.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Model1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Model1.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Model1.edmx</DependentUpon>
-    </Compile>
     <Compile Include="Models\OCLinkLog.cs">
       <DependentUpon>LogModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\patient.cs">
-      <DependentUpon>HISModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SysHospital.cs">
       <DependentUpon>ZMCMSModel.tt</DependentUpon>
@@ -326,16 +270,6 @@
       <DependentUpon>tgk.tt</DependentUpon>
     </Compile>
     <Content Include="a060d-aaku2-001.ico" />
-    <Content Include="Models\HISModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>HISModel.edmx</DependentUpon>
-      <LastGenOutput>HISModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\HISModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>HISModel.edmx</DependentUpon>
-      <LastGenOutput>HISModel.cs</LastGenOutput>
-    </Content>
     <Content Include="Models\LogModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>LogModel.edmx</DependentUpon>
@@ -357,10 +291,10 @@
       <DependentUpon>tgk.edmx</DependentUpon>
       <LastGenOutput>tgk.cs</LastGenOutput>
     </Content>
-    <Content Include="x64\liblept1753.dll" />
-    <Content Include="x64\libtesseract3052.dll" />
-    <Content Include="x86\liblept1753.dll" />
-    <Content Include="x86\libtesseract3052.dll" />
+    <Content Include="x64\leptonica-1.80.0.dll" />
+    <Content Include="x64\tesseract41.dll" />
+    <Content Include="x86\leptonica-1.80.0.dll" />
+    <Content Include="x86\tesseract41.dll" />
     <EmbeddedResource Include="Cutter.resx">
       <DependentUpon>Cutter.cs</DependentUpon>
     </EmbeddedResource>
@@ -385,33 +319,12 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ZMCMSModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <EntityDeploy Include="Models\connModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>connModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="Models\connModel.edmx.diagram">
-      <DependentUpon>connModel.edmx</DependentUpon>
-    </None>
-    <EntityDeploy Include="Models\Model1.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>Model1.Designer.cs</LastGenOutput>
-    </EntityDeploy>
     <EntityDeploy Include="Models\LogModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>LogModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <EntityDeploy Include="Models\HISModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>HISModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="Models\HISModel.edmx.diagram">
-      <DependentUpon>HISModel.edmx</DependentUpon>
-    </None>
     <None Include="Models\LogModel.edmx.diagram">
       <DependentUpon>LogModel.edmx</DependentUpon>
-    </None>
-    <None Include="Models\Model1.edmx.diagram">
-      <DependentUpon>Model1.edmx</DependentUpon>
     </None>
     <None Include="Models\ZMCMSModel.edmx.diagram">
       <DependentUpon>ZMCMSModel.edmx</DependentUpon>
@@ -475,26 +388,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="amkkb-w4cgf-001.ico" />
-    <Content Include="Models\connModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>connModel.edmx</DependentUpon>
-      <LastGenOutput>connModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\connModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>connModel.edmx</DependentUpon>
-      <LastGenOutput>connModel.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\Model1.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Model1.edmx</DependentUpon>
-      <LastGenOutput>Model1.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\Model1.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Model1.edmx</DependentUpon>
-      <LastGenOutput>Model1.cs</LastGenOutput>
-    </Content>
     <Content Include="Models\ZMCMSModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ZMCMSModel.edmx</DependentUpon>
@@ -507,11 +400,11 @@
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\Tesseract.3.3.0\build\Tesseract.targets" Condition="Exists('..\packages\Tesseract.3.3.0\build\Tesseract.targets')" />
+  <Import Project="..\packages\Tesseract.4.1.1\build\Tesseract.targets" Condition="Exists('..\packages\Tesseract.4.1.1\build\Tesseract.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>此專案參考這部電腦上所缺少的 NuGet 套件。請啟用 NuGet 套件還原，以下載該套件。如需詳細資訊，請參閱 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的檔案是 {0}。</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Tesseract.3.3.0\build\Tesseract.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Tesseract.3.3.0\build\Tesseract.targets'))" />
+    <Error Condition="!Exists('..\packages\Tesseract.4.1.1\build\Tesseract.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Tesseract.4.1.1\build\Tesseract.targets'))" />
   </Target>
 </Project>

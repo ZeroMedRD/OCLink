@@ -226,8 +226,7 @@
             this.tbResize.Name = "tbResize";
             this.tbResize.Size = new System.Drawing.Size(55, 33);
             this.tbResize.TabIndex = 27;
-            this.tbResize.Visible = false;
-            this.tbResize.TextChanged += new System.EventHandler(this.tbResize_TextChanged);
+            this.tbResize.Visible = false;            
             // 
             // tbRed
             // 
@@ -431,8 +430,7 @@
             this.lbRed.Size = new System.Drawing.Size(45, 24);
             this.lbRed.TabIndex = 20;
             this.lbRed.Text = "Red";
-            this.lbRed.Visible = false;
-            this.lbRed.Click += new System.EventHandler(this.lbRed_Click);
+            this.lbRed.Visible = false;            
             // 
             // panel2
             // 

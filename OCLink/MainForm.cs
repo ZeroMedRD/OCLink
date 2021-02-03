@@ -72,6 +72,11 @@ namespace OCLink
                 sqlpw = value;
             }
         }
+
+        #region 設定資料庫連線
+        string strConn = "data source=23.97.65.134,1933;Initial Catalog={0};Integrated Security=False;user id=sa;password=I@ntif@t;";
+        #endregion
+
         string publishVersion;//版本編號
         Stopwatch sw = new System.Diagnostics.Stopwatch();                      //程式計時器
         ArrayList MyMacAddress = new ArrayList();                               //本機地址
@@ -1155,7 +1160,7 @@ namespace OCLink
 
             // output url Format example : 
             // http://www.weightobserver.com.tw:8080/antifat/his?hospital={0}&dr={1}&patientno={2}&patientname={3}&patientIdno={4}&patientBirth={5}&tel={6}&cell={7}
-            // 0=醫事機構代碼 1=登錄帳號 2=病歷號 3=名子 4=身分證5=生日 6=家電 7=手機
+            // 0=醫事機構代碼 1=登錄帳號 2=病歷號 3=名字 4=身分證5=生日 6=家電 7=手機
             string[] names = { ur0, ur1, ur2, ur3, ur4, ur5, ur6 ,ur7 };//把上面的值放在Names裡面
             string output = names[0] + ", " + names[1] + ", " + names[2] + ", " +//幫他們設定名子
                             names[3] + ", " + names[4] + ", " + names[5] + ", " +
@@ -1163,35 +1168,106 @@ namespace OCLink
 
             string ur = String.Format(conn, names[0], names[1], names[2], names[3], names[4], names[5], names[6],names[7]);//這個在資訊平台一鍵連結功能設定上面會有數字那個數字就是帶剛剛取的值
 
-            if (function1111 !="   ")//當不小心按到空白項目會沒有作用(3個空白的原因是在後台的空白選項是3個空白如果後台改掉這邊就要改)
+            string sHospID = names[0];
+            int iCode = int.Parse(names[1]);
+            string sName = names[2];
+            string sIdNo = String.IsNullOrEmpty(names[3]) ? "" : names[3];
+            string sBirthday = names[4];
+            string sTelephone = names[5];
+            string sMobilePhone = names[6];
+
+            string currentConn = String.Format(strConn, "his" + sHospID);
+            using (SqlConnection sqlconn = new SqlConnection(currentConn))
             {
-                if(myClass.IsNumeric(str1))//判斷str1是否為數字
+                bool bCallBrowse = false;
+                sqlconn.Open();
+                try
                 {
-                    this.Hide();
-                    notifyIcon1.ShowBalloonTip(5000);
-                    prog_flag = false;
-                    sw.Stop();//碼錶停止
-                    string savetime = sw.Elapsed.TotalMilliseconds.ToString();
-                    bool Return = WritePrivateProfileString("AppName", "開連結時間(ms)", savetime, test);
-                    Process.Start("chrome", ur);//用chrome開網頁 如過用們預設的瀏覽器會有出錯問題
+                    string sqlstr = String.Format("select * from patient p where p.intRsRecno={0} and p.strIdno='{1}'", iCode, sIdNo);
+                    MessageBox.Show(sqlstr);
+                    SqlCommand cmd = new SqlCommand(sqlstr, sqlconn);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    try
+                    {
+                        reader.Read();
+                        if (reader["strName"].ToString() != sName || reader["datBirthday"].ToString() != sBirthday || reader["strTel"].ToString() != sTelephone || reader["strCell"].ToString() != sMobilePhone)
+                        {
+                            if (MessageBox.Show("資料不一致 " + Environment.NewLine +
+                                            "病歷號碼:" + reader["intRsRecno"].ToString() + " ==>" + iCode.ToString() + Environment.NewLine +
+                                            "身份證字號:" + reader["strIdno"].ToString() + " ==>" + sIdNo + Environment.NewLine +
+                                            "姓名:" + reader["strName"].ToString() + " ==>" + sName + Environment.NewLine +
+                                            "出生日期:" + reader["datBirthday"].ToString() + " ==>" + sBirthday + Environment.NewLine +
+                                            "電話:" + reader["strTel"].ToString() + " ==>" + sTelephone + Environment.NewLine +
+                                            "行動電話:" + reader["strCell"].ToString() + " ==>" + sMobilePhone + Environment.NewLine +
+                                            "個管系統病人基本資料找不到，如果確定要繼續開啟個管會自動新增此病人資料！",
+                                            "問題",
+                                            MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes )
+                            {
+                                bCallBrowse = true;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        if (MessageBox.Show("病歷號碼:" + iCode.ToString() + Environment.NewLine +
+                                            "身份證字號:" + sIdNo + Environment.NewLine +
+                                            "姓名:" + sName + Environment.NewLine +
+                                            "出生日期:" + sBirthday + Environment.NewLine +
+                                            "電話:" + sTelephone + Environment.NewLine +
+                                            "行動電話:" + sMobilePhone + Environment.NewLine +
+                                        "個管系統病人基本資料找不到，如果確定要繼續開啟個管會自動新增此病人資料！",
+                                        "問題",
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes )
+                        {
+                            bCallBrowse = true;
+                        }
+                    }
+                    //funCommand(sqlstr, sqlconn, 1);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString() + "資料開啟有問題請重試或洽系統工程師\n\n聯絡電話：(03) 4636913");
+                }
 
-                    // 儲存使用者按了一鍵連結的相關資訊
-                    Save2LogDB(names[0], names[1], names[2], ur);
-                }
-                else if(function1111 == "凌醫首頁")
+                // 執行開啟 browse
+                if (bCallBrowse)
                 {
-                    this.Hide();
-                    notifyIcon1.ShowBalloonTip(5000);
-                    prog_flag = false;
-                    Process.Start("chrome", ur);
+                    if (function1111 != "   ")//當不小心按到空白項目會沒有作用(3個空白的原因是在後台的空白選項是3個空白如果後台改掉這邊就要改)
+                    {
+                        if (myClass.IsNumeric(str1))//判斷str1是否為數字
+                        {
+                            this.Hide();
+                            notifyIcon1.ShowBalloonTip(5000);
+                            prog_flag = false;
+                            sw.Stop();//碼錶停止
+                            string savetime = sw.Elapsed.TotalMilliseconds.ToString();
+                            bool Return = WritePrivateProfileString("AppName", "開連結時間(ms)", savetime, test);
+                            Process.Start("chrome", ur);//用chrome開網頁 如過用們預設的瀏覽器會有出錯問題
+
+                            // 儲存使用者按了一鍵連結的相關資訊
+                            Save2LogDB(names[0], names[1], names[2], ur);
+                        }
+                        else if (function1111 == "凌醫首頁")
+                        {
+                            this.Hide();
+                            notifyIcon1.ShowBalloonTip(5000);
+                            prog_flag = false;
+                            Process.Start("chrome", ur);
+
+                            Save2LogDB(names[0], names[1], names[2], ur);
+                        }
+                        else
+                        {
+                            // 截圖內容不正確(不為數字)會開啟這個網址
+                            Process.Start("chrome", "http://www.weightobserver.com.tw:8080/antifat/#");
+
+                            Save2LogDB(names[0], names[1], names[2], "http://www.weightobserver.com.tw:8080/antifat/#--截圖內容不正確(不為數字)會開啟這個網址");
+                        }
+                    }
                 }
-                else
-                {
-                    Process.Start("chrome", "http://www.weightobserver.com.tw:8080/antifat/#");//截圖內容不正確(不為數字)會開啟這個網址
-                }
-            }
+            }            
         }
-
+      
         private void Save2LogDB(string sHospID, string sLoginUser, string sCode, string sUrl)
         {
             // EF SaveData
@@ -1619,12 +1695,13 @@ namespace OCLink
             // 開始OCR
             //string s = ocr.Recognize(@"C:\Temp\CaptureImage.jpg", -1, startX, startY, width, height, AspriseOCR.RECOGNIZE_TYPE_ALL, AspriseOCR.OUTPUT_FORMAT_PLAINTEXT);
             // 正式環境需把這解開 
-            TesseractEngine ocr = new TesseractEngine("./tessdata", "eng", EngineMode.TesseractAndCube);//設定語言   英文;
+            //TesseractEngine ocr = new TesseractEngine("./tessdata", "eng", EngineMode.TesseractAndLstm);//設定語言   英文;
             // 測試時可以把這解開 
-            //TesseractEngine ocr = new TesseractEngine(@"D:\ZeroMedRD\OCLink\OCLink\tessdata", "eng", EngineMode.TesseractAndCube);//設定語言   英文;
+            TesseractEngine ocr = new TesseractEngine(@"D:\ZeroMedRD\OCLink\OCLink\tessdata", "chi_tra",EngineMode.TesseractAndLstm);//設定語言   中英文;
             //ocr = new TesseractEngine("./tessdata", "chi_tra");//設定語言   中文
             //ocr = new TesseractEngine("./tessdata", "eng", EngineMode.TesseractAndCube);//設定語言   英文
 
+            string sPreventString = String.Empty;
             string str = String.Empty;
             
             //匯入圖片進行識別
@@ -1653,10 +1730,16 @@ namespace OCLink
                     }
 
                     bit = PreprocesImage(bit, false);
-                    Page page = ocr.Process(bit);
-                    //MessageBox.Show(page.GetText().Trim());
-                    str = page.GetText().Trim().ToUpper().Replace(" ","").Replace("O","0").Replace("l","1").Replace("S","5").Replace("P","0");//識別後的內容  "重要" 這裡是常常被反應辨識不佳   要改善就從這裡改善
-                    str = Regex.Replace(str, "[^0-9][^-][^/]", "");//保留數字
+                    Page page = ocr.Process(bit);                    
+                    sPreventString = page.GetText().Trim();
+                    MessageBox.Show(sPreventString);
+                    str = sPreventString.ToUpper().Replace("O", "0").Replace("L", "1").Replace("I", "1").Replace("S", "5").Replace("j", "5").Replace("P", "0");
+                    str = sPreventString.Replace(" ", "").Replace("一", "-").Replace("?", "7");
+                    //str = page.GetText().Trim().Replace(" ", "").Replace("o", "0").Replace("O", "0").Replace("l", "1").Replace("I", "1").Replace("S", "5").Replace("s", "5").Replace("j", "5").Replace("p", "0").Replace("一", "-");
+                    //str = page.GetText().Trim().Replace(" ","").Replace("o","0").Replace("l", "1").Replace("I","1").Replace("S","5").Replace("s", "5").Replace("p","0");//識別後的內容  "重要" 這裡是常常被反應辨識不佳   要改善就從這裡改善
+                    //str = Regex.Replace(str, "[^0-9][^-][^/]", "");//保留數字
+                    str = Regex.Replace(str, @"[\u4e00-\u9fa5]", "");         // 去除漢字
+                    str = Regex.Replace(str, "[^0-9][^-][^/]", "");           // 保留數字與字符 - /
                     page.Dispose();
                     bit.Dispose();
                     ocr.Dispose();
@@ -1699,9 +1782,14 @@ namespace OCLink
 
                     bit = PreprocesImage(bit, false);
                     Page page = ocr.Process(bit);
-                    //MessageBox.Show(page.GetText().Trim());
-                    str = page.GetText().Trim().ToUpper().Replace(" ", "").Replace("O", "0").Replace("l", "1").Replace("S", "5").Replace("P", "0");//識別後的內容 "重要" 這裡是常常被反應辨識不佳   要改善就從這裡改善
-                    str = Regex.Replace(str, "[^0-9][^-][^/]", "");//保留數字
+                    sPreventString = page.GetText().Trim();
+                    MessageBox.Show(sPreventString);
+                    //識別後的內容 "重要" 這裡是常常被反應辨識不佳   要改善就從這裡改善
+                    str = sPreventString.ToUpper().Replace("O", "0").Replace("L", "1").Replace("I", "1").Replace("S", "5").Replace("j", "5").Replace("P", "0");
+                    str = sPreventString.Replace(" ", "").Replace("一", "-").Replace("?","7");
+                    str = Regex.Replace(str, @"[\u4e00-\u9fa5]", "");         // 去除漢字
+                    str = Regex.Replace(str, "[^0-9][^-][^/]", "");           // 保留數字與字符 - /
+                    //str = Regex.Replace(str, @"\D", "");         // 保留數字
                     page.Dispose();
                     bit.Dispose(); 
                     ocr.Dispose();
@@ -1731,39 +1819,39 @@ namespace OCLink
         /// <returns></returns>
         private Bitmap PreprocesImage(Bitmap image, bool lReverse)//會抓你設定的RGB跟放大倍率 來辨識圖片提高準確率
         {
-            Color cForeColor = Color.White;
-            Color cBackColor = Color.Black;
+            //Color cForeColor = Color.White;
+            //Color cBackColor = Color.Black;
 
-            if (lReverse == true)
-            {
-                cForeColor = Color.Black;
-                cBackColor = Color.White;
-            }
+            //if (lReverse == true)
+            //{
+            //    cForeColor = Color.Black;
+            //    cBackColor = Color.White;
+            //}
 
             //You can change your new color here. Red,Green,LawnGreen any..
             Color actualColor;
 
             //make an empty bitmap the same size as scrBitmap
-            if(btz == true)
-            {
-                nResize = (IsNumeric(tbResize.Text)) ? int.Parse(tbResize.Text.Trim()) : 1;
-            }
-            else
-            {
-                nResize = (IsNumeric(tresize.Text)) ? int.Parse(tresize.Text.Trim()) : 1;
-            }
-            
+            //if(btz == true)
+            //{
+            //    nResize = (IsNumeric(tbResize.Text)) ? int.Parse(tbResize.Text.Trim()) : 10;
+            //}
+            //else
+            //{
+            //    nResize = (IsNumeric(tresize.Text)) ? int.Parse(tresize.Text.Trim()) : 10;
+            //}
+            nResize = 5;
             image = ResizeImage(image, image.Width * nResize, image.Height * nResize);
             if(hotkeycheck == false)
             {
-                if(btz == true)
-                {
+                //if(btz == true)
+                //{
                     image.Save(@"C:\ZMTemp\Preprocess_Resize.jpg");
-                }
-                else
-                {
+                //}
+                //else
+                //{
                     image.Save(@"C:\ZMTemp\Preprocess_Resize_office.jpg");
-                }
+                //}
             }
                         
             Bitmap newBitmap = new Bitmap(image.Width, image.Height);
@@ -1794,33 +1882,6 @@ namespace OCLink
                             break;
                     }
                     newBitmap.SetPixel(i, j, Color.FromArgb(Result, Result, Result));
-
-
-
-                    //int avg = (actualColor.R + actualColor.G + actualColor.B) / 3; //RGB同除3就會變成灰階
-                    //newBitmap.SetPixel(i, j, Color.FromArgb(avg, avg, avg));
-
-                    // > 150 because.. Images edges can be of low pixel colr. if we set all pixel color to new then there will be no smoothness left.
-
-                    // 判斷 RGB 值
-                    //if (btz ==true)
-                    //{
-                    //    nRed = (IsNumeric(tbRed.Text)) ? int.Parse(tbRed.Text.Trim()) : 0;
-                    //    nGreen = (IsNumeric(tbGreen.Text)) ? int.Parse(tbRed.Text.Trim()) : 0;
-                    //    nBlue = (IsNumeric(tbBlue.Text)) ? int.Parse(tbRed.Text.Trim()) : 0;
-                    //}
-                    //else
-                    //{
-                    //    nRed = (IsNumeric(tred.Text)) ? int.Parse(tred.Text.Trim()) : 0;
-                    //    nGreen = (IsNumeric(tgreen.Text)) ? int.Parse(tred.Text.Trim()) : 0;
-                    //    nBlue = (IsNumeric(tblue.Text)) ? int.Parse(tred.Text.Trim()) : 0;
-                    //}
-
-
-                    //if (actualColor.R > nRed && actualColor.G > nGreen && actualColor.B > nBlue)    //在這裡設定RGB
-                    //    newBitmap.SetPixel(i, j, cForeColor);
-                    //else
-                    //newBitmap.SetPixel(i, j, cBackColor);
                 }
             }
 
@@ -1839,17 +1900,7 @@ namespace OCLink
             }
             return newBitmap;
         }
-
-        private void tbResize_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lbRed_Click(object sender, EventArgs e)
-        {
-
-        }
-
+                
         private void ButtonHotKey_Click(object sender, EventArgs e)//快捷鍵設定鈕
         {
            // this.Height = 335;
