@@ -41,6 +41,10 @@ namespace OCLink
         public string sHospRowid;//資訊面板
         public string drId = "1111";//取得登錄者帳號
         public string sqlIP;//從form3取值
+        string strconn65 = "65.52.165.109,1933";
+        string strconnUser = "sa";
+        string strconnpw = "I@ntif@t;";
+        string strconn23 = "23.97.65.134,1933";
         public string StrValueIP //form3傳值
         {
             set
@@ -74,7 +78,8 @@ namespace OCLink
         }
 
         #region 設定資料庫連線
-        string strConn = "data source=23.97.65.134,1933;Initial Catalog={0};Integrated Security=False;user id=sa;password=I@ntif@t;";
+        //string strConn = "data source=23.97.65.134,1933;Initial Catalog={0};Integrated Security=False;user id=sa;password=I@ntif@t;";
+
         #endregion
 
         string publishVersion;//版本編號
@@ -208,7 +213,7 @@ namespace OCLink
 
         public void setdata()
         {
-            string strCon1 = "server=65.52.165.109,1933;database=OPDBoard;user=sa;password=I@ntif@t;";
+            string strCon1 = "server=" + strconn65 +"; database=OPDBoard;user=" + strconnUser + ";password=" + strconnpw;
             using (SqlConnection conn = new SqlConnection(strCon1))
             {
                 conn.Open();
@@ -229,7 +234,7 @@ namespace OCLink
                         bCheckID = true;
                     }
                 }
-                string strCon2 = "server=65.52.165.109,1933;database=ZMCMS;user=sa;password=I@ntif@t;";
+                string strCon2 = "server=" +strconn65 +";database=ZMCMS;user=" +strconnUser +";password=" + strconnpw;
                 SqlConnection conn1 = new SqlConnection(strCon2);
                 conn1.Open();
                 try
@@ -331,7 +336,7 @@ namespace OCLink
                 Directory.CreateDirectory(@"C:\ZMTemp");
             }
 
-            string strCon = @"data source= 65.52.165.109,1933;initial catalog= ZMCMS;user id=sa;password=I@ntif@t";//下方的部分是要抓先前使用者紀錄來保留個人化設定
+            string strCon = @"data source=" + strconn65 +";initial catalog= ZMCMS;user id=" + strconnUser+";password=" + strconnpw;//下方的部分是要抓先前使用者紀錄來保留個人化設定
             using (SqlConnection conn = new SqlConnection(strCon))//連線SQL資料到conn
             {
                 try
@@ -1142,130 +1147,132 @@ namespace OCLink
             sw.Start();//碼表開始計時
             // 打開凌醫網頁
             string ur0 = (hisid != "") ? hisid : "";//判斷是否為空值
-            
-            string ur1 = (drId != "") ?  drId : "";
 
-            string ur2 = (str1 != "") ?  str1 : "";
+            string ur1 = (drId != "") ? drId : "";
 
-            string ur3 = (name != "") ?  name : "";
-            
-            string ur4 = (ID != "") ?  ID : "";
-            
-            string ur5 = (Birth != "") ?  Birth : "";
-            
-            string ur6 = (tel != "") ?  tel : "";
-            
-            string ur7 = (Cell != "") ?  Cell : "";
+            string ur2 = (str1 != "") ? str1 : "";
+
+            string ur3 = (name != "") ? name : "";
+
+            string ur4 = (ID != "") ? ID : "";
+
+            string ur5 = (Birth != "") ? Birth : "";
+
+            string ur6 = (tel != "") ? tel : "";
+
+            string ur7 = (Cell != "") ? Cell : "";
 
 
             // output url Format example : 
             // http://www.weightobserver.com.tw:8080/antifat/his?hospital={0}&dr={1}&patientno={2}&patientname={3}&patientIdno={4}&patientBirth={5}&tel={6}&cell={7}
             // 0=醫事機構代碼 1=登錄帳號 2=病歷號 3=名字 4=身分證5=生日 6=家電 7=手機
-            string[] names = { ur0, ur1, ur2, ur3, ur4, ur5, ur6 ,ur7 };//把上面的值放在Names裡面
+            string[] names = { ur0, ur1, ur2, ur3, ur4, ur5, ur6, ur7 };//把上面的值放在Names裡面
             string output = names[0] + ", " + names[1] + ", " + names[2] + ", " +//幫他們設定名子
                             names[3] + ", " + names[4] + ", " + names[5] + ", " +
                             names[6] + ", " + names[7];
 
-            string ur = String.Format(conn, names[0], names[1], names[2], names[3], names[4], names[5], names[6],names[7]);//這個在資訊平台一鍵連結功能設定上面會有數字那個數字就是帶剛剛取的值
+            string ur = String.Format(conn, names[0], names[1], names[2], names[3], names[4], names[5], names[6], names[7]);//這個在資訊平台一鍵連結功能設定上面會有數字那個數字就是帶剛剛取的值           
+            //string sHospID = names[0];
+            //int iCode = int.Parse("T55");
+            //string sName = names[2];
+            //string sIdNo = String.IsNullOrEmpty(names[3]) ? "" : names[3];
+            //string sBirthday = names[4];
+            //string sTelephone = names[5];
+            //string sMobilePhone = names[6];
 
-            string sHospID = names[0];
-            int iCode = int.Parse(names[1]);
-            string sName = names[2];
-            string sIdNo = String.IsNullOrEmpty(names[3]) ? "" : names[3];
-            string sBirthday = names[4];
-            string sTelephone = names[5];
-            string sMobilePhone = names[6];
-
-            string currentConn = String.Format(strConn, "his" + sHospID);
-            using (SqlConnection sqlconn = new SqlConnection(currentConn))
-            {
-                bool bCallBrowse = false;
-                sqlconn.Open();
-                try
-                {
-                    string sqlstr = String.Format("select * from patient p where p.intRsRecno={0} and p.strIdno='{1}'", iCode, sIdNo);
-                    MessageBox.Show(sqlstr);
-                    SqlCommand cmd = new SqlCommand(sqlstr, sqlconn);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    try
-                    {
-                        reader.Read();
-                        if (reader["strName"].ToString() != sName || reader["datBirthday"].ToString() != sBirthday || reader["strTel"].ToString() != sTelephone || reader["strCell"].ToString() != sMobilePhone)
-                        {
-                            if (MessageBox.Show("資料不一致 " + Environment.NewLine +
-                                            "病歷號碼:" + reader["intRsRecno"].ToString() + " ==>" + iCode.ToString() + Environment.NewLine +
-                                            "身份證字號:" + reader["strIdno"].ToString() + " ==>" + sIdNo + Environment.NewLine +
-                                            "姓名:" + reader["strName"].ToString() + " ==>" + sName + Environment.NewLine +
-                                            "出生日期:" + reader["datBirthday"].ToString() + " ==>" + sBirthday + Environment.NewLine +
-                                            "電話:" + reader["strTel"].ToString() + " ==>" + sTelephone + Environment.NewLine +
-                                            "行動電話:" + reader["strCell"].ToString() + " ==>" + sMobilePhone + Environment.NewLine +
-                                            "個管系統病人基本資料找不到，如果確定要繼續開啟個管會自動新增此病人資料！",
-                                            "問題",
-                                            MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes )
-                            {
-                                bCallBrowse = true;
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        if (MessageBox.Show("病歷號碼:" + iCode.ToString() + Environment.NewLine +
-                                            "身份證字號:" + sIdNo + Environment.NewLine +
-                                            "姓名:" + sName + Environment.NewLine +
-                                            "出生日期:" + sBirthday + Environment.NewLine +
-                                            "電話:" + sTelephone + Environment.NewLine +
-                                            "行動電話:" + sMobilePhone + Environment.NewLine +
-                                        "個管系統病人基本資料找不到，如果確定要繼續開啟個管會自動新增此病人資料！",
-                                        "問題",
-                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes )
-                        {
-                            bCallBrowse = true;
-                        }
-                    }
-                    //funCommand(sqlstr, sqlconn, 1);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString() + "資料開啟有問題請重試或洽系統工程師\n\n聯絡電話：(03) 4636913");
-                }
+            //string currentConn = String.Format(strConn, "his" + sHospID);
+            //using (SqlConnection sqlconn = new SqlConnection(currentConn))
+            //{
+            //    bool bCallBrowse = false;
+            //    sqlconn.Open();
+            //    try
+            //    {
+            //        string sqlstr = String.Format("select * from patient p where p.intRsRecno={0} and p.strIdno='{1}'", iCode, sIdNo);
+            //        MessageBox.Show(sqlstr);
+            //        SqlCommand cmd = new SqlCommand(sqlstr, sqlconn);
+            //        SqlDataReader reader = cmd.ExecuteReader();
+            //        try
+            //        {
+            //            reader.Read();
+            //            if (reader["strName"].ToString() != sName || reader["datBirthday"].ToString() != sBirthday || reader["strTel"].ToString() != sTelephone || reader["strCell"].ToString() != sMobilePhone)
+            //            {
+            //                if (MessageBox.Show("資料不一致 " + Environment.NewLine +
+            //                                "病歷號碼:" + reader["intRsRecno"].ToString() + " ==>" + iCode.ToString() + Environment.NewLine +
+            //                                "身份證字號:" + reader["strIdno"].ToString() + " ==>" + sIdNo + Environment.NewLine +
+            //                                "姓名:" + reader["strName"].ToString() + " ==>" + sName + Environment.NewLine +
+            //                                "出生日期:" + reader["datBirthday"].ToString() + " ==>" + sBirthday + Environment.NewLine +
+            //                                "電話:" + reader["strTel"].ToString() + " ==>" + sTelephone + Environment.NewLine +
+            //                                "行動電話:" + reader["strCell"].ToString() + " ==>" + sMobilePhone + Environment.NewLine +
+            //                                "個管系統病人基本資料找不到，如果確定要繼續開啟個管會自動新增此病人資料！",
+            //                                "問題",
+            //                                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            //                {
+            //                    bCallBrowse = true;
+            //                }
+            //            }
+            //        }
+            //        catch
+            //        {
+            //            if (MessageBox.Show("病歷號碼:" + iCode.ToString() + Environment.NewLine +
+            //                                "身份證字號:" + sIdNo + Environment.NewLine +
+            //                                "姓名:" + sName + Environment.NewLine +
+            //                                "出生日期:" + sBirthday + Environment.NewLine +
+            //                                "電話:" + sTelephone + Environment.NewLine +
+            //                                "行動電話:" + sMobilePhone + Environment.NewLine +
+            //                            "個管系統病人基本資料找不到，如果確定要繼續開啟個管會自動新增此病人資料！",
+            //                            "問題",
+            //                            MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            //            {
+            //                bCallBrowse = true;
+            //            }
+            //        }
+            //        //funCommand(sqlstr, sqlconn, 1);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show(ex.ToString() + "資料開啟有問題請重試或洽系統工程師\n\n聯絡電話：(03) 4636913");
+            //    }
 
                 // 執行開啟 browse
-                if (bCallBrowse)
+
+
+                if (function1111 != "   ")//當不小心按到空白項目會沒有作用(3個空白的原因是在後台的空白選項是3個空白如果後台改掉這邊就要改)
                 {
-                    if (function1111 != "   ")//當不小心按到空白項目會沒有作用(3個空白的原因是在後台的空白選項是3個空白如果後台改掉這邊就要改)
+                    if (myClass.IsNumeric(str1))//判斷str1是否為數字
                     {
-                        if (myClass.IsNumeric(str1))//判斷str1是否為數字
-                        {
-                            this.Hide();
-                            notifyIcon1.ShowBalloonTip(5000);
-                            prog_flag = false;
-                            sw.Stop();//碼錶停止
-                            string savetime = sw.Elapsed.TotalMilliseconds.ToString();
-                            bool Return = WritePrivateProfileString("AppName", "開連結時間(ms)", savetime, test);
-                            Process.Start("chrome", ur);//用chrome開網頁 如過用們預設的瀏覽器會有出錯問題
+                        this.Hide();
+                        notifyIcon1.ShowBalloonTip(5000);
+                        prog_flag = false;
+                        sw.Stop();//碼錶停止
+                        string savetime = sw.Elapsed.TotalMilliseconds.ToString();
+                        bool Return = WritePrivateProfileString("AppName", "開連結時間(ms)", savetime, test);
+                        Process.Start("chrome", ur);//用chrome開網頁 如過用們預設的瀏覽器會有出錯問題
 
-                            // 儲存使用者按了一鍵連結的相關資訊
-                            Save2LogDB(names[0], names[1], names[2], ur);
-                        }
-                        else if (function1111 == "凌醫首頁")
-                        {
-                            this.Hide();
-                            notifyIcon1.ShowBalloonTip(5000);
-                            prog_flag = false;
-                            Process.Start("chrome", ur);
+                        // 儲存使用者按了一鍵連結的相關資訊
+                        Save2LogDB(names[0], names[1], names[2], ur);
+                    }
+                    else if (function1111 == "凌醫首頁")
+                    {
+                        this.Hide();
+                        notifyIcon1.ShowBalloonTip(5000);
+                        prog_flag = false;
+                        Process.Start("chrome", ur);
 
-                            Save2LogDB(names[0], names[1], names[2], ur);
-                        }
-                        else
-                        {
-                            // 截圖內容不正確(不為數字)會開啟這個網址
-                            Process.Start("chrome", "http://www.weightobserver.com.tw:8080/antifat/#");
+                        Save2LogDB(names[0], names[1], names[2], ur);
+                    }
+                    else
+                    {
+                        // 截圖內容不正確(不為數字)會開啟這個網址
+                        Process.Start("chrome", "http://www.weightobserver.com.tw:8080/antifat/#");
 
-                            Save2LogDB(names[0], names[1], names[2], "http://www.weightobserver.com.tw:8080/antifat/#--截圖內容不正確(不為數字)會開啟這個網址");
-                        }
+                        Save2LogDB(names[0], names[1], names[2], "http://www.weightobserver.com.tw:8080/antifat/#--截圖內容不正確(不為數字)會開啟這個網址");
+                    }
+                    if (ID != checkID || name != checkname)
+                    {
+                        Save2LogDB(names[0], names[1], "100", ur);
                     }
                 }
-            }            
+            //}
         }
       
         private void Save2LogDB(string sHospID, string sLoginUser, string sCode, string sUrl)
@@ -1305,14 +1312,6 @@ namespace OCLink
         //    return Json(result, JsonRequestBehavior.AllowGet);
         //}
 
-
-        //public void gotoSite(string url)
-        //{
-        //    var proc = new Process();
-        //    proc.StartInfo.FileName = "chrome.exe";
-        //    proc.StartInfo.Arguments = url + " --new-window --start-maximized";   // --incognito";
-        //    proc.Start();
-        //}
 
         bool btz = true;//判斷診間掛號紐是否按下
         private void buttonS_Click(object sender, EventArgs e)//掛號紐
@@ -1398,19 +1397,14 @@ namespace OCLink
         }
 
         // OCR 測試結果顯示
+        string checkID;
+        string checkname;
+        string checktel;
+        string checkBirth;
         public string str1;//截圖出來的內容(病歷號)
         public bool GotOCR = false;//是否取得病歷號 
         private void btn_OCR1(object sender, EventArgs e)//這裡取病人資料OCR核心
         {
-            //string appDataSource = Configuration(AppContext[""]);
-            //string sDataSource = myClass.AESDecrypt(appDataSource, "z1r@m1d!@#$%^&*(");
-            //HISEntities db_his = new HISEntities();
-            //var result = from p in db_his.patient where p.strIdno == 身份證字號 select p;
-            // 取得 his1234567890 資料庫的 patient 資料
-            // 欄位
-
-
-
             //if (testhis == "TECH")//方頂取title
             //{
             //    Timer mytimer = new Timer();
@@ -1423,15 +1417,31 @@ namespace OCLink
             //        hotkeycheck = true;
             //    }
             //}
-            if(GotOCR ==false && function1111 !="凌醫首頁")
+            if (GotOCR ==false && function1111 !="凌醫首頁")
             {
                 i = 0;
                 str1 = GetOCR();//這裡截圖來病歷號
-                //str1 = Regex.Replace(str1, "[^0-9]", "");//保留數字
                 if (hotkeycheck == false)
                 {
                     MessageBox.Show(str1);//要確認截圖結果是否正確
                     hotkeycheck = true;
+                }
+                string ckeckconn = "server =" + strconn23 + "; database = his" + hisid + "; user = " + strconnUser+ "; password = " + strconnpw;
+                using (SqlConnection conn = new SqlConnection(ckeckconn))
+                {
+                    string sqlconn = "select top 1* from patient where strUserAccount  like'%" + str1 + "'";
+                    conn.Open();
+                    SqlCommand sda = new SqlCommand(sqlconn, conn);
+                    SqlDataReader clinic = sda.ExecuteReader();
+                    while (clinic.Read())
+                    {
+                        checkname = clinic["strname"].ToString().Trim();
+                        checkID = clinic["strIdno"].ToString().Trim();
+                        checktel = clinic["strTel"].ToString().Trim();
+                        string sqlcheckBirth = clinic["datBirthday"].ToString().Trim();
+                        DateTime dt = Convert.ToDateTime(sqlcheckBirth);
+                        checkBirth = dt.Year + "/" + dt.Month + "/" + dt.Day;
+                    }
                 }
             }
             sw.Reset();//碼表歸零
@@ -1667,6 +1677,23 @@ namespace OCLink
                     MessageBox.Show("擷取資料錯誤,請重新截圖");
                 }
             }
+           
+            //if (ID != checkID || name != checkname )
+            //{
+            //DialogResult myResult = MessageBox.Show("貴院的該病人資料與以前不同,是否要將新資料覆蓋過去?\r\n注意!!資料更新後就回不來了" + "\r\n" + "\r\n" + "新:" + name + " " + ID + " " + tel + "\r\n" + "\r\n" + "舊:" + checkname + " " + checkID + " " + checktel, "注意", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            //if (myResult == DialogResult.Yes)
+            //{
+
+            //}
+            //if (myResult == DialogResult.No)
+            //{
+            //    name = checkname;
+            //    ID = checkID;
+            //    tel = checktel;
+            //    Birth = checkBirth;
+            //}
+            //}
+
             sw.Stop();//碼錶停止
             string savetime = sw.Elapsed.TotalMilliseconds.ToString();
             bool Return = WritePrivateProfileString("AppName", "開資料時間(ms)", savetime, test);
@@ -1695,9 +1722,9 @@ namespace OCLink
             // 開始OCR
             //string s = ocr.Recognize(@"C:\Temp\CaptureImage.jpg", -1, startX, startY, width, height, AspriseOCR.RECOGNIZE_TYPE_ALL, AspriseOCR.OUTPUT_FORMAT_PLAINTEXT);
             // 正式環境需把這解開 
-            //TesseractEngine ocr = new TesseractEngine("./tessdata", "eng", EngineMode.TesseractAndLstm);//設定語言   英文;
+            TesseractEngine ocr = new TesseractEngine("./tessdata", "eng", EngineMode.TesseractAndLstm);//設定語言   英文;
             // 測試時可以把這解開 
-            TesseractEngine ocr = new TesseractEngine(@"D:\ZeroMedRD\OCLink\OCLink\tessdata", "chi_tra",EngineMode.TesseractAndLstm);//設定語言   中英文;
+            //TesseractEngine ocr = new TesseractEngine(@"D:\ZeroMedRD\OCLink\OCLink\tessdata", "chi_tra", EngineMode.TesseractAndLstm);//設定語言   中英文;
             //ocr = new TesseractEngine("./tessdata", "chi_tra");//設定語言   中文
             //ocr = new TesseractEngine("./tessdata", "eng", EngineMode.TesseractAndCube);//設定語言   英文
 
@@ -1732,14 +1759,10 @@ namespace OCLink
                     bit = PreprocesImage(bit, false);
                     Page page = ocr.Process(bit);                    
                     sPreventString = page.GetText().Trim();
-                    MessageBox.Show(sPreventString);
                     str = sPreventString.ToUpper().Replace("O", "0").Replace("L", "1").Replace("I", "1").Replace("S", "5").Replace("j", "5").Replace("P", "0");
                     str = sPreventString.Replace(" ", "").Replace("一", "-").Replace("?", "7");
-                    //str = page.GetText().Trim().Replace(" ", "").Replace("o", "0").Replace("O", "0").Replace("l", "1").Replace("I", "1").Replace("S", "5").Replace("s", "5").Replace("j", "5").Replace("p", "0").Replace("一", "-");
-                    //str = page.GetText().Trim().Replace(" ","").Replace("o","0").Replace("l", "1").Replace("I","1").Replace("S","5").Replace("s", "5").Replace("p","0");//識別後的內容  "重要" 這裡是常常被反應辨識不佳   要改善就從這裡改善
-                    //str = Regex.Replace(str, "[^0-9][^-][^/]", "");//保留數字
                     str = Regex.Replace(str, @"[\u4e00-\u9fa5]", "");         // 去除漢字
-                    str = Regex.Replace(str, "[^0-9][^-][^/]", "");           // 保留數字與字符 - /
+                    str = Regex.Replace(str, "[^0-9][^-][^/][a-zA-Z]", "");// 保留數字與字符 - /
                     page.Dispose();
                     bit.Dispose();
                     ocr.Dispose();
@@ -1783,13 +1806,11 @@ namespace OCLink
                     bit = PreprocesImage(bit, false);
                     Page page = ocr.Process(bit);
                     sPreventString = page.GetText().Trim();
-                    MessageBox.Show(sPreventString);
                     //識別後的內容 "重要" 這裡是常常被反應辨識不佳   要改善就從這裡改善
                     str = sPreventString.ToUpper().Replace("O", "0").Replace("L", "1").Replace("I", "1").Replace("S", "5").Replace("j", "5").Replace("P", "0");
-                    str = sPreventString.Replace(" ", "").Replace("一", "-").Replace("?","7");
+                    str = sPreventString.Replace(" ", "").Replace("一", "-").Replace("?", "7");
                     str = Regex.Replace(str, @"[\u4e00-\u9fa5]", "");         // 去除漢字
-                    str = Regex.Replace(str, "[^0-9][^-][^/]", "");           // 保留數字與字符 - /
-                    //str = Regex.Replace(str, @"\D", "");         // 保留數字
+                    str = Regex.Replace(str, "[^0-9][^-][^/][a-zA-Z]", "");// 保留數字與字符去英文字母 -
                     page.Dispose();
                     bit.Dispose(); 
                     ocr.Dispose();
