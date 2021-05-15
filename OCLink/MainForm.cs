@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Configuration;
-using System.Linq;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Drawing;
@@ -21,7 +19,6 @@ using OCLink.Models;
 using System.Data.OleDb;
 using ZMLib;
 using System.Deployment.Application;
-using Timer = System.Windows.Forms.Timer;
 
 namespace OCLink
 {
@@ -219,7 +216,7 @@ namespace OCLink
                 conn.Open();
                 try
                 {
-                    string sqlstr = "select * from InfoPanel";
+                    string sqlstr = "select * from InfoPanel where IPCBDCode = 'E'";//2021/4/23更改
                     funCommand(sqlstr, conn, 1);
                 }
                 catch (Exception ex)
@@ -610,6 +607,16 @@ namespace OCLink
                         MessageBox.Show("請設定掛號室截圖路徑 避免連結錯誤");
                     }
                     uint reg37 = GetPrivateProfileString("AppName", "OPD", "", sb, (uint)sb.Capacity, test);
+                    uint reg38 = GetPrivateProfileString("AppName", "病歷號", "", sb, (uint)sb.Capacity, test);
+                    if(sb.ToString() =="True")
+                    {
+                        checkBox4.Checked = true;
+                    }
+                    uint reg39 = GetPrivateProfileString("AppName", "身份證", "", sb, (uint)sb.Capacity, test);
+                    if (sb.ToString() == "True")
+                    {
+                        checkBox6.Checked = true;
+                    }
                     if (sb.ToString() == "")
                     {
                         MessageBox.Show("請設定診間截圖路徑 避免連結錯誤");
@@ -622,20 +629,20 @@ namespace OCLink
                 }
             }
             // 下列RGB參數有一個是空白則一律帶預設值
-            if(tbResize.Text == "" || tbRed.Text == "" || tbGreen.Text == "" || tbBlue.Text =="")
-            {
-                tbResize.Text = "1";
-                tbRed.Text = "50";
-                tbGreen.Text = "50";
-                tbBlue.Text = "50";
-            }
-            if(tresize.Text == "" || tred.Text == "" || tgreen.Text == "" || tblue.Text == "")
-            {
-                tresize.Text = "1";
-                tred.Text = "40";
-                tgreen.Text = "40";
-                tblue.Text = "40";
-            }
+            //if(tbResize.Text == "" || tbRed.Text == "" || tbGreen.Text == "" || tbBlue.Text =="")
+            //{
+            //    tbResize.Text = "1";
+            //    tbRed.Text = "50";
+            //    tbGreen.Text = "50";
+            //    tbBlue.Text = "50";
+            //}
+            //if(tresize.Text == "" || tred.Text == "" || tgreen.Text == "" || tblue.Text == "")
+            //{
+            //    tresize.Text = "1";
+            //    tred.Text = "40";
+            //    tgreen.Text = "40";
+            //    tblue.Text = "40";
+            //}
         }
         
         private bool hotkeycheck = true;//判斷快捷鍵截圖是否要messagebox顯現
@@ -949,13 +956,6 @@ namespace OCLink
                             else
                                 this.Text = hisid + "_" + clinic["HospName"].ToString() + "_版本號碼" ;//診間名稱+醫事機構代碼
                             break;
-                        //case 3:
-                        //    name = clinic["strDisplayName"].ToString();//名子
-                        //    tel = clinic["strTel"].ToString();//電話
-                        //    Cell = clinic["strCell"].ToString();//手機
-                        //    Birth = String.Format("{0: yyyy-MM-dd}", clinic["datBirthday"]);//生日
-                        //    ID = clinic["strIdno"].ToString();//身分證
-                        //    break;
                     }
                 }
                 clinic.Close();
@@ -1055,92 +1055,169 @@ namespace OCLink
 
         private void hotkey2_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            
-                string ur2 = comboBox1.SelectedValue.ToString();
+            string ur2 = comboBox1.SelectedValue.ToString();
+            string ur1 = comboBox1.Text.Trim();
+            if(testhis =="TECH"&&ur1 =="個管問診")
+            {
+                TECHbrowser();
+            }
+            else
+            {
                 openBrowser(ur2);//開連結
-            
+            }
         }
 
         private void hotkey3_OnHotkey(object sender, HotKeyEventArgs e)
         {
-           
-                string ur2 = comboBox2.SelectedValue.ToString();
-                openBrowser(ur2);
-            
+            string ur2 = comboBox2.SelectedValue.ToString();
+            string ur1 = comboBox2.Text.Trim();
+            if (testhis == "TECH" && ur1 == "個管問診")
+            {
+                TECHbrowser();
+            }
+            else
+            {
+                openBrowser(ur2);//開連結
+            }
+
         }
 
         private void hotkey4_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            
-                string ur2 = comboBox3.SelectedValue.ToString();
-                openBrowser(ur2);
-            
+            string ur2 = comboBox3.SelectedValue.ToString();
+            string ur1 = comboBox3.Text.Trim();
+            if (testhis == "TECH" && ur1 == "個管問診")
+            {
+                TECHbrowser();
+            }
+            else
+            {
+                openBrowser(ur2);//開連結
+            }
+
         }
 
         private void hotkey5_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            
-                string ur2 = comboBox4.SelectedValue.ToString();
-                openBrowser(ur2);
-            
+            string ur2 = comboBox4.SelectedValue.ToString();
+            string ur1 = comboBox4.Text.Trim();
+            if (testhis == "TECH" && ur1 == "個管問診")
+            {
+                TECHbrowser();
+            }
+            else
+            {
+                openBrowser(ur2);//開連結
+            }
         }
         private void hotkey6_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            
-                string ur2 = comboBox5.SelectedValue.ToString();
-                openBrowser(ur2);
-            
+            string ur2 = comboBox5.SelectedValue.ToString();
+            string ur1 = comboBox5.Text.Trim();
+            if (testhis == "TECH" && ur1 == "個管問診")
+            {
+                TECHbrowser();
+            }
+            else
+            {
+                openBrowser(ur2);//開連結
+            }
         }
         private void hotkey7_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            
-                string ur2 = comboBox6.SelectedValue.ToString();
-                openBrowser(ur2);
-            
+            string ur2 = comboBox6.SelectedValue.ToString();
+            string ur1 = comboBox6.Text.Trim();
+            if (testhis == "TECH" && ur1 == "個管問診")
+            {
+                TECHbrowser();
+            }
+            else
+            {
+                openBrowser(ur2);//開連結
+            }
         }
         private void hotkey8_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            
-                string ur2 = comboBox7.SelectedValue.ToString();
-                openBrowser(ur2);
-            
+            string ur2 = comboBox7.SelectedValue.ToString();
+            string ur1 = comboBox7.Text.Trim();
+            if (testhis == "TECH" && ur1 == "個管問診")
+            {
+                TECHbrowser();
+            }
+            else
+            {
+                openBrowser(ur2);//開連結
+            }
         }
         private void hotkey9_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            
-                string ur2 = comboBox8.SelectedValue.ToString();
-                openBrowser(ur2);
-            
+            string ur2 = comboBox8.SelectedValue.ToString();
+            string ur1 = comboBox8.Text.Trim();
+            if (testhis == "TECH" && ur1 == "個管問診")
+            {
+                TECHbrowser();
+            }
+            else
+            {
+                openBrowser(ur2);//開連結
+            }
         }
         private void hotkey10_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            
-                string ur2 = comboBox9.SelectedValue.ToString();
-                openBrowser(ur2);
-            
+            string ur2 = comboBox9.SelectedValue.ToString();
+            string ur1 = comboBox9.Text.Trim();
+            if (testhis == "TECH" && ur1 == "個管問診")
+            {
+                TECHbrowser();
+            }
+            else
+            {
+                openBrowser(ur2);//開連結
+            }
         }
         private void hotkey11_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            
-                string ur2 = comboBox10.SelectedValue.ToString();
-                openBrowser(ur2);
-            
+            string ur2 = comboBox10.SelectedValue.ToString();
+            string ur1 = comboBox10.Text.Trim();
+            if (testhis == "TECH" && ur1 == "個管問診")
+            {
+                TECHbrowser();
+            }
+            else
+            {
+                openBrowser(ur2);//開連結
+            }
         }
         private void hotkey12_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            
-                string ur2 = comboBox11.SelectedValue.ToString();
-                openBrowser(ur2);
-            
+            string ur2 = comboBox11.SelectedValue.ToString();
+            string ur1 = comboBox11.Text.Trim();
+            if (testhis == "TECH" && ur1 == "個管問診")
+            {
+                TECHbrowser();
+            }
+            else
+            {
+                openBrowser(ur2);//開連結
+            }
         }
         private void hotkey13_OnHotkey(object sender, HotKeyEventArgs e)
         {
-            
-                string ur2 = comboBox12.SelectedValue.ToString();
-                openBrowser(ur2);
-            
+            string ur2 = comboBox12.SelectedValue.ToString();
+            string ur1 = comboBox12.Text.Trim();
+            if (testhis == "TECH" && ur1 == "個管問診")
+            {
+                TECHbrowser();
+            }
+            else
+            {
+                openBrowser(ur2);//開連結
+            }
         }
-
+        void TECHbrowser()
+        {
+            Process.Start("chrome", "http://www.weightobserver.com.tw:8080/antifat/his?hospital=" + hisid + "&dr=" + drId + "&patientno=" + str1 + "&patientname=" + name + "&patientIdno=" + ID + "&patientBirth=" + Birth + "&tel=" + tel + "&cell=" + Cell + "&strRecno=" + str1);
+        }
         void openBrowser(string conn)
         {
             sw.Reset();//碼表歸零
@@ -1172,107 +1249,51 @@ namespace OCLink
                             names[6] + ", " + names[7];
 
             string ur = String.Format(conn, names[0], names[1], names[2], names[3], names[4], names[5], names[6], names[7]);//這個在資訊平台一鍵連結功能設定上面會有數字那個數字就是帶剛剛取的值           
-            //string sHospID = names[0];
-            //int iCode = int.Parse("T55");
-            //string sName = names[2];
-            //string sIdNo = String.IsNullOrEmpty(names[3]) ? "" : names[3];
-            //string sBirthday = names[4];
-            //string sTelephone = names[5];
-            //string sMobilePhone = names[6];
+                                                                                                                            //string sHospID = names[0];
+                                                                                                                            //int iCode = int.Parse("T55");
+                                                                                                                            //string sName = names[2];
+                                                                                                                            //string sIdNo = String.IsNullOrEmpty(names[3]) ? "" : names[3];
+                                                                                                                            //string sBirthday = names[4];
+                                                                                                                            //string sTelephone = names[5];
+                                                                                                                            //string sMobilePhone = names[6];
 
-            //string currentConn = String.Format(strConn, "his" + sHospID);
-            //using (SqlConnection sqlconn = new SqlConnection(currentConn))
-            //{
-            //    bool bCallBrowse = false;
-            //    sqlconn.Open();
-            //    try
-            //    {
-            //        string sqlstr = String.Format("select * from patient p where p.intRsRecno={0} and p.strIdno='{1}'", iCode, sIdNo);
-            //        MessageBox.Show(sqlstr);
-            //        SqlCommand cmd = new SqlCommand(sqlstr, sqlconn);
-            //        SqlDataReader reader = cmd.ExecuteReader();
-            //        try
-            //        {
-            //            reader.Read();
-            //            if (reader["strName"].ToString() != sName || reader["datBirthday"].ToString() != sBirthday || reader["strTel"].ToString() != sTelephone || reader["strCell"].ToString() != sMobilePhone)
-            //            {
-            //                if (MessageBox.Show("資料不一致 " + Environment.NewLine +
-            //                                "病歷號碼:" + reader["intRsRecno"].ToString() + " ==>" + iCode.ToString() + Environment.NewLine +
-            //                                "身份證字號:" + reader["strIdno"].ToString() + " ==>" + sIdNo + Environment.NewLine +
-            //                                "姓名:" + reader["strName"].ToString() + " ==>" + sName + Environment.NewLine +
-            //                                "出生日期:" + reader["datBirthday"].ToString() + " ==>" + sBirthday + Environment.NewLine +
-            //                                "電話:" + reader["strTel"].ToString() + " ==>" + sTelephone + Environment.NewLine +
-            //                                "行動電話:" + reader["strCell"].ToString() + " ==>" + sMobilePhone + Environment.NewLine +
-            //                                "個管系統病人基本資料找不到，如果確定要繼續開啟個管會自動新增此病人資料！",
-            //                                "問題",
-            //                                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            //                {
-            //                    bCallBrowse = true;
-            //                }
-            //            }
-            //        }
-            //        catch
-            //        {
-            //            if (MessageBox.Show("病歷號碼:" + iCode.ToString() + Environment.NewLine +
-            //                                "身份證字號:" + sIdNo + Environment.NewLine +
-            //                                "姓名:" + sName + Environment.NewLine +
-            //                                "出生日期:" + sBirthday + Environment.NewLine +
-            //                                "電話:" + sTelephone + Environment.NewLine +
-            //                                "行動電話:" + sMobilePhone + Environment.NewLine +
-            //                            "個管系統病人基本資料找不到，如果確定要繼續開啟個管會自動新增此病人資料！",
-            //                            "問題",
-            //                            MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            //            {
-            //                bCallBrowse = true;
-            //            }
-            //        }
-            //        //funCommand(sqlstr, sqlconn, 1);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show(ex.ToString() + "資料開啟有問題請重試或洽系統工程師\n\n聯絡電話：(03) 4636913");
-            //    }
-
-                // 執行開啟 browse
-
-
-                if (function1111 != "   ")//當不小心按到空白項目會沒有作用(3個空白的原因是在後台的空白選項是3個空白如果後台改掉這邊就要改)
+            
+            if (function1111 != "   ")//當不小心按到空白項目會沒有作用(3個空白的原因是在後台的空白選項是3個空白如果後台改掉這邊就要改)
+            {
+                if (myClass.IsNumeric(str1))//判斷str1是否為數字
                 {
-                    if (myClass.IsNumeric(str1))//判斷str1是否為數字
-                    {
-                        this.Hide();
-                        notifyIcon1.ShowBalloonTip(5000);
-                        prog_flag = false;
-                        sw.Stop();//碼錶停止
-                        string savetime = sw.Elapsed.TotalMilliseconds.ToString();
-                        bool Return = WritePrivateProfileString("AppName", "開連結時間(ms)", savetime, test);
-                        Process.Start("chrome", ur);//用chrome開網頁 如過用們預設的瀏覽器會有出錯問題
+                    this.Hide();
+                    notifyIcon1.ShowBalloonTip(5000);
+                    prog_flag = false;
+                    sw.Stop();//碼錶停止
+                    string savetime = sw.Elapsed.TotalMilliseconds.ToString();
+                    bool Return = WritePrivateProfileString("AppName", "開連結時間(ms)", savetime, test);
+                    Process.Start("chrome", ur);//用chrome開網頁 如過用們預設的瀏覽器會有出錯問題
 
-                        // 儲存使用者按了一鍵連結的相關資訊
-                        Save2LogDB(names[0], names[1], names[2], ur);
-                    }
-                    else if (function1111 == "凌醫首頁")
-                    {
-                        this.Hide();
-                        notifyIcon1.ShowBalloonTip(5000);
-                        prog_flag = false;
-                        Process.Start("chrome", ur);
-
-                        Save2LogDB(names[0], names[1], names[2], ur);
-                    }
-                    else
-                    {
-                        // 截圖內容不正確(不為數字)會開啟這個網址
-                        Process.Start("chrome", "http://www.weightobserver.com.tw:8080/antifat/#");
-
-                        Save2LogDB(names[0], names[1], names[2], "http://www.weightobserver.com.tw:8080/antifat/#--截圖內容不正確(不為數字)會開啟這個網址");
-                    }
-                    if (ID != checkID || name != checkname)
-                    {
-                        Save2LogDB(names[0], names[1], "100", ur);
-                    }
+                    // 儲存使用者按了一鍵連結的相關資訊
+                    Save2LogDB(names[0], names[1], names[2], ur);
                 }
-            //}
+                else if (function1111 == "凌醫首頁")
+                {
+                    this.Hide();
+                    notifyIcon1.ShowBalloonTip(5000);
+                    prog_flag = false;
+                    Process.Start("chrome", ur);
+
+                    Save2LogDB(names[0], names[1], names[2], ur);
+                }
+                else
+                {
+                    // 截圖內容不正確(不為數字)會開啟這個網址
+                    Process.Start("chrome", "http://www.weightobserver.com.tw:8080/antifat/#");
+
+                    Save2LogDB(names[0], names[1], names[2], "http://www.weightobserver.com.tw:8080/antifat/#--截圖內容不正確(不為數字)會開啟這個網址");
+                }
+                if (ID != checkID || name != checkname)
+                {
+                    Save2LogDB(names[0], names[1], "100", ur);
+                }
+            }
         }
       
         private void Save2LogDB(string sHospID, string sLoginUser, string sCode, string sUrl)
@@ -1294,25 +1315,6 @@ namespace OCLink
 
             return;
         }
-
-        //public JsonResult GetCombos(string stext)
-        //{
-        //    var result =
-        //        db_zmcms.ComboMaster
-        //        .Where(s => s.CBMClass == "OCL")
-        //        .Join(db_zmcms.ComboDetail, a => a.CBMRowid, b => b.CBMRowid, (a, b) => new
-        //        {
-        //            CBDRowid = b.CBDRowid,
-        //            CBDCode = b.CBDCode,
-        //            function = b.CBDDescription,
-        //            CBDDisplayFlag = b.CBDDisplayFlag,
-        //            CBDDisplayOrder = b.CBDDisplayOrder
-        //        }).Where(r => r.CBDDisplayFlag == true).OrderBy(b => b.CBDDisplayOrder);
-
-        //    return Json(result, JsonRequestBehavior.AllowGet);
-        //}
-
-
         bool btz = true;//判斷診間掛號紐是否按下
         private void buttonS_Click(object sender, EventArgs e)//掛號紐
         {
@@ -1324,15 +1326,6 @@ namespace OCLink
             buttonS.ForeColor = Color.White;
             ButtonZ.BackColor = Color.Gainsboro;
             ButtonZ.ForeColor = Color.Black;
-
-            //tbResize.Visible = true;
-            //tbRed.Visible = true;
-            //tbGreen.Visible = true;
-            //tbBlue.Visible = true;
-            //tresize.Visible = false;
-            //tred.Visible = false;
-            //tgreen.Visible = false;
-            //tblue.Visible = false;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -1371,23 +1364,6 @@ namespace OCLink
             // 將系統訊息傳遞自父類的WndProc
             base.WndProc(ref m);
         }
-
-        //void  testcomm()
-        //{
-        //    string strCon3 = "server= oy.asuscomm.com,36913;database=his" + hisid + ";user=sa;password=z1r0m1d$^#^(!#";
-        //    SqlConnection conn2 = new SqlConnection(strCon3);//切換資料庫
-        //    conn2.Open();
-        //    try
-        //    {
-        //        string sqlstr5 = "select * from patient p where p.strUserAccount LIKE '%" + str1.Trim() + "'";
-        //        funCommand(sqlstr5, conn2, 3);//個人資料
-        //    }
-        //    catch
-        //    {
-        //        MessageBox.Show("截圖錯誤 請重新截圖");//             000001                             102815
-        //    }
-        //}
-        
         private void btn_OCR_Click(object sender, EventArgs e)//OCR鈕會問為甚麼不寫在裡面因為我要區分按的OCR和快捷鍵的OCR
         {
             bool Return;
@@ -1399,12 +1375,15 @@ namespace OCLink
         // OCR 測試結果顯示
         string checkID;
         string checkname;
-        string checktel;
-        string checkBirth;
         public string str1;//截圖出來的內容(病歷號)
         public bool GotOCR = false;//是否取得病歷號 
         private void btn_OCR1(object sender, EventArgs e)//這裡取病人資料OCR核心
         {
+            str1 = "";
+            ID = "";
+            tel = "";
+            Birth = "";
+            Cell = "";
             //if (testhis == "TECH")//方頂取title
             //{
             //    Timer mytimer = new Timer();
@@ -1425,23 +1404,6 @@ namespace OCLink
                 {
                     MessageBox.Show(str1);//要確認截圖結果是否正確
                     hotkeycheck = true;
-                }
-                string ckeckconn = "server =" + strconn23 + "; database = his" + hisid + "; user = " + strconnUser+ "; password = " + strconnpw;
-                using (SqlConnection conn = new SqlConnection(ckeckconn))
-                {
-                    string sqlconn = "select top 1* from patient where strUserAccount  like'%" + str1 + "'";
-                    conn.Open();
-                    SqlCommand sda = new SqlCommand(sqlconn, conn);
-                    SqlDataReader clinic = sda.ExecuteReader();
-                    while (clinic.Read())
-                    {
-                        checkname = clinic["strname"].ToString().Trim();
-                        checkID = clinic["strIdno"].ToString().Trim();
-                        checktel = clinic["strTel"].ToString().Trim();
-                        string sqlcheckBirth = clinic["datBirthday"].ToString().Trim();
-                        DateTime dt = Convert.ToDateTime(sqlcheckBirth);
-                        checkBirth = dt.Year + "/" + dt.Month + "/" + dt.Day;
-                    }
                 }
             }
             sw.Reset();//碼表歸零
@@ -1540,13 +1502,22 @@ namespace OCLink
                 string strCon2 = "server=" + sqlIP +";database=" + sqldatabace + ";user=" + sqlID + ";password=" +sqlpw +";";
                 using (SqlConnection conn = new SqlConnection(strCon2))
                 {
-                    string sqlconn = "select top 1 姓名,身份證字號,生日,電話H,電話O from 病患檔 where 病歷號碼 = '" + str1 +"'";
+                    string sqlconn = "";
+                    if (checkBox4.Checked == true)
+                    {
+                        sqlconn = "select * from 病患檔 where 病歷號碼  ='" + str1 + "'";
+                    }
+                    else if(checkBox6.Checked == true)
+                    {
+                        sqlconn = "select * from 病患檔 where 身份證字號  like  '%" + str1 + "'";
+                    }
                     conn.Open();
                     SqlCommand sda = new SqlCommand(sqlconn, conn);
                     SqlDataReader clinic = sda.ExecuteReader();
                     while (clinic.Read())
                     {
                         name = clinic["姓名"].ToString().Trim();
+                        str1 = clinic["病歷號碼"].ToString().Trim();
                         ID = clinic["身份證字號"].ToString().Trim();
                         Birth = clinic["生日"].ToString().Trim();
                         tel = clinic["電話H"].ToString().Trim();
@@ -1677,23 +1648,19 @@ namespace OCLink
                     MessageBox.Show("擷取資料錯誤,請重新截圖");
                 }
             }
-           
-            //if (ID != checkID || name != checkname )
-            //{
-            //DialogResult myResult = MessageBox.Show("貴院的該病人資料與以前不同,是否要將新資料覆蓋過去?\r\n注意!!資料更新後就回不來了" + "\r\n" + "\r\n" + "新:" + name + " " + ID + " " + tel + "\r\n" + "\r\n" + "舊:" + checkname + " " + checkID + " " + checktel, "注意", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            //if (myResult == DialogResult.Yes)
-            //{
-
-            //}
-            //if (myResult == DialogResult.No)
-            //{
-            //    name = checkname;
-            //    ID = checkID;
-            //    tel = checktel;
-            //    Birth = checkBirth;
-            //}
-            //}
-
+            string ckeckconn = "server =" + strconn23 + "; database = his" + hisid + "; user = " + strconnUser + "; password = " + strconnpw;
+            using (SqlConnection conn = new SqlConnection(ckeckconn))
+            {
+                string sqlconn = "select top 1* from patient where strUserAccount  like'%" + str1 + "'";
+                conn.Open();
+                SqlCommand sda = new SqlCommand(sqlconn, conn);
+                SqlDataReader clinic = sda.ExecuteReader();//strTel
+                while (clinic.Read())
+                {
+                    checkname = (!String.IsNullOrEmpty(clinic["strname"].ToString().Trim())) ? (clinic["strname"].ToString().Trim()) : "";
+                    checkID = (!String.IsNullOrEmpty(clinic["strIdno"].ToString().Trim())) ? (clinic["strIdno"].ToString().Trim()) : "";
+                }
+            }
             sw.Stop();//碼錶停止
             string savetime = sw.Elapsed.TotalMilliseconds.ToString();
             bool Return = WritePrivateProfileString("AppName", "開資料時間(ms)", savetime, test);
@@ -1757,12 +1724,81 @@ namespace OCLink
                     }
 
                     bit = PreprocesImage(bit, false);
-                    Page page = ocr.Process(bit);                    
-                    sPreventString = page.GetText().Trim();
-                    str = sPreventString.ToUpper().Replace("O", "0").Replace("L", "1").Replace("I", "1").Replace("S", "5").Replace("j", "5").Replace("P", "0");
-                    str = sPreventString.Replace(" ", "").Replace("一", "-").Replace("?", "7");
-                    str = Regex.Replace(str, @"[\u4e00-\u9fa5]", "");         // 去除漢字
-                    str = Regex.Replace(str, "[^0-9][^-][^/][a-zA-Z]", "");// 保留數字與字符 - /
+                    Page page = ocr.Process(bit);
+                    sPreventString = page.GetText().Trim().Replace(" ", "");
+                    if(testhis == "TECH")
+                    {
+                        int i = 0;
+                        if (checkBox5.Checked == true)
+                        {
+                            i = sPreventString.Length - 8;
+                            sPreventString = (sPreventString.Length > 8) ? sPreventString.Remove(0, i) : sPreventString;
+                        }
+                        else
+                        {
+                            i = sPreventString.Length - 9;
+                            sPreventString = (sPreventString.Length > 9) ? sPreventString.Remove(0, i) : sPreventString;
+
+                        }
+                    }
+
+                    //if (testhis == "TECH")
+                    //{
+                    //    string strTxt = "";
+                    //    for (int i = 0; i < sPreventString.Length; i++)
+                    //    {
+                    //        if ((i == 0) && ((sPreventString[i].ToString() == "0") || (sPreventString[i].ToString() == "1") || (sPreventString[i].ToString() == "8") || (sPreventString[i].ToString() == "5") || (sPreventString[i].ToString() == "3")))
+                    //        {
+                    //            switch (sPreventString[i].ToString())
+                    //            {
+                    //                case "0":
+                    //                    strTxt += "O";
+                    //                    break;
+                    //                case "1":
+                    //                    strTxt += "I";
+                    //                    break;
+                    //                case "8":
+                    //                    strTxt += "B";
+                    //                    break;
+                    //                case "5":
+                    //                    strTxt += "S";
+                    //                    break;
+                    //                case "3":
+                    //                    strTxt += "S";
+                    //                    break;
+                    //            }
+                    //        }
+                    //        else
+                    //        {
+                    //            strTxt += sPreventString[i];
+                    //        }
+                    //    }
+                    //    //string sPreventString2 = "";
+                    //    //bool bCK_sPreventString = false;
+                    //    //foreach (var test in strTxt)
+                    //    //{
+                    //    //    if (test.ToString() == " ")
+                    //    //    {
+                    //    //        bCK_sPreventString = true;
+                    //    //    }
+                    //    //    if (bCK_sPreventString == false)
+                    //    //    {
+                    //    //        sPreventString2 += test.ToString();
+                    //    //    }
+                    //    //}
+                    //    str = Regex.Replace(strTxt, "[^A-Za-z0-9]", "");
+                    //    str = str.Replace(" ", "").Replace("一", "-").Replace("?", "7");
+                    //}
+                    //if (testhis != "TECH")
+                    //{
+                    str = Regex.Replace(sPreventString, "[^A-Za-z0-9]", "");
+                    str = str.ToUpper().Replace("O", "0").Replace("L", "1").Replace("I", "1").Replace("S", "5")
+                          .Replace("j", "5").Replace("P", "0").Replace(" ", "").Replace("一", "-").Replace("?", "7");
+                    str = Regex.Replace(str, "[a-zA-Z]+", "");         // 去除英文
+                    str = Regex.Replace(str, "[^0-9][^-][^/]", "");// 保留數字與字符 - /
+                    //}
+                    str = testhis == "RS" ?str.Length == 6 ? str : str = " ":str;
+                    str = testhis == "VISW" ? str.Length == 7 ? str : str = " " : str;//********************
                     page.Dispose();
                     bit.Dispose();
                     ocr.Dispose();
@@ -1779,7 +1815,7 @@ namespace OCLink
                     }
                 }
             }
-            else if (btz == false && i < 2)
+            else if (btz == false && i < 2&&str.Length < 5)
             {
                 i++;
                 if (hotkeycheck == false)
@@ -1802,15 +1838,81 @@ namespace OCLink
                             bit = new Bitmap(Image.FromFile(@"C:\ZMTemp\BWImage_office.jpg"));
                         }
                     }
-
                     bit = PreprocesImage(bit, false);
                     Page page = ocr.Process(bit);
-                    sPreventString = page.GetText().Trim();
-                    //識別後的內容 "重要" 這裡是常常被反應辨識不佳   要改善就從這裡改善
-                    str = sPreventString.ToUpper().Replace("O", "0").Replace("L", "1").Replace("I", "1").Replace("S", "5").Replace("j", "5").Replace("P", "0");
-                    str = sPreventString.Replace(" ", "").Replace("一", "-").Replace("?", "7");
-                    str = Regex.Replace(str, @"[\u4e00-\u9fa5]", "");         // 去除漢字
-                    str = Regex.Replace(str, "[^0-9][^-][^/][a-zA-Z]", "");// 保留數字與字符去英文字母 -
+                    sPreventString = page.GetText().Trim().Replace(" ", "");
+                    if(testhis == "TECH")
+                    {
+                        int i = 0;
+                        if (checkBox5.Checked == true)
+                        {
+                            i = sPreventString.Length - 8;
+                            sPreventString = (sPreventString.Length > 8) ? sPreventString.Remove(0, i) : sPreventString;
+                        }
+                        else
+                        {
+                            i = sPreventString.Length - 9;
+                            sPreventString = (sPreventString.Length > 9) ? sPreventString.Remove(0, i) : sPreventString;
+
+                        }
+                    }
+                    //if (testhis == "TECH")
+                    //{
+                    //    string strTxt = "";
+                    //    for (int i = 0; i < sPreventString.Length; i++)
+                    //    {
+                    //        if ((i == 0) && ((sPreventString[i].ToString() == "0") || (sPreventString[i].ToString() == "1") || (sPreventString[i].ToString() == "8") || (sPreventString[i].ToString() == "5") || (sPreventString[i].ToString() == "3")))
+                    //        {
+                    //            switch (sPreventString[i].ToString())
+                    //            {
+                    //                case "0":
+                    //                    strTxt += "O";
+                    //                    break;
+                    //                case "1":
+                    //                    strTxt += "I";
+                    //                    break;
+                    //                case "8":
+                    //                    strTxt += "B";
+                    //                    break;
+                    //                case "5":
+                    //                    strTxt += "S";
+                    //                    break;
+                    //                case "3":
+                    //                    strTxt += "S";
+                    //                    break;
+                    //            }
+                    //        }
+                    //        else
+                    //        {
+                    //            strTxt += sPreventString[i];
+                    //        }
+                    //    }
+                    //string sPreventString2 = "";
+                    //bool bCK_sPreventString = false;
+                    //foreach (var test in strTxt)
+                    //{
+                    //    if (test.ToString() == " ")
+                    //    {
+                    //        bCK_sPreventString = true;
+                    //    }
+                    //    if (bCK_sPreventString == false)
+                    //    {
+                    //        sPreventString2 += test.ToString();
+                    //    }
+                    //}
+                    //str = Regex.Replace(strTxt, "[^A-Za-z0-9]", "");
+                    //str = str.Replace(" ", "").Replace("一", "-").Replace("?", "7");
+                    //}
+                    //if (testhis != "TECH")
+                    //{
+                    str = Regex.Replace(sPreventString, "[^A-Za-z0-9]", "");
+                    str = str.ToUpper().Replace("O", "0").Replace("L", "1").Replace("I", "1").Replace("S", "5")
+                          .Replace("j", "5").Replace("P", "0").Replace(" ", "").Replace("一", "-").Replace("?", "7");
+                    str = Regex.Replace(str, "[a-zA-Z]+", "");         // 去除英文
+                    str = Regex.Replace(str, "[^0-9][^-][^/]", "");// 保留數字與字符 - /
+                    //}
+                    str = testhis == "RS" ? str.Length == 6 ? str : str = " " : str;
+                    str = testhis == "VISW" ? str.Length == 7 ? str : str = " " : str;//**********************
                     page.Dispose();
                     bit.Dispose(); 
                     ocr.Dispose();
@@ -1822,7 +1924,7 @@ namespace OCLink
                     if (!myClass.IsNumeric(str) && hotkeycheck == true)
                     {
                         //str = OcrB();//執行時間 1524.9099ms
-                        btz = true;
+                        btz = true;//2
                         str = GetOCR();
                     }
                 }
@@ -1977,6 +2079,8 @@ namespace OCLink
             Return = WritePrivateProfileString("AppName", "sql帳號", sqlID, test);
             Return = WritePrivateProfileString("AppName", "sql密碼", sqlpw, test);
             Return = WritePrivateProfileString("AppName", "sql密碼", sqlpw, test);
+            Return = WritePrivateProfileString("AppName", "病歷號", checkBox4.Checked.ToString(), test);
+            Return = WritePrivateProfileString("AppName", "身份證", checkBox6.Checked.ToString(), test);
             UserHotkey();
             if (comboBox1.Text == "   ")
             {
@@ -2278,18 +2382,27 @@ namespace OCLink
                 testhis = "RS";
                 textBox1.Enabled = false;
                 button3.Enabled = false;
+                checkBox4.Visible = false;
+                checkBox5.Visible = false;
+                checkBox6.Visible = false;
             }
             if(comboBox13.Text == "展望資訊")
             {
                 testhis = "VISW";
                 textBox1.Enabled = true;
                 button3.Enabled = false;
+                checkBox4.Visible = false;
+                checkBox5.Visible = false;
+                checkBox6.Visible = false;
             }
             if (comboBox13.Text == "方鼎資訊")
             {
                 testhis = "TECH";
                 textBox1.Enabled = false;
-                if(sqlIP ==""&&sqldatabace ==""&&sqlID ==""&& sqlpw =="")
+                checkBox4.Visible = true;
+                checkBox5.Visible = true;
+                checkBox6.Visible = true;
+                if (sqlIP ==""&&sqldatabace ==""&&sqlID ==""&& sqlpw =="")
                 {
                     Form3 lForm = new Form3();
                     lForm.Owner = this;//重要的一步，主要是使Form2的Owner指針指向Form1  
@@ -2303,24 +2416,36 @@ namespace OCLink
                 testhis = "DHA";
                 textBox1.Enabled = false;
                 button3.Enabled = false;
+                checkBox4.Visible = false;
+                checkBox5.Visible = false;
+                checkBox6.Visible = false;
             }
             if (comboBox13.Text == "醫聖資訊")
             {
                 testhis = "SC";
                 textBox1.Enabled = false;
                 button3.Enabled = false;
+                checkBox4.Visible = false;
+                checkBox5.Visible = false;
+                checkBox6.Visible = false;
             }
             if (comboBox13.Text == "開蘭安心")
             {
                 testhis = "KN";
                 textBox1.Enabled = false;
                 button3.Enabled = false;
+                checkBox4.Visible = false;
+                checkBox5.Visible = false;
+                checkBox6.Visible = false;
             }
             if (comboBox13.Text == "蒙利特")
             {
                 testhis = "MTR";
                 textBox1.Enabled = false;
                 button3.Enabled = false;
+                checkBox4.Visible = false;
+                checkBox5.Visible = false;
+                checkBox6.Visible = false;
             }
         }
 
@@ -2374,6 +2499,23 @@ namespace OCLink
         {
             
         }
+        
+
+        private void checkBox4_CheckedChanged(object sender, EventArgs e)
+        {
+            if(checkBox4.Checked ==true&& checkBox6.Checked ==true)
+            {
+                checkBox6.Checked = false;
+            }
+        }
+
+        private void checkBox6_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox4.Checked == true && checkBox6.Checked == true)
+            {
+                checkBox4.Checked = false;
+            }
+        }
         public string combobox8;
         private void comboBox8_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -2415,9 +2557,6 @@ namespace OCLink
             {
                 // 要重設座標故先把檔案刪除
                 File.Delete(@"C:\ZMTemp\TestFile.TXT");
-
-                //if (!File.Exists(@"C:\Temp\TestFile.TXT"))
-                //{
                 if (this.WindowState != FormWindowState.Minimized)
                 {
                     this.WindowState = FormWindowState.Minimized;
@@ -2444,9 +2583,6 @@ namespace OCLink
             {
                 // 要重設座標故先把檔案刪除
                 File.Delete(@"C:\ZMTemp\TestFile_office.TXT");
-
-                //if (!File.Exists(@"C:\Temp\TestFile.TXT"))
-                //{
                 if (this.WindowState != FormWindowState.Minimized)
                 {
                     this.WindowState = FormWindowState.Minimized;
